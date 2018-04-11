@@ -1,0 +1,118 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section head{
+    <style type="text/css">
+        .datagrid-pager table{display:none;}
+        .lbl{white-space:nowrap}
+    </style>
+}
+
+@section scripts{
+        <script src="~/Areas/Mms/ViewModels/mms.com.js"></script>
+        <script src="~/Areas/Mms/ViewModels/mms.viewModel.search.js"></script>
+        <script src="~/Content/js/core/datagrid-scrollview.js"></script>
+        <script src="~/Content/js/jquery-plugin/fineuploader-3.7.1/jquery.fineuploader-3.7.1.min.js"></script>
+        <script type="text/javascript">
+            var vmInstance;
+            var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+            using(['datagrid','messager'],function(){
+                var viewModel = function(){ 
+                    var self = this;
+                    mms.viewModel.search.apply(this,arguments);
+                    self.grid.size = { w: 4, h: 94 };
+                    self.grid.autoRowHeight = false;
+                    self.grid.view =scrollView();
+                };
+
+                vmInstance = new viewModel(data);
+                ko.bindingViewModel(vmInstance);  
+                setTimeout(initUploader,500);
+            });
+
+            var initUploader = function(){
+                $('#uploader1').find(".l-btn-text").fineUploader({
+                    request: {endpoint: '/api/mms/test/postfile'},
+                    text:{uploadButton:'上传'},
+                    autoUpload:true 
+                }).on('upload',function(id, name){
+                    $.messager.progress({ title: '请稍等', msg: '正在上传...', interval: 0 });
+                }).on('complete',function(event, id, name, response){
+                    $.messager.progress('close');
+                    if (response.success) 
+                    {
+                        com.message('success',response.message);
+                        vmInstance.searchClick();
+                    }
+                }).on('progress',function(target,id, name, loaded, total){
+                    $.messager.progress('bar').progressbar('setValue', Math.ceil(loaded * 100 / total));
+                    if (loaded>=total)
+                    {
+                        $.messager.progress('close');
+                        $.messager.progress({ title: '请稍等', msg: '上传完成，正在导入处理...',interval: 300,text:''});
+                    }
+                }).on('error',function(target,id, name, reason, maybeXhrOrXdr){
+                    com.message('error',reason);
+                });
+                $("#uploader1").css("overflow","hidden");
+                $(".qq-upload-button").css("overflow","");
+                $(".qq-drop-processing,.qq-upload-list").hide();
+            };
+        </script>
+}
+        <div class="z-toolbar">
+            <a id="a_refresh" href="#" plain="true" class="easyui-linkbutton" icon="icon-arrow_refresh" title="刷新" data-bind="click:refreshClick">刷新</a>
+            <a id="a_add"    href="#" plain="true" class="easyui-linkbutton" icon="icon-add" title="新增" data-bind="click:addClick">新增</a>
+            <a id="a_edit"   href="#" plain="true" class="easyui-linkbutton" icon="icon-edit" data-bind="click:editClick" title="编辑">编辑</a>
+            <a id="a_del"    href="#" plain="true" class="easyui-linkbutton" icon="icon-cross" title="删除" data-bind="click:deleteClick">删除</a>
+            <a id="a_audit"  href="#" plain="true" class="easyui-linkbutton" icon="icon-user-accept" data-bind="click:auditClick" title="审核">审核</a>
+            <a id="a_export" href="#" class="easyui-splitbutton" data-options="menu:'#dropdown',iconCls:'icon-download'">导出</a>
+            <a id="uploader1" class="easyui-linkbutton" icon="icon-upload" plain="true" data-bind1="click:uploadClick" title="上传">上传</a>
+        </div>
+
+        <div id="dropdown" style="width:100px; display:none;">  
+            <div data-options="iconCls:'icon-ext-xls'"      suffix="xls"    data-bind="click:downloadClick">Excel2003   </div>  
+            <div data-options="iconCls:'icon-page_excel'"   suffix="xlsx"   data-bind="click:downloadClick">Excel2007   </div>  
+            <div data-options="iconCls:'icon-ext-doc'"      suffix="doc"    data-bind="click:downloadClick">Word2003    </div>  
+        </div> 
+ 
+        <div id="condition" class="container_12" style="position:relative;">
+            <div class="grid_1 lbl">用户编码</div>
+            <div class="grid_2 val"><input type="text" data-bind="value:form.UserCode" class="z-txt easyui-autocomplete" data-options="url:'/api/mms/send/getbillno'"/></div>
+            <div class="grid_1 lbl">用户名称</div>
+            <div class="grid_2 val"><input type="text" data-bind="value:form.UserName" class="z-txt easyui-autocomplete" data-options="url:'/api/mms/merchant/getnames'"/></div>
+            <div class="grid_1 lbl">描述说明</div>
+            <div class="grid_2 val"><input type="text" data-bind="value:form.Description" class="z-txt easyui-autocomplete" data-options="url:'/api/mms/send/getdoperson'"/></div>
+      
+            <div class="clear"></div>
+       
+            <div class="grid_1 lbl">是否启用</div>
+            <div class="grid_2 val"><input type="text" data-bind="value:form.IsEnable" class="z-txt"/></div>
+            <div class="grid_1 lbl">登陆次数</div>
+            <div class="grid_2 val"><input type="text" data-bind="value:form.LoginCount" class="z-txt"/></div>
+            <div class="grid_1 lbl">最后登陆时间</div>
+            <div class="grid_2 val"><input type="text" data-bind="value:form.LastLoginDate" class="z-txt easyui-daterange"/></div>
+
+            <div class="clear"></div>
+
+            <div class="prefix_9" style="position:absolute;top:5px;height:0;">  
+                <a id="a_search" href="#" class="buttonHuge button-blue" style="margin:0 15px;" data-bind="click:searchClick">查询</a> 
+                <a id="a_reset" href="#" class="buttonHuge button-blue" data-bind="click:clearClick">清空</a>
+            </div>
+        </div>
+
+       <table data-bind="datagrid:grid">
+            <thead>  
+                <tr>  
+                    <th field="UserCode"            sortable="true" align="left"    width="120"   >用户编码   </th>  
+                    <th field="UserName"            sortable="true" align="left"    width="150"   >用户名称     </th>  
+                    <th field="Description"         sortable="true" align="left"    width="180"  >描述说明   </th>  
+                    <th field="IsEnable"            sortable="true" align="center"    width="70" >是否启用   </th>  
+                    <th field="LoginCount"          sortable="true" align="right"    width="60" >登陆次数       </th>  
+                    <th field="LastLoginDate"       sortable="true" align="center"    width="120" formatter="com.formatTime"  >最后登陆时间   </th>   
+                </tr>                            
+            </thead>      
+        </table> 
+ 

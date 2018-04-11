@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<settings lookupType="pickingBill" defaultOrderBy='BillNo'>
+  <module>Psi</module>
+  <select>
+    BillNo as value,BillNo as test,CustomNo,Contract
+  </select>
+  <from>
+    psi_picking
+  </from>
+  <where defaultForAll='true' defaultCp='equal' defaultIgnoreEmpty='true' >
+    <field name='BillNo'       cp='startwith' variable='value'  ></field>
+  </where>
+</settings>

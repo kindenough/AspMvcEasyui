@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{36C1BA99-16C8-4BD8-9FBA-59811CE7C1F2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Zephyr.Core</RootNamespace>
+    <AssemblyName>Zephyr.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Zephyr.Bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Activation" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Args\EditPageEventArgs.cs" />
+    <Compile Include="Base\ServiceBaseEditPage.cs" />
+    <Compile Include="Core\ZMessage.cs" />
+    <Compile Include="Enum\TabType.cs" />
+    <Compile Include="Exporter\Exporter.cs" />
+    <Compile Include="Exporter\ICompress.cs" />
+    <Compile Include="Exporter\IExport.cs" />
+    <Compile Include="Exporter\ZipCompress.cs" />
+    <Compile Include="Exporter\XlsxExport.cs" />
+    <Compile Include="Exporter\Column.cs" />
+    <Compile Include="Exporter\IDataGetter.cs" />
+    <Compile Include="Exporter\ApiData.cs" />
+    <Compile Include="Exporter\XlsExport.cs" />
+    <Compile Include="Exporter\PdfExport.cs" />
+    <Compile Include="Exporter\HtmlDocExport.cs" />
+    <Compile Include="Exporter\NoneCompress.cs" />
+    <Compile Include="Exporter\IFormatter.cs" />
+    <Compile Include="Exporter\SexFormatter.cs" />
+    <Compile Include="Exporter\NoneFormatter.cs" />
+    <Compile Include="Generator\Entity\Table.cs" />
+    <Compile Include="Generator\Entity\TableKey.cs" />
+    <Compile Include="Generator\Entity\TableSchema.cs" />
+    <Compile Include="Generator\Util.cs" />
+    <Compile Include="Generator\GenTables.cs" />
+    <Compile Include="Generator\Providers\ISqlGen.cs" />
+    <Compile Include="Generator\Providers\Oracle.cs" />
+    <Compile Include="Generator\Providers\SqlServer.cs" />
+    <Compile Include="Logs\LogReader.cs" />
+    <Compile Include="Request\RequestWrapperMethods.cs" />
+    <Compile Include="Request\RequestWrapper.cs" />
+    <Compile Include="Base\ServiceBase.cs" />
+    <Compile Include="Base\ServiceBaseDelete.cs" />
+    <Compile Include="Base\ServiceBaseEdit.cs" />
+    <Compile Include="Base\ServiceBaseInsert.cs" />
+    <Compile Include="Base\ServiceBaseLog.cs" />
+    <Compile Include="Base\ServiceBaseQuery.cs" />
+    <Compile Include="Base\ServiceBaseUpdate.cs" />
+    <Compile Include="Core\Db.cs" />
+    <Compile Include="Enum\DownloadType.cs" />
+    <Compile Include="Enum\FileSuffix.cs" />
+    <Compile Include="Enum\ErrorHandleType.cs" />
+    <Compile Include="Core\NewKey.cs" />
+    <Compile Include="Core\PinYin.cs" />
+    <Compile Include="Args\EditEventArgs.cs" />
+    <Compile Include="Args\InsertEventArgs.cs" />
+    <Compile Include="Args\UpdateEventArgs.cs" />
+    <Compile Include="Args\DeleteEventArgs.cs" />
+    <Compile Include="Request\RequestWrapperConvert.cs" />
+    <Compile Include="Request\RequestWrapperService.cs" />
+    <Compile Include="Logs\LogHelper.cs" />
+    <Compile Include="Param\ParamSP.cs" />
+    <Compile Include="Param\ParamSPData.cs" />
+    <Compile Include="Param\ParamWhere.cs" />
+    <Compile Include="Core\FormsAuth.cs" />
+    <Compile Include="Base\LoginerBase.cs" />
+    <Compile Include="Core\APP.cs" />
+    <Compile Include="Core\Attribute.cs" />
+    <Compile Include="Base\ServiceBaseUtils.cs" />
+    <Compile Include="Base\ModelBase.cs" />
+    <Compile Include="Enum\MsgType.cs" />
+    <Compile Include="Enum\OptType.cs" />
+    <Compile Include="Enum\ServiceType.cs" />
+    <Compile Include="Core\ZException.cs" />
+    <Compile Include="Param\ParamDelete.cs" />
+    <Compile Include="Param\ParamDeleteData.cs" />
+    <Compile Include="Param\ParamInsert.cs" />
+    <Compile Include="Param\ParamInsertData.cs" />
+    <Compile Include="Param\ParamQuery.cs" />
+    <Compile Include="Param\ParamQueryData.cs" />
+    <Compile Include="Param\ParamUpdate.cs" />
+    <Compile Include="Param\ParamUpdateData.cs" />
+    <Compile Include="Param\ParamUtils.cs" />
+    <Compile Include="Core\Compare.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Zephyr.Data\Zephyr.Data.csproj">
+      <Project>{b5ae821b-7728-49b3-9119-3bbc4c8e58e9}</Project>
+      <Name>Zephyr.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Zephyr.Utils\Zephyr.Utils.csproj">
+      <Project>{B62970F8-65AA-46E0-9F11-F573C117248F}</Project>
+      <Name>Zephyr.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Logs\Default.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,5 @@
+F:\360Downloads\360极速浏览器\asp.net+Web+mvc4.0 EasyUI 最新 权限管理系统源码教程\BN089-BS开发框架MVC4版\source20131023\Zephyr.Net\Zephyr.Bin\Zephyr.Core.dll
+F:\360Downloads\360极速浏览器\asp.net+Web+mvc4.0 EasyUI 最新 权限管理系统源码教程\BN089-BS开发框架MVC4版\source20131023\Zephyr.Net\Zephyr.Bin\Zephyr.Core.pdb
+F:\360Downloads\360极速浏览器\asp.net+Web+mvc4.0 EasyUI 最新 权限管理系统源码教程\BN089-BS开发框架MVC4版\source20131023\Zephyr.Net\Zephyr.Core\obj\Debug\Zephyr.Core.csprojResolveAssemblyReference.cache
+F:\360Downloads\360极速浏览器\asp.net+Web+mvc4.0 EasyUI 最新 权限管理系统源码教程\BN089-BS开发框架MVC4版\source20131023\Zephyr.Net\Zephyr.Core\obj\Debug\Zephyr.Core.dll
+F:\360Downloads\360极速浏览器\asp.net+Web+mvc4.0 EasyUI 最新 权限管理系统源码教程\BN089-BS开发框架MVC4版\source20131023\Zephyr.Net\Zephyr.Core\obj\Debug\Zephyr.Core.pdb

@@ -1,0 +1,287 @@
+2013-09-27 10:08:15,827 [8500] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-27 10:08:16,055 [8500] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-27 10:08:16,062 [8500] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-27 10:08:16,127 [8500] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-27 10:08:21,488 [11532] DEBUG Servicesys_user - 获取实体对象
+2013-09-27 10:08:21,507 [11532] DEBUG Sys - select sys_user.* from sys_user where  UserCode =  'lhs'and Password =  'lhs'and IsEnable =  'True'
+2013-09-27 10:08:21,904 [11532] DEBUG Sys - 
+update sys_user
+set LoginCount = isnull(LoginCount,0) + 1
+   ,LastLoginDate = getdate()
+where UserCode = 'lhs' 
+2013-09-27 10:08:21,966 [11532] DEBUG Sys - insert into sys_loginHistory([UserCode],[UserName],[HostName],[HostIP],[LoginCity],[LoginDate]) values('lhs','刘会胜','LHS-PC','ILData[0]/localhost','福建省厦门市','2013-09-27 10:08:21')
+2013-09-27 10:08:21,972 [11532] DEBUG Servicemms_project - 获取实体对象
+2013-09-27 10:08:21,973 [11532] DEBUG Mms - select mms_project.* from mms_project where  ProjectCode =  '201306030001'
+2013-09-27 10:08:22,069 [3536] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-09-27 10:08:24,723 [12864] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-09-27 10:08:32,448 [13576] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/product/Index','/Mms/product')
+2013-09-27 10:08:32,464 [13576] DEBUG Servicesys_code - 获取动态列表
+2013-09-27 10:08:32,465 [13576] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'MeasureUnit'
+2013-09-27 10:08:34,031 [12840] DEBUG Servicemms_product - 获取动态列表
+2013-09-27 10:08:34,031 [12840] DEBUG Mms - select top 20 * from mms_product order by ID
+2013-09-27 10:08:34,180 [12840] DEBUG Mms - select count(*) from ( select * from mms_product ) tb_temp
+2013-09-27 10:16:59,089 [12864] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/product/Index','/Mms/product')
+2013-09-27 10:16:59,092 [12864] DEBUG Servicesys_code - 获取动态列表
+2013-09-27 10:16:59,092 [12864] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'MeasureUnit'
+2013-09-27 10:16:59,845 [7484] DEBUG Servicemms_product - 获取动态列表
+2013-09-27 10:16:59,850 [7484] DEBUG Mms - select top 20 * from mms_product order by ID
+2013-09-27 10:16:59,851 [7484] DEBUG Mms - select count(*) from ( select * from mms_product ) tb_temp
+2013-09-27 10:21:42,107 [11532] DEBUG Servicemms_product - 获取动态列表
+2013-09-27 10:21:42,107 [11532] DEBUG Mms - select top 20 * from mms_product order by ID
+2013-09-27 10:21:42,108 [11532] DEBUG Mms - select count(*) from ( select * from mms_product ) tb_temp
+2013-09-27 10:21:44,389 [7484] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/staff/Index','/Mms/staff')
+2013-09-27 10:21:44,401 [7484] DEBUG Servicesys_code - 获取动态列表
+2013-09-27 10:21:44,401 [7484] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'PersonType'
+2013-09-27 10:21:45,488 [7484] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/staff'
+2013-09-27 10:21:45,491 [7484] DEBUG Sys - 
+select *
+from sys_roleMenuColumnMap 
+where MenuCode = '9960'
+and RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+2013-09-27 10:21:45,541 [7484] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/staff'
+2013-09-27 10:21:45,542 [7484] DEBUG Sys - 
+select A.*
+from sys_button A
+inner join sys_roleMenuButtonMap B on B.MenuCode = '9960' and B.ButtonCode = A.ButtonCode
+where RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+order by ButtonSeq
+2013-09-27 10:21:46,286 [9236] DEBUG ServiceREMP_Staff - 获取动态列表
+2013-09-27 10:21:46,287 [9236] DEBUG Mms - select top 20 * from REMP_Staff order by EMPSID
+2013-09-27 10:21:46,379 [9236] DEBUG Mms - select count(*) from ( select * from REMP_Staff ) tb_temp
+2013-09-27 10:21:48,810 [12864] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/Staff/edit')
+2013-09-27 10:21:48,824 [12864] DEBUG ServiceREMP_Staff - 获取动态对象
+2013-09-27 10:21:48,828 [12864] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '2'
+2013-09-27 10:21:48,837 [12864] DEBUG ServiceREMP_Staff - 获取上一条下一条数据
+2013-09-27 10:21:48,871 [12864] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-27 10:21:48,874 [12864] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID
+2013-09-27 10:21:48,877 [12864] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-27 10:21:48,878 [12864] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID < '2' order by EMPSID desc
+2013-09-27 10:21:48,882 [12864] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-27 10:21:48,883 [12864] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID >  '2' order by EMPSID
+2013-09-27 10:21:48,886 [12864] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-27 10:21:48,886 [12864] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID desc
+2013-09-27 10:21:48,925 [12864] DEBUG ServiceREMP_Change - 获取动态列表
+2013-09-27 10:21:48,926 [12864] DEBUG Mms - select REMP_Change.* from REMP_Change where  EMPSID =  '2'
+2013-09-27 10:21:48,941 [12864] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-27 10:21:48,942 [12864] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '2'
+2013-09-27 10:21:48,955 [12864] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-27 10:21:48,955 [12864] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '2'
+2013-09-27 10:21:48,957 [12864] DEBUG Servicesys_code - 获取动态列表
+2013-09-27 10:21:48,957 [12864] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'PersonType'
+2013-09-27 10:21:48,958 [12864] DEBUG ServiceREMP_Department - 获取动态列表
+2013-09-27 10:21:48,958 [12864] DEBUG Mms - select deptname as text,DEPTID as value from REMP_Department
+2013-09-27 10:22:02,620 [7484] DEBUG ServiceREMP_Staff - 编辑记录
+2013-09-27 10:22:02,637 [7484] DEBUG Mms - select REMP_Change.* from REMP_Change where  CHANID =  '2'
+2013-09-27 10:22:02,648 [7484] DEBUG Mms - update REMP_Change set [EMPSID] = '23', [changedate] = '2013-09-18 0:00:00', [changetype] = '2', [createtime] = '1' where  CHANID =  '2'
+2013-09-27 10:22:02,655 [7484] ERROR ServiceREMP_Staff - 编辑记录失败
+System.Exception: 数据已经被引用，更新失败，请先删除引用数据并重试！
+   在 Zephyr.Core.Db.<Context>b__2(ErrorEventArgs e) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Core\Db.cs:行号 98
+   在 Zephyr.Data.ExecuteQueryHandler.HandleQueryException(Exception exception) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\Handlers\ExecuteQueryHandler.cs:行号 105
+   在 Zephyr.Data.ExecuteQueryHandler.ExecuteQuery(Boolean useReader, Action action) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\Handlers\ExecuteQueryHandler.cs:行号 28
+   在 Zephyr.Data.DbCommand.Execute() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\PartialClasses\Execute.cs:行号 9
+   在 Zephyr.Data.BaseUpdateBuilder.Execute() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Builders\Update\BaseUpdateBuilder.cs:行号 29
+   在 Zephyr.Core.ServiceBase`1.<EditPage>b__9(RequestWrapper x) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEditPage.cs:行号 67
+   在 Zephyr.Core.ServiceBase`1.<>c__DisplayClassf.<EditPage>b__b() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEditPage.cs:行号 182
+   在 Zephyr.Core.LogHelper.Logger(ILog log, String function, ErrorHandle errorHandleType, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Logs\LogHelper.cs:行号 44
+2013-09-27 10:22:02,694 [7484] ERROR /api/Mms/Staff/edit/ - System.Exception: 数据已经被引用，更新失败，请先删除引用数据并重试！
+   在 Zephyr.Core.LogHelper.Logger(ILog log, String function, ErrorHandle errorHandleType, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Logs\LogHelper.cs:行号 54
+   在 Zephyr.Core.ServiceBase`1.Logger(String function, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseLog.cs:行号 23
+   在 Zephyr.Core.ServiceBase`1.EditPage(JObject data, RequestWrapper formWrapper, List`1 tabsWrapper) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEditPage.cs:行号 72
+   在 CallSite.Target(Closure , CallSite , REMP_StaffService , Object , RequestWrapper , List`1 )
+   在 System.Dynamic.UpdateDelegates.UpdateAndExecute4[T0,T1,T2,T3,TRet](CallSite site, T0 arg0, T1 arg1, T2 arg2, T3 arg3)
+   在 Zephyr.Areas.Mms.Controllers.StaffApiController.Edit(Object data) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Mms\Controllers\StaffController.cs:行号 220
+   在 lambda_method(Closure , Object , Object[] )
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.<>c__DisplayClassf.<GetExecutor>b__9(Object instance, Object[] methodParameters)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.Execute(Object instance, Object[] arguments)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.<>c__DisplayClass5.<ExecuteAsync>b__4()
+   在 System.Threading.Tasks.TaskHelpers.RunSynchronously[TResult](Func`1 func, CancellationToken cancellationToken)
+2013-09-27 10:22:11,659 [3536] DEBUG ServiceREMP_Staff - 获取动态对象
+2013-09-27 10:22:11,659 [3536] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '1'
+2013-09-27 10:22:11,660 [3536] DEBUG ServiceREMP_Staff - 获取上一条下一条数据
+2013-09-27 10:22:11,660 [3536] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-27 10:22:11,661 [3536] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID
+2013-09-27 10:22:11,661 [3536] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-27 10:22:11,661 [3536] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID < '1' order by EMPSID desc
+2013-09-27 10:22:11,663 [3536] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-27 10:22:11,663 [3536] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID >  '1' order by EMPSID
+2013-09-27 10:22:11,665 [3536] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-27 10:22:11,665 [3536] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID desc
+2013-09-27 10:22:11,665 [3536] DEBUG ServiceREMP_Change - 获取动态列表
+2013-09-27 10:22:11,666 [3536] DEBUG Mms - select REMP_Change.* from REMP_Change where  EMPSID =  '1'
+2013-09-27 10:22:11,666 [3536] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-27 10:22:11,666 [3536] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '1'
+2013-09-27 10:22:11,667 [3536] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-27 10:22:11,668 [3536] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '1'
+2013-09-27 10:22:19,920 [3536] DEBUG ServiceREMP_Staff - 编辑记录
+2013-09-27 10:22:19,921 [3536] DEBUG Mms - select REMP_Change.* from REMP_Change where  CHANID =  '1'
+2013-09-27 10:22:19,922 [3536] DEBUG Mms - update REMP_Change set [EMPSID] = '1', [changedate] = '2013-09-22 0:00:00', [changetype] = '12', [createtime] = '1' where  CHANID =  '1'
+2013-09-27 11:16:27,947 [12864] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-09-27 11:16:29,355 [13576] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-09-27 11:16:32,949 [7484] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/staff/Index','/Mms/staff')
+2013-09-27 11:16:32,951 [7484] DEBUG Servicesys_code - 获取动态列表
+2013-09-27 11:16:32,951 [7484] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'PersonType'
+2013-09-27 11:16:32,984 [7484] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/staff'
+2013-09-27 11:16:32,985 [7484] DEBUG Sys - 
+select *
+from sys_roleMenuColumnMap 
+where MenuCode = '9960'
+and RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+2013-09-27 11:16:32,986 [7484] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/staff'
+2013-09-27 11:16:32,987 [7484] DEBUG Sys - 
+select A.*
+from sys_button A
+inner join sys_roleMenuButtonMap B on B.MenuCode = '9960' and B.ButtonCode = A.ButtonCode
+where RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+order by ButtonSeq
+2013-09-27 11:16:34,880 [3536] DEBUG ServiceREMP_Staff - 获取动态列表
+2013-09-27 11:16:34,885 [3536] DEBUG Mms - select top 20 * from REMP_Staff order by EMPSID
+2013-09-27 11:16:34,887 [3536] DEBUG Mms - select count(*) from ( select * from REMP_Staff ) tb_temp
+2013-09-27 11:16:36,371 [3536] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/Staff/edit')
+2013-09-27 11:16:36,373 [3536] DEBUG ServiceREMP_Staff - 获取动态对象
+2013-09-27 11:16:36,373 [3536] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '3'
+2013-09-27 11:16:36,375 [3536] DEBUG ServiceREMP_Staff - 获取上一条下一条数据
+2013-09-27 11:16:36,375 [3536] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-27 11:16:36,375 [3536] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID
+2013-09-27 11:16:36,375 [3536] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-27 11:16:36,375 [3536] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID < '3' order by EMPSID desc
+2013-09-27 11:16:36,377 [3536] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-27 11:16:36,377 [3536] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID >  '3' order by EMPSID
+2013-09-27 11:16:36,379 [3536] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-27 11:16:36,379 [3536] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID desc
+2013-09-27 11:16:36,380 [3536] DEBUG ServiceREMP_Change - 获取动态列表
+2013-09-27 11:16:36,380 [3536] DEBUG Mms - select REMP_Change.* from REMP_Change where  EMPSID =  '3'
+2013-09-27 11:16:36,381 [3536] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-27 11:16:36,381 [3536] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '3'
+2013-09-27 11:16:36,382 [3536] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-27 11:16:36,382 [3536] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '3'
+2013-09-27 11:16:36,383 [3536] DEBUG Servicesys_code - 获取动态列表
+2013-09-27 11:16:36,384 [3536] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'PersonType'
+2013-09-27 11:16:36,384 [3536] DEBUG ServiceREMP_Department - 获取动态列表
+2013-09-27 11:16:36,384 [3536] DEBUG Mms - select deptname as text,DEPTID as value from REMP_Department
+2013-09-27 11:16:56,520 [12840] DEBUG ServiceREMP_Change - 获取新主键
+2013-09-27 11:16:56,522 [12840] DEBUG Mms - select isnull(max(CHANID),0) from REMP_Change  where 1 = 1  and  EMPSID =  '3'
+2013-09-27 11:17:11,137 [12840] DEBUG ServiceREMP_Staff - 编辑记录
+2013-09-27 11:17:11,138 [12840] DEBUG Mms - select REMP_Change.* from REMP_Change where  CHANID =  '1'
+2013-09-27 11:23:02,112 [12840] DEBUG Mms - insert into REMP_Change([CHANID],[EMPSID],[changedate],[changetype],[createtime]) values('1','3','2013-09-03','1','2')
+2013-09-27 11:23:02,361 [12840] ERROR ServiceREMP_Staff - 编辑记录失败
+System.Data.SqlClient.SqlException (0x80131904): 当 IDENTITY_INSERT 设置为 OFF 时，不能为表 'REMP_Change' 中的标识列插入显式值。
+   在 Zephyr.Data.ExecuteQueryHandler.HandleQueryException(Exception exception) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\Handlers\ExecuteQueryHandler.cs:行号 107
+   在 Zephyr.Data.ExecuteQueryHandler.ExecuteQuery(Boolean useReader, Action action) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\Handlers\ExecuteQueryHandler.cs:行号 28
+   在 Zephyr.Data.DbCommand.Execute() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\PartialClasses\Execute.cs:行号 9
+   在 Zephyr.Data.BaseInsertBuilder.Execute() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Builders\Insert\BaseInsertBuilder.cs:行号 22
+   在 Zephyr.Core.ServiceBase`1.<EditPage>b__a(RequestWrapper x) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEditPage.cs:行号 68
+   在 Zephyr.Core.ServiceBase`1.<>c__DisplayClassf.<EditPage>b__b() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEditPage.cs:行号 182
+   在 Zephyr.Core.LogHelper.Logger(ILog log, String function, ErrorHandle errorHandleType, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Logs\LogHelper.cs:行号 44
+ClientConnectionId:d0c1538a-e3db-4293-be0c-f96195bf0eba
+2013-09-27 11:23:04,149 [12840] ERROR /api/Mms/Staff/edit/ - System.Data.SqlClient.SqlException (0x80131904): 当 IDENTITY_INSERT 设置为 OFF 时，不能为表 'REMP_Change' 中的标识列插入显式值。
+   在 Zephyr.Core.LogHelper.Logger(ILog log, String function, ErrorHandle errorHandleType, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Logs\LogHelper.cs:行号 54
+   在 Zephyr.Core.ServiceBase`1.Logger(String function, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseLog.cs:行号 23
+   在 Zephyr.Core.ServiceBase`1.EditPage(JObject data, RequestWrapper formWrapper, List`1 tabsWrapper) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEditPage.cs:行号 72
+   在 CallSite.Target(Closure , CallSite , REMP_StaffService , Object , RequestWrapper , List`1 )
+   在 Zephyr.Areas.Mms.Controllers.StaffApiController.Edit(Object data) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Mms\Controllers\StaffController.cs:行号 220
+   在 lambda_method(Closure , Object , Object[] )
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.<>c__DisplayClassf.<GetExecutor>b__9(Object instance, Object[] methodParameters)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.Execute(Object instance, Object[] arguments)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.<>c__DisplayClass5.<ExecuteAsync>b__4()
+   在 System.Threading.Tasks.TaskHelpers.RunSynchronously[TResult](Func`1 func, CancellationToken cancellationToken)
+ClientConnectionId:d0c1538a-e3db-4293-be0c-f96195bf0eba

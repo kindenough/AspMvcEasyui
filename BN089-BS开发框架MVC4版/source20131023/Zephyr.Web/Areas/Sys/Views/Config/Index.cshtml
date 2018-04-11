@@ -1,0 +1,59 @@
+﻿@{
+    ViewBag.Title = "系统设置";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section head{
+    <style type="text/css">
+        input { width: 124px; }
+        h1 {font-size: 18px;font-family: 'Microsoft YaHei';padding: 0px;padding-left: 20px;color: #A2A2A2;margin-bottom: 5px;}
+        ul { list-style: none; }
+        li div {width: 140px;float: left;text-align: right;padding-right: 10px;}
+        .c {margin: 5px;border-top: 2px solid #1382CE;margin-bottom: 15px;padding-top: 10px;}
+    </style>
+}
+
+@section scripts{
+    <script src="~/Areas/Sys/ViewModels/Config.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+        ko.bindingViewModel(new viewModel(data));
+    </script>
+}
+    <div style="margin:10px;">
+        <h1>皮肤设置</h1>
+        <div class="c">
+            <ul>
+                <li>
+                    <div>皮肤：</div>
+                    <input data-bind="comboboxValue:form.theme" type="text" id="txt_theme"
+                           data-options="data: data.dataSource.themes, editable: false" 
+                           class="easyui-combobox" />
+                </li>
+            </ul>
+        </div>
+
+        <h1>菜单设置</h1>
+        <div class="c">
+            <ul>
+                <li>
+                    <div>表现方式：</div>
+                    <input data-bind="comboboxValue:form.navigation" type="text" id="txt_nav_showtype" name="navshowtype" data-options="data: data.dataSource.navigations, editable: false" class="easyui-combobox"/> 
+                    <a href="#" title="未实现..." style="color: blue;">查看效果图</a>
+                </li>
+            </ul>
+        </div>
+        <h1>数据表格设置</h1>
+        <div class="c">
+            <ul>
+                <li>
+                    <div>每页记录数：</div>
+                    <input data-bind="numberspinnerValue:form.gridrows" type="text" id="txt_grid_rows" data-options="min:10,max:1000,increment:10" class="easyui-numberspinner" />
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div style="margin:140px;width:160px; margin-top:40px; font-family:'Microsoft YaHei'">
+        <a id="btnok" href="#" class="buttonHuge button-blue" data-bind="click:save">保存设置</a>
+    </div>

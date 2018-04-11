@@ -1,0 +1,52 @@
+2013-08-08 15:26:57,722 [13588] ERROR / - System.Exception: 超时时间已到。在操作完成之前超时时间已过或服务器未响应
+   在 Zephyr.Core.Db.<Context>b__2(ErrorEventArgs e) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Core\Db.cs:行号 98
+   在 Zephyr.Data.ExecuteQueryHandler.HandleQueryException(Exception exception) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\Handlers\ExecuteQueryHandler.cs:行号 105
+   在 Zephyr.Data.ExecuteQueryHandler.ExecuteQuery(Boolean useReader, Action action) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\Handlers\ExecuteQueryHandler.cs:行号 28
+   在 Zephyr.Data.DbCommand.QueryMany[TEntity,TList](Action`2 customMapper) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\PartialClasses\QueryMany.cs:行号 14
+   在 Zephyr.Data.DbCommand.QueryMany[TEntity](Action`2 customMapper) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\PartialClasses\QueryMany.cs:行号 36
+   在 Zephyr.Models.sys_userService.GetCurrentUserSettings() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Sys\Models\sys_user.cs:行号 107
+   在 Zephyr.Controllers.HomeController.Index() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Controllers\HomeController.cs:行号 19
+   在 lambda_method(Closure , ControllerBase , Object[] )
+   在 System.Web.Mvc.ActionMethodDispatcher.Execute(ControllerBase controller, Object[] parameters)
+   在 System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   在 System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass42.<BeginInvokeSynchronousActionMethod>b__41()
+   在 System.Web.Mvc.Async.AsyncResultWrapper.<>c__DisplayClass8`1.<BeginSynchronous>b__7(IAsyncResult _)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`1.End()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethod(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass37.<>c__DisplayClass39.<BeginInvokeActionMethodWithFilters>b__33()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass4f.<InvokeActionMethodFilterAsynchronously>b__49()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass4f.<InvokeActionMethodFilterAsynchronously>b__49()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass4f.<InvokeActionMethodFilterAsynchronously>b__49()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass37.<BeginInvokeActionMethodWithFilters>b__36(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`1.End()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethodWithFilters(IAsyncResult asyncResult)
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass25.<>c__DisplayClass2a.<BeginInvokeAction>b__20()
+   在 System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass25.<BeginInvokeAction>b__22(IAsyncResult asyncResult)
+2013-08-08 15:27:00,664 [16944] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-08-08 15:27:05,192 [7068] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-08-08 15:27:31,270 [7068] DEBUG Servicemms_send - 获取动态列表
+2013-08-08 15:27:31,300 [7068] DEBUG Mms - select top 20 
+        *
+     from 
+        test_user
+     order by UserCode
+2013-08-08 15:27:31,445 [7068] DEBUG Mms - select count(*) from ( select 
+        *
+     from 
+        test_user
+     ) tb_temp

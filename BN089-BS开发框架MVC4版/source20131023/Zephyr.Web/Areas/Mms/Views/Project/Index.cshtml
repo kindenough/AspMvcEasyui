@@ -1,0 +1,157 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section head{
+    <style type="text/css">
+        div#navigation{background:white}
+        div#wrapper{float:right;width:100%;margin-left:-185px}
+        div#content{margin-left:185px}
+        div#navigation{float:left;width:180px}
+        .datagrid-cell a{color:black;}
+        .datagrid-cell a:hover{color:red;}
+
+        .lbs
+        {
+             white-space:nowrap;
+        }
+    </style>
+}
+
+@section scripts{
+    <script src="~/Areas/Mms/ViewModels/mms.project.js"></script>
+    <script type="text/javascript">
+        using(['validatebox','combobox']);
+        var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+        var formatPartAttr = utils.fnValueToText(data.dataSource.partAttr);
+        var formatImagePart = utils.fnValueToText(data.dataSource.imagePart);
+        ko.bindingViewModel(new viewModel(data));
+    </script>
+}
+
+<div id="container">
+    <div id="wrapper">
+        <div id="content">
+            <div class="z-toolbar">
+                <a id="a_refresh" href="#" plain="true" class="easyui-linkbutton" icon="icon-arrow_refresh" title="刷新" data-bind="click:refreshClick">刷新</a>
+                <a id="a_add"     href="#" plain="true" class="easyui-linkbutton" icon="icon-add" title="新增" data-bind="click:addClick">新增</a>
+                <a id="a_del"     href="#" plain="true" class="easyui-linkbutton" icon="icon-cross" title="删除" data-bind1="click:deleteClick">删除</a>
+                <a id="a_save"    href="#" plain="true" class="easyui-linkbutton" icon="icon-save" data-bind="click:saveClick" title="保存">保存</a>
+            </div>
+
+            <div id="div1" class="easyui-tabs">
+                <div title="工程信息">
+                    <div id="master" class="container_16" data-bind="inputwidth:0.9,autoheight:73">
+                        <div class="grid_2 lbl">项目编码</div>
+                        <div class="grid_6 val"><input type="text" data-bind="value:form.ProjectCode,readOnly:true" class="z-txt readonly"/></div>
+                        <div class="grid_2 lbl required">项目名称</div>
+                        <div class="grid_6 val"><input type="text" data-bind="value:form.ProjectName" class="z-txt" required="true" /></div>
+                      
+                        <div class="clear"></div>
+
+                        <div class="grid_2 lbl">工程简称</div>
+                        <div class="grid_6 val "><input type="text" data-bind="value:form.ShortName" class="z-txt" /></div>            
+                        <div class="grid_2 lbl">重点工程</div>
+                        <div class="grid_6 val"><input type="text" data-bind="value:form.KeyProject" class="z-txt" /></div>
+
+                        <div class="clear"></div>
+
+                        <div class="grid_2 lbl">负责人</div>
+                        <div class="grid_6 val"><input type="text" data-bind="value:form.ChargePerson" class="z-txt"/></div>
+                        <div class="grid_2 lbl">合同金额</div>
+                        <div class="grid_6 val"><input type="text" data-bind="numberboxValue:form.ContractMoney" class="z-txt easyui-numberbox" data-options="min: 0, precision: 2"/></div>
+                        
+                        <div class="clear"></div>
+
+                        <div class="grid_2 lbl">建设单位 </div>
+                        <div class="grid_6 val"><input type="text" data-bind="value:form.OwnerUnit" class="z-txt" /></div>
+                        <div class="grid_2 lbl">设计单位 </div>
+                        <div class="grid_6 val"><input type="text" data-bind="value:form.DesignUnit" class="z-txt" /></div>
+
+                        <div class="clear"></div>
+
+                        <div class="grid_2 lbl">施工单位</div>
+                        <div class="grid_6 val"><input type="text" data-bind="value:form.ConstructionUnit" class="z-txt" /></div>
+                        <div class="grid_2 lbl">监理单位 </div>
+                        <div class="grid_6 val"><input type="text" data-bind="value:form.SupervisionUnit" class="z-txt" /></div>
+       
+                        <div class="clear"></div>
+
+                        <div class="grid_2 lbl lbs">合同开工日期</div>
+                        <div class="grid_6 val"><input type="text" data-bind="dateboxValue:form.ContractBeginDate" class="z-txt easyui-datebox" /></div>
+                        <div class="grid_2 lbl lbs">合同竣工日期</div>
+                        <div class="grid_6 val"><input type="text" data-bind="dateboxValue:form.ContractEndDate" class="z-txt easyui-datebox" /></div>
+            
+                        <div class="clear"></div>
+
+                        <div class="grid_2 lbl lbs">实际开工日期</div>
+                        <div class="grid_6 val"><input type="text" data-bind="dateboxValue:form.ActualBeginDate" class="z-txt easyui-datebox" /></div>
+                        <div class="grid_2 lbl lbs">实际竣工日期</div>
+                        <div class="grid_6 val"><input type="text" data-bind="dateboxValue:form.ActualEndDate" class="z-txt easyui-datebox" /></div>
+
+                        <div class="clear"></div>
+
+                        <div class="grid_2 lbl">实际工期</div>
+                        <div class="grid_6 val"><input type="text" data-bind="numberboxValue:form.ActualDuration" class="z-txt easyui-numberbox" data-options="min: 0"/></div>
+                        <div class="grid_2 lbl">建筑分类</div>
+                        <div class="grid_6 val"><input type="text" data-bind="value:form.BuildingType" class="z-txt" /></div>
+                        
+                        <div class="clear"></div>
+
+                        <div class="grid_2 lbl">工程地点</div>
+                        <div class="grid_6 val"><input type="text" data-bind="value:form.ProjectArea" class="z-txt" /></div>
+                        <div class="grid_2 lbl">地域</div>
+                        <div class="grid_6 val"><input type="text" data-bind="value:form.Region" class="z-txt" /></div>
+                        
+                        <div class="clear"></div>
+
+                        <div class="grid_2 lbl">建筑面积</div>
+                        <div class="grid_6 val"><input type="text" data-bind="numberboxValue:form.BuildingArea" class="z-txt easyui-numberbox" data-options="min: 0, precision: 2"/></div>
+                        <div class="grid_2 lbl">已完工面积</div>
+                        <div class="grid_6 val"><input type="text" data-bind="numberboxValue:form.CompleteArea" class="z-txt easyui-numberbox" data-options="min: 0, precision: 2"/></div>
+                       
+                        <div class="grid_2 lbl">资金来源</div>
+                        <div class="grid_6 val"><input type="text" data-bind="value:form.FundSource" class="z-txt" /></div>
+                         <div class="grid_2 lbl">工程总造价</div>
+                        <div class="grid_6 val"><input type="text" data-bind="numberboxValue:form.ProjectCost" class="z-txt easyui-numberbox" data-options="min: 0, precision: 2"/></div>
+                        
+                        <div class="clear"></div>
+
+                        <div class="grid_2 lbl">项目概括</div>
+                        <div class="grid_6 val"><input type="text" data-bind="value:form.ProjectExplain" class="z-txt" /></div>
+                        <div class="grid_2 lbl">备注</div>
+                        <div class="grid_6 val"><input type="text" data-bind="value:form.Remark" class="z-txt" /></div>
+
+                        <div class="clear"></div>
+                    </div>
+                </div>       
+                <div title="施工部位" style="padding-top:2px;">
+                    <table id="list" data-bind="treegrid:grid">
+                        <thead>
+                            <tr>
+                                <th field="BuildPartCode"   hidden="true"></th>  
+                                <th field="ProjectCode"     hidden="true" ></th> 
+                                <th field="BuildPartName"   sortable="true" align="left"    width="120" editor="text">名称   </th>  
+                                <th field="PartAttr"        sortable="true" align="left"    width="100" editor="{type: 'combobox', options:{data:data.dataSource.partAttr}}" formatter="formatPartAttr">部位属性   </th>  
+                                <th field="NodeControl"     sortable="true" align="center"  width="100" editor="text" >节点控制       </th>  
+                                <th field="ActualBeginTime" sortable="true" align="left"    width="80" editor="{type:'datebox'}" formatter="com.formatDate"  >实际开工时间   </th>  
+                                <th field="ActualEndTime"   sortable="true" align="left"    width="80" editor="{type:'datebox'}" formatter="com.formatDate" >实际竣工时间   </th>  
+                                <th field="ImagePart"       sortable="true" align="center"  width="80" editor="{type: 'combobox', options:{data:data.dataSource.imagePart}}" formatter="formatImagePart" >形象部位   </th> 
+                                <th field="Remark"          sortable="true" align="left"    width="200" editor="text">备注       </th>   
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="navigation">
+        <div title="项目列表" style="width: 180px;" class="easyui-panel" data-options="title: '项目列表', iconCls: 'icon-org', height: $(window).height() - 4 ">
+            <ul data-bind="easyuiTree:tree"></ul>
+        </div>
+    </div>
+</div>
+
+        
+ 

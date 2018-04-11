@@ -1,0 +1,51 @@
+﻿@{
+    ViewBag.Title = "LookupMaterial";
+     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section head{
+    <style type="text/css">
+        .z-toolbar{ border-width:0; margin:0;}
+        #form_div{ padding:0 !important;height: 100%;width: 100%;}
+        .lbl { text-align:right; line-height:25px;}
+        .datagrid .panel-body{ border-width:0 !important;}
+        body{ padding:0 !important;}
+    </style>    
+}
+
+@section scripts{
+    <script src="~/Areas/Mms/ViewModels/mms.com.js"></script>
+    <script src="~/Areas/Mms/ViewModels/mms.lookupMaterial.js"></script>
+}
+
+    <div id="layoutbox">
+        <div region="west" title="材料类别" style="width:180px;" >
+              <ul id="typetree"></ul>  
+        </div>
+        
+         <div region="center" split="true"  >
+            <div id="right" class="easyui-layout" fit="true">
+                    <div region="north" style="height:348px" border="false" split="true">
+                       <div class="z-toolbar" style="border-bottom-width: 1px;">
+                            <div id="master" class="container_16">
+                                <div class="grid_2 lbl" id="valueTitle">材料编码</div>
+                                <div class="grid_4 val"><input type="text" id="id" name="MaterialCode" class="z-txt" data-cp="like"  /></div>
+                                <div class="grid_2 lbl" id="textTitle">材料名称</div>
+                                <div class="grid_4 val"><input type="text" id="text" name="MaterialName" class="z-txt" data-cp="like" /></div>
+                                <div class="grid_4 val" style="margin-top: 0px;"><a id="btnSearch" href="#" plain="true" class="easyui-linkbutton" icon="icon-search"title="过滤">过滤</a> <a id="btnClear" href="#" plain="true" class="easyui-linkbutton" icon="icon-clear" title="清空">清空</a></div>
+                            </div>
+                        </div>
+                        <div id="list"></div>
+                    </div>
+                    
+                    <div region="center" border="false" split="true">
+                            <div id="selectlist" class="hide"></div>
+                            <div class="z-toolbar" style="text-align: center; padding: 4px 0; border-top-width: 1px; position:relative;">
+                                <div style="float: left;margin:5px 10px; position:absolute">双击选择或删除，已选择<span id="total" style="color: red;">0</span>条数据</div>
+                                <button id="btnConfirm" class="sexybutton"><span><span><span class="ok">确定</span></span></span></button>&nbsp;
+                                <button id="btnCancel" class="sexybutton"><span><span><span class="cancel">取消</span></span></span></button>
+                            </div>
+                    </div>
+            </div>
+        </div>  
+    </div> 

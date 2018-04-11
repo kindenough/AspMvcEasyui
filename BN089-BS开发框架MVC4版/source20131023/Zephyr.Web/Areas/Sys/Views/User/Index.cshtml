@@ -1,0 +1,123 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section head{
+        <style type="text/css">
+            div#navigation{background:white}
+            div#wrapper{float:right;width:100%;margin-left:-185px}
+            div#content{margin-left:185px}
+            div#navigation{float:left;width:180px}
+            .datagrid-cell a{color:black;}
+            .datagrid-cell a:hover{color:red;}
+        </style>
+}
+
+@section scripts{
+        <script src="~/Areas/Sys/ViewModels/Organize.js"></script>
+        <script src="~/Areas/Sys/ViewModels/User.js"></script>
+        <script type="text/javascript">
+           using('validatebox');
+           var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+            var formatterButton = function (value, row) {
+                var dataStr = JSON.stringify({UserCode:row.UserCode,UserName:row.UserName,_isnew:row._isnew});
+                var html = '<a href="#" onclick=\'setOrganize(' + dataStr + ')\'><span class="icon icon-org">&nbsp;</span>[设置机构]</a>';
+                html += '<a href="#" onclick=\'setRole(' + dataStr + ')\' style="margin-left:10px"><span class="icon icon-group">&nbsp;</span>[设置角色]</a>';
+                html += '<a href="#" onclick=\'userSetting(' + dataStr + ')\' style="margin-left:10px"><span class="icon icon-wrench_orange">&nbsp;</span>[用户设置]</a>';
+                return html;
+           };
+        </script>
+}
+
+<div id="container">
+    <div id="wrapper">
+        <div id="content">
+            <div class="z-toolbar">
+                <a id="a_refresh" href="#" plain="true" class="easyui-linkbutton" icon="icon-arrow_refresh" title="刷新" data-bind="click:refreshClick">刷新</a>
+                <a id="a_add"     href="#" plain="true" class="easyui-linkbutton" icon="icon-add" title="新增" data-bind="click:addClick">新增</a>
+                <a id="a_edit"    href="#" plain="true" class="easyui-linkbutton" icon="icon-edit" data-bind="click:editClick" title="编辑">编辑</a>
+                <a id="a_del"     href="#" plain="true" class="easyui-linkbutton" icon="icon-cross" title="删除" data-bind="click:deleteClick">删除</a>
+                <a id="a_save"    href="#" plain="true" class="easyui-linkbutton" icon="icon-save" data-bind="click:saveClick" title="保存">保存</a>
+                <a id="a_pwd"     href="#" plain="true" class="easyui-linkbutton" icon="icon-key" data-bind="click:passwordClick" title="重置密码">重置密码</a>
+            </div>
+
+            <table id="gridlist" data-bind="datagrid:grid">
+                 <thead>  
+                    <tr>  
+                        <th field="UserCode"            sortable="true" align="left"    width="70"  editor="{type:'validatebox',options:{required:true}}"  >用户编码   </th>  
+                        <th field="UserName"            sortable="true" align="left"    width="80"  editor="{type:'validatebox',options:{required:true}}"  >用户名称     </th>  
+                        <th field="Description"         sortable="true" align="left"    width="180" editor="text"  >描述说明   </th>  
+                        <th field="IsEnable"            sortable="true" align="center"    width="70" formatter="com.formatCheckbox"  editor="{type:'checkbox',options:{on:true,off:false}}">是否启用   </th>  
+                        <th field="LoginCount"          sortable="true" align="right"    width="60" >登陆次数       </th>  
+                        <th field="LastLoginDate"       sortable="true" align="center"    width="120" formatter="com.formatTime"  >最后登陆时间   </th>   
+                        <th field="Permit" align="center"    width="270" formatter="formatterButton"> 操作     </th> 
+                    </tr>                            
+                </thead>      
+            </table> 
+        </div>
+    </div>
+    <div id="navigation">
+        <div title="组织机构" style="width: 180px;" class="easyui-panel" data-options="title: '组织机构', iconCls: 'icon-org', height: $(window).height() - 4 ">
+            <ul data-bind="easyuiTree:tree"></ul>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="setorganize-template">
+    <div style="margin:5px;">
+        <div style="border-bottom:1px solid #CCC; margin-bottom:5px;">
+            <span id="role_name" class="icon32 icon-user-edit32" style="padding-left:48px;font-weight:bold; font-size:14px;color:#666;" data-bind="text:UserName">刘会胜</span> 
+        </div>
+        <div> 所属机构：</div>
+        <div data-bind="html:graph"  style="height:315px;overflow:auto;"></div>
+    </div>
+    <div style="text-align:center;">
+        <a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" data-bind="click:confirmClick" href="javascript:void(0)"  >确定</a>  
+        <a class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" data-bind="click:cancelClick" href="javascript:void(0)">取消</a> 
+    </div>
+</script> 
+
+<script type="text/html" id="setrole-template">
+    <style type="text/css">
+        .listview{ margin:0 !important;}
+        .listview li{width:100px !important;background-color:skyblue !important;float:left;margin:3px;}
+    </style>
+    <div style="margin:5px;height:370px;overflow:auto;"  >
+        <div style="border-bottom:1px solid #CCC; margin-bottom:5px;">
+            <span class="icon32 icon-user-edit32" style="padding-left:48px;font-weight:bold; font-size:14px;color:#666;" data-bind="text:UserName">刘会胜</span> 
+        </div>
+        <div> 拥有角色(请点击勾选)：</div>
+        <div class="metrouicss">
+            <ul class="listview"></ul>
+        </div>
+    </div>
+    <div style="text-align:center;">
+        <a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" data-bind="click:confirmClick" href="javascript:void(0)"  >确定</a>  
+        <a class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" data-bind="click:cancelClick" href="javascript:void(0)">取消</a> 
+    </div>
+</script>
+
+<script type="text/html" id="manage-template">
+    <style type="text/css">
+        .datagrid-wrap{border-width:0 0 1px 0;}
+        .datagrid-toolbar{background-color:#E0ECFF !important}
+    </style>
+
+    <table data-bind="datagrid:grid">
+        <thead>
+            <th field="ID" hidden="true"></th>
+            <th field="UserCode" hidden="true"></th>
+            <th field="SettingCode"    align="left" editor="{type:'validatebox',options:{required:true}}"    width="80"  >设置编码   </th>  
+            <th field="SettingName"    align="left" editor="text"    width="70"  >设置名称   </th>  
+            <th field="SettingValue"   align="left" editor="text"    width="120" >设定值   </th> 
+            <th field="Description"    align="left" editor="text"    width="280" >描述说明   </th> 
+        </thead>
+    </table>
+    
+    <div style="text-align:center;margin:5px;">
+        <a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" data-bind="click:confirmClick" href="javascript:void(0)"  >确定</a>  
+        <a class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" data-bind="click:cancelClick" href="javascript:void(0)">取消</a> 
+    </div>
+</script>       
+ 

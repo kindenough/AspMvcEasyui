@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<settings lookupType="supplier" defaultOrderBy='Id'>
+  <module>Psi</module>
+  <select>
+    Id   as   value,Name   as   text
+  </select>
+  <from>
+    psi_supplier
+  </from>
+  <where defaultForAll='true' defaultCp='equal' defaultIgnoreEmpty='true' >
+    <field name='Id'       cp='startwith'  ></field>
+    <field name='Name'       cp='like'       ></field>
+  </where>
+</settings>

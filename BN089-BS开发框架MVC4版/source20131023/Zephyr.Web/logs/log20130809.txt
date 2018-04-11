@@ -1,0 +1,214 @@
+2013-08-09 00:25:30,963 [1916] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-09 00:25:30,996 [1916] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-09 00:25:31,003 [1916] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-09 00:25:31,004 [1916] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-09 00:28:26,345 [5668] DEBUG Servicesys_user - 获取实体对象
+2013-08-09 00:28:26,363 [5668] DEBUG Sys - select sys_user.* from sys_user where  UserCode =  'lhs'and Password =  'lhs'and IsEnable =  'True'
+2013-08-09 00:28:26,452 [5668] DEBUG Sys - 
+update sys_user
+set LoginCount = isnull(LoginCount,0) + 1
+   ,LastLoginDate = getdate()
+where UserCode = 'lhs' 
+2013-08-09 00:28:26,491 [5668] DEBUG Sys - insert into sys_loginHistory([UserCode],[UserName],[HostName],[HostIP],[LoginCity],[LoginDate]) values('lhs','刘会胜','LHS-PC','ILData[0]/localhost','','2013-08-09 0:28:26')
+2013-08-09 00:28:26,495 [5668] DEBUG Servicemms_project - 获取实体对象
+2013-08-09 00:28:26,496 [5668] DEBUG Mms - select mms_project.* from mms_project where  ProjectCode =  '201306030001'
+2013-08-09 00:28:26,660 [1460] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-08-09 00:28:30,228 [8292] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-08-09 00:28:41,290 [1460] DEBUG Servicemms_send - 获取动态列表
+2013-08-09 00:28:41,292 [1460] DEBUG Mms - select top 20 
+        *
+     from 
+        test_user
+     order by UserCode
+2013-08-09 00:28:41,370 [1460] DEBUG Mms - select count(*) from ( select 
+        *
+     from 
+        test_user
+     ) tb_temp
+2013-08-09 00:28:43,370 [1460] DEBUG Servicemms_send - 获取动态列表
+2013-08-09 00:28:43,371 [1460] DEBUG Mms - with PagedPersons as
+								(
+									select top 100 percent 
+        *
+    , row_number() over (order by UserCode) as FLUENTDATA_ROWNUMBER
+									 from 
+        test_user
+    
+								)
+								select *
+								from PagedPersons
+								where fluentdata_RowNumber between 21 and 40
+2013-08-09 00:28:43,414 [1460] DEBUG Mms - select count(*) from ( select 
+        *
+     from 
+        test_user
+     ) tb_temp
+2013-08-09 00:28:43,953 [8292] DEBUG Servicemms_send - 获取动态列表
+2013-08-09 00:28:43,953 [8292] DEBUG Mms - with PagedPersons as
+								(
+									select top 100 percent 
+        *
+    , row_number() over (order by UserCode) as FLUENTDATA_ROWNUMBER
+									 from 
+        test_user
+    
+								)
+								select *
+								from PagedPersons
+								where fluentdata_RowNumber between 41 and 60
+2013-08-09 00:28:43,957 [8292] DEBUG Mms - select count(*) from ( select 
+        *
+     from 
+        test_user
+     ) tb_temp
+2013-08-09 00:28:44,555 [5668] DEBUG Servicemms_send - 获取动态列表
+2013-08-09 00:28:44,555 [5668] DEBUG Mms - with PagedPersons as
+								(
+									select top 100 percent 
+        *
+    , row_number() over (order by UserCode) as FLUENTDATA_ROWNUMBER
+									 from 
+        test_user
+    
+								)
+								select *
+								from PagedPersons
+								where fluentdata_RowNumber between 61 and 80
+2013-08-09 00:28:44,559 [5668] DEBUG Mms - select count(*) from ( select 
+        *
+     from 
+        test_user
+     ) tb_temp
+2013-08-09 00:28:45,616 [6816] DEBUG Servicemms_send - 获取动态列表
+2013-08-09 00:28:45,617 [6816] DEBUG Mms - with PagedPersons as
+								(
+									select top 100 percent 
+        *
+    , row_number() over (order by UserCode) as FLUENTDATA_ROWNUMBER
+									 from 
+        test_user
+    
+								)
+								select *
+								from PagedPersons
+								where fluentdata_RowNumber between 81 and 100
+2013-08-09 00:28:45,621 [6816] DEBUG Mms - select count(*) from ( select 
+        *
+     from 
+        test_user
+     ) tb_temp
+2013-08-09 00:28:46,211 [5668] DEBUG Servicemms_send - 获取动态列表
+2013-08-09 00:28:46,211 [5668] DEBUG Mms - with PagedPersons as
+								(
+									select top 100 percent 
+        *
+    , row_number() over (order by UserCode) as FLUENTDATA_ROWNUMBER
+									 from 
+        test_user
+    
+								)
+								select *
+								from PagedPersons
+								where fluentdata_RowNumber between 101 and 120
+2013-08-09 00:28:46,216 [5668] DEBUG Mms - select count(*) from ( select 
+        *
+     from 
+        test_user
+     ) tb_temp
+2013-08-09 00:28:46,879 [6816] DEBUG Servicemms_send - 获取动态列表
+2013-08-09 00:28:46,879 [6816] DEBUG Mms - with PagedPersons as
+								(
+									select top 100 percent 
+        *
+    , row_number() over (order by UserCode) as FLUENTDATA_ROWNUMBER
+									 from 
+        test_user
+    
+								)
+								select *
+								from PagedPersons
+								where fluentdata_RowNumber between 121 and 140
+2013-08-09 00:28:46,883 [6816] DEBUG Mms - select count(*) from ( select 
+        *
+     from 
+        test_user
+     ) tb_temp
+2013-08-09 00:28:47,607 [6816] DEBUG Servicemms_send - 获取动态列表
+2013-08-09 00:28:47,607 [6816] DEBUG Mms - with PagedPersons as
+								(
+									select top 100 percent 
+        *
+    , row_number() over (order by UserCode) as FLUENTDATA_ROWNUMBER
+									 from 
+        test_user
+    
+								)
+								select *
+								from PagedPersons
+								where fluentdata_RowNumber between 141 and 160
+2013-08-09 00:28:47,612 [6816] DEBUG Mms - select count(*) from ( select 
+        *
+     from 
+        test_user
+     ) tb_temp
+2013-08-09 00:28:48,896 [5668] DEBUG Servicemms_send - 获取动态列表
+2013-08-09 00:28:48,896 [5668] DEBUG Mms - with PagedPersons as
+								(
+									select top 100 percent 
+        *
+    , row_number() over (order by UserCode) as FLUENTDATA_ROWNUMBER
+									 from 
+        test_user
+    
+								)
+								select *
+								from PagedPersons
+								where fluentdata_RowNumber between 161 and 180
+2013-08-09 00:28:48,901 [5668] DEBUG Mms - select count(*) from ( select 
+        *
+     from 
+        test_user
+     ) tb_temp
+2013-08-09 00:28:52,240 [6816] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Sys/organize/Index','/Sys/organize')
+2013-08-09 00:28:52,253 [6816] DEBUG Servicesys_organize - 获取实体列表
+2013-08-09 00:28:52,257 [6816] DEBUG Sys - select sys_organize.* from sys_organize
+2013-08-09 00:29:15,420 [17556] DEBUG Sys - select sys_organize.* from sys_organize where  ParentCode =  '040504010101'
+2013-08-09 00:29:15,427 [17556] DEBUG Sys - delete from sys_organize where  OrganizeCode =  '040504010101'
+2013-08-09 00:29:21,065 [17556] ERROR /api/sys/organize/040504010101 - System.Exception: 数据已经被引用，更新失败，请先删除引用数据并重试！
+   在 Zephyr.Core.Db.<Context>b__2(ErrorEventArgs e) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Core\Db.cs:行号 98
+   在 Zephyr.Data.ExecuteQueryHandler.HandleQueryException(Exception exception) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\Handlers\ExecuteQueryHandler.cs:行号 105
+   在 Zephyr.Data.ExecuteQueryHandler.ExecuteQuery(Boolean useReader, Action action) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\Handlers\ExecuteQueryHandler.cs:行号 28
+   在 Zephyr.Data.DbCommand.Execute() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\PartialClasses\Execute.cs:行号 9
+   在 Zephyr.Data.BaseDeleteBuilder.Execute() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Builders\Delete\BaseDeleteBuilder.cs:行号 18
+   在 Zephyr.Models.sys_organizeService.RecursionDelete(String id) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Sys\Models\sys_organize.cs:行号 19
+   在 Zephyr.Areas.Sys.Controllers.OrganizeApiController.Delete(String id) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Sys\Controllers\OrganizeController.cs:行号 58
+   在 lambda_method(Closure , Object , Object[] )
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.<>c__DisplayClass13.<GetExecutor>b__c(Object instance, Object[] methodParameters)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.Execute(Object instance, Object[] arguments)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.<>c__DisplayClass5.<ExecuteAsync>b__4()
+   在 System.Threading.Tasks.TaskHelpers.RunSynchronously[TResult](Func`1 func, CancellationToken cancellationToken)
+2013-08-09 00:32:40,897 [11744] DEBUG Sys - 
+select distinct A.RoleCode,A.RoleName
+,(case when B.RoleCode is null then 'false' else 'true' end) as Checked
+from sys_role A
+left join sys_organizeRoleMap B on B.RoleCode = A.RoleCode and B.OrganizeCode = '040504010101'

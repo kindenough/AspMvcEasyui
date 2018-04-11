@@ -1,0 +1,158 @@
+﻿
+@{
+    ViewBag.Title = "Direct";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+<script src="/Content/js/viewModel/com.viewModel.edit.js"></script>
+<script type="text/javascript">
+    var viewModel = function(data){ 
+        var self = this;
+        com.viewModel.edit.apply(self,arguments);
+            this.grid0.size={w:8,h:177};
+            this.grid2.size={w:8,h:177};
+    } 
+    var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+    ko.bindingViewModel(new viewModel(data));
+</script>
+}
+
+<div class="z-toolbar">
+    <a id="a_save" href="#" plain="true" class="easyui-linkbutton" icon="icon-save" data-bind="click:readonly()?null:saveClick,linkbuttonDisable:readonly" title="保存">保存</a>
+    <a id="a_undo" href="#" plain="true" class="easyui-linkbutton" icon="icon-undo" data-bind="click:readonly()?null:rejectClick,linkbuttonDisable:readonly" title="撤消">撤消</a>
+    <a id="a_audit" href="#" plain="true" class="easyui-linkbutton" icon="icon-user-accept" data-bind="click:auditClick,easyuiLinkbutton:approveButton" title="审核">审核</a>
+    <a id="a_printer" href="#" plain="true" class="easyui-linkbutton" icon="icon-printer" title="打印" data-bind="click:printClick">打印</a>
+    <div class="datagrid-btn-separator"></div>
+    <a id="a_other" href="#" class="easyui-splitbutton" data-options="menu:'#divother',iconCls:'icon-application_go'" title="其他">其他</a>
+    <div class="datagrid-btn-separator"></div>
+    <a id="a_first" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_first" data-bind="click:firstClick,linkbuttonEnable:pageData.scrollKeys.firstEnable" title="第一条"></a> 
+    <a id="a_previous" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_previous" data-bind="click:previousClick,linkbuttonEnable:pageData.scrollKeys.previousEnable" title="上一条"></a> 
+    <a id="a_next" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_next" data-bind="click:nextClick,linkbuttonEnable:pageData.scrollKeys.nextEnable" title="下一条"></a> 
+    <a id="a_last" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_last" data-bind="click:lastClick,linkbuttonEnable:pageData.scrollKeys.lastEnable" title="最后一条"></a> 
+</div>
+
+<div id="divother" style="width:100px; display:none;">
+    <div data-options="iconCls:'icon-add'">新增</div>
+    <div data-options="iconCls:'icon-cross'">删除</div>
+    <div data-options="iconCls:'icon-arrow_refresh'">刷新</div>
+</div>  
+
+<div id="master" class="container_12" data-bind="inputwidth:0.9">
+    <div class="grid_1 lbl">BillNo</div>
+    <div class="grid_3 val"><input type="text" data-bind="value:pageData.form.BillNo ,readOnly : true" class="z-txt " /></div>
+    <div class="grid_1 lbl">BillDate</div>
+    <div class="grid_3 val"><input type="text" data-bind="value:pageData.form.BillDate ,readOnly:readonly" class="z-txt " /></div>
+    <div class="grid_1 lbl">DoPerson</div>
+    <div class="grid_3 val"><input type="text" data-bind="value:pageData.form.DoPerson ,readOnly:readonly" class="z-txt " /></div>
+    
+    <div class="clear"></div>
+    
+    <div class="grid_1 lbl">SupplierCode</div>
+    <div class="grid_3 val"><input type="text" data-bind="value:pageData.form.SupplierCode ,readOnly:readonly" class="z-txt " /></div>
+    <div class="grid_1 lbl">ContractCode</div>
+    <div class="grid_3 val"><input type="text" data-bind="value:pageData.form.ContractCode ,readOnly:readonly" class="z-txt " /></div>
+    <div class="grid_1 lbl">ArriveDate</div>
+    <div class="grid_3 val"><input type="text" data-bind="value:pageData.form.ArriveDate ,readOnly:readonly" class="z-txt " /></div>
+    
+    <div class="clear"></div>
+    
+    <div class="grid_1 lbl">BuildPartCode</div>
+    <div class="grid_3 val"><input type="text" data-bind="value:pageData.form.BuildPartCode ,readOnly:readonly" class="z-txt " /></div>
+    <div class="grid_1 lbl">PayKind</div>
+    <div class="grid_3 val"><input type="text" data-bind="value:pageData.form.PayKind ,readOnly:readonly" class="z-txt " /></div>
+    <div class="grid_1 lbl">OriginalNum</div>
+    <div class="grid_3 val"><input type="text" data-bind="value:pageData.form.OriginalNum ,readOnly:readonly" class="z-txt " /></div>
+    
+    <div class="clear"></div>
+    
+    <div class="grid_1 lbl">ApprovePerson</div>
+    <div class="grid_3 val"><input type="text" data-bind="value:pageData.form.ApprovePerson ,readOnly:readonly" class="z-txt " /></div>
+    <div class="grid_1 lbl">TotalMoney</div>
+    <div class="grid_3 val"><input type="text" data-bind="value:pageData.form.TotalMoney ,readOnly:readonly" class="z-txt " /></div>
+    <div class="grid_1 lbl">ApproveState</div>
+    <div class="grid_3 val"><input type="text" data-bind="value:pageData.form.ApproveState ,readOnly:readonly" class="z-txt " /></div>
+
+    <div class="clear"></div>
+</div>
+
+<div id="tt" class="easyui-tabs">  
+    <div title="tab1">
+        <table data-bind="datagrid:grid0">
+            <thead>
+                <tr> 
+                    <th field="BillNo"		sortable="true"	align="left"	width="80" editor="text" >BillNo</th>
+                    <th field="RowId"		sortable="true"	align="left"	width="80" editor="text" >RowId</th>
+                    <th field="MaterialCode"		sortable="true"	align="left"	width="80" editor="text" >MaterialCode</th>
+                    <th field="Unit"		sortable="true"	align="left"	width="80" editor="text" >Unit</th>
+                    <th field="UnitPrice"		sortable="true"	align="left"	width="80" editor="text" >UnitPrice</th>
+                    <th field="Num"		sortable="true"	align="left"	width="80" editor="text" >Num</th>
+                    <th field="Money"		sortable="true"	align="left"	width="80" editor="text" >Money</th>
+                    <th field="CreatePerson"		sortable="true"	align="left"	width="80" editor="text" >CreatePerson</th>
+                    <th field="CreateDate"		sortable="true"	align="left"	width="80" editor="text" >CreateDate</th>
+                    <th field="UpdatePerson"		sortable="true"	align="left"	width="80" editor="text" >UpdatePerson</th>
+                    <th field="UpdateDate"		sortable="true"	align="left"	width="80" editor="text" >UpdateDate</th>
+                    <th field="Remark"		sortable="true"	align="left"	width="80" editor="text" >Remark</th>
+                </tr>
+            </thead>
+        </table>
+            
+        <div id="gridtb0">
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" data-bind="click:readonly()?null:grid0.addRowClick,linkbuttonDisable:readonly">新增</a>
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" data-bind="click:readonly()?null:grid0.onClickRow,linkbuttonDisable:readonly">编辑</a>
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" data-bind="click:readonly()?null:grid0.removeRowClick,linkbuttonDisable:readonly">删除</a>
+        </div>  
+    </div>
+    <div title="tab2" style="padding-top:2px;">
+        <div class="container_12" data-bind="inputwidth:0.9,autoheight:181" id = "form1">
+            <div class="grid_1 lbl">审批意见</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab1.ApproveRemark ,readOnly:true" class="z-txt  readonly"/></div>
+            <div class="grid_1 lbl">编制人</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab1.CreatePerson ,readOnly:true" class="z-txt  readonly"/></div>
+            <div class="grid_1 lbl">编制日期</div>
+            <div class="grid_3 val"><input type="text" data-bind="dateboxValue:pageData.tab1.CreateDate ,dateboxReadOnly:true" class="z-txt easyui-datebox readonly"/></div>
+                
+            <div class="clear"></div>
+                
+            <div class="grid_1 lbl">修改人</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab1.UpdatePerson ,readOnly:true" class="z-txt  readonly"/></div>
+            <div class="grid_1 lbl">修改日期</div>
+            <div class="grid_3 val"><input type="text" data-bind="dateboxValue:pageData.tab1.UpdateDate ,dateboxReadOnly:true" class="z-txt easyui-datebox readonly"/></div>
+            <div class="grid_1 lbl">PayKind</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab1.PayKind ,readOnly:true" class="z-txt  readonly"/></div>
+                
+            <div class="clear"></div>
+                
+            <div class="grid_1 lbl">PickPerson</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab1.PickPerson ,readOnly:true" class="z-txt  readonly"/></div>
+            <div class="grid_1 lbl">BuildPartCode</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab1.BuildPartCode ,readOnly:true" class="z-txt  readonly"/></div>
+        </div>     
+    </div>
+    <div title="tab3">
+        <table data-bind="datagrid:grid2">
+            <thead>
+                <tr> 
+                    <th field="UseUnit"		sortable="true"	align="left"	width="80" editor="text" >UseUnit</th>
+                    <th field="Num"		sortable="true"	align="left"	width="80" editor="text" >Num</th>
+                    <th field="UnitPrice"		sortable="true"	align="left"	width="80" editor="text" >UnitPrice</th>
+                </tr>
+            </thead>
+        </table>
+            
+        <div id="gridtb2">
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" data-bind="click:readonly()?null:grid2.addRowClick,linkbuttonDisable:readonly">新增</a>
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" data-bind="click:readonly()?null:grid2.onClickRow,linkbuttonDisable:readonly">编辑</a>
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" data-bind="click:readonly()?null:grid2.removeRowClick,linkbuttonDisable:readonly">删除</a>
+        </div>  
+    </div>
+    <div title="tab4"></div>
+    <div title="tab5" style="padding-top:2px;">
+        <div class="container_12" data-bind="inputwidth:0.9,autoheight:181" id = "form4">
+            <div class="grid_1 lbl">ChargePerson</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab4.ChargePerson ,readOnly:true" class="z-txt  readonly"/></div>
+            <div class="grid_1 lbl">RegisterFund</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab4.RegisterFund ,readOnly:true" class="z-txt  readonly"/></div>
+        </div>     
+    </div>
+</div>

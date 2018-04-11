@@ -1,0 +1,193 @@
+2013-10-18 16:30:30,111 [10332] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-10-18 16:30:39,285 [10332] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-10-18 16:30:39,414 [10332] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-10-18 16:30:40,572 [10332] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-10-18 16:30:40,593 [10332] DEBUG Psi - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-10-18 16:30:40,842 [10332] DEBUG Psi - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-10-18 16:30:52,327 [12668] DEBUG Servicesys_user - 获取实体对象
+2013-10-18 16:30:52,349 [12668] DEBUG Sys - select sys_user.* from sys_user where  UserCode =  'lhs'and Password =  'lhs'and IsEnable =  'True'
+2013-10-18 16:30:53,534 [12668] DEBUG Sys - 
+update sys_user
+set LoginCount = isnull(LoginCount,0) + 1
+   ,LastLoginDate = getdate()
+where UserCode = 'lhs' 
+2013-10-18 16:30:53,892 [12668] DEBUG Sys - insert into sys_loginHistory([UserCode],[UserName],[HostName],[HostIP],[LoginCity],[LoginDate]) values('lhs','刘会胜','LHS-PC','localhost','福建省厦门市','2013-10-18 16:30:53')
+2013-10-18 16:30:54,049 [12668] DEBUG Servicemms_project - 获取实体对象
+2013-10-18 16:30:54,050 [12668] DEBUG Mms - select mms_project.* from mms_project where  ProjectCode =  '201306030001'
+2013-10-18 16:30:55,731 [13996] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-10-18 16:31:01,421 [7952] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-10-18 16:31:09,203 [12668] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Sys/generator/Index','/Sys/generator')
+2013-10-18 16:31:18,839 [9264] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/lossreport/Index','/Mms/lossreport')
+2013-10-18 16:31:18,907 [9264] DEBUG Servicemms_warehouse - 获取动态列表
+2013-10-18 16:31:18,908 [9264] DEBUG Mms - select WarehouseCode as value,WarehouseName as text from mms_warehouse where  ProjectCode =  '201306030001'
+2013-10-18 16:31:20,702 [7952] DEBUG Servicemms_lossReport - 获取动态列表
+2013-10-18 16:31:20,703 [7952] DEBUG Mms - select top 20 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName
+     from 
+        mms_LossReport A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+     where  A.ProjectCode =  '201306030001' order by A.BillNo
+2013-10-18 16:31:21,117 [7952] DEBUG Mms - select count(*) from ( select 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName
+     from 
+        mms_LossReport A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+     where  A.ProjectCode =  '201306030001' ) tb_temp
+2013-10-18 16:42:08,848 [15352] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/lossreport/edit')
+2013-10-18 16:42:08,880 [15352] DEBUG Servicemms_lossReport - 获取实体对象
+2013-10-18 16:42:08,886 [15352] DEBUG Mms - select mms_lossReport.* from mms_lossReport where  BillNo =  '201306060003'
+2013-10-18 16:42:08,906 [15352] DEBUG Servicemms_lossReport - 获取上一条下一条数据
+2013-10-18 16:42:08,938 [15352] DEBUG Servicemms_lossReport - 获取字段
+2013-10-18 16:42:08,940 [15352] DEBUG Mms - select top 1 BillNo from mms_lossReport where  ProjectCode =  '201306030001' order by BillNo
+2013-10-18 16:42:08,944 [15352] DEBUG Servicemms_lossReport - 获取字段
+2013-10-18 16:42:08,944 [15352] DEBUG Mms - select top 1 BillNo from mms_lossReport where  BillNo < '201306060003'and ProjectCode =  '201306030001' order by BillNo desc
+2013-10-18 16:42:08,960 [15352] DEBUG Servicemms_lossReport - 获取字段
+2013-10-18 16:42:08,960 [15352] DEBUG Mms - select top 1 BillNo from mms_lossReport where  BillNo >  '201306060003'and ProjectCode =  '201306030001' order by BillNo
+2013-10-18 16:42:08,963 [15352] DEBUG Servicemms_lossReport - 获取字段
+2013-10-18 16:42:08,964 [15352] DEBUG Mms - select top 1 BillNo from mms_lossReport where  ProjectCode =  '201306030001' order by BillNo desc
+2013-10-18 16:42:09,646 [15352] DEBUG Servicesys_code - 获取动态列表
+2013-10-18 16:42:09,646 [15352] DEBUG Sys - select Text as value,Text as text from sys_code where  CodeType =  'MeasureUnit'
+2013-10-18 16:42:09,847 [15352] DEBUG Servicemms_warehouse - 获取动态列表
+2013-10-18 16:42:09,847 [15352] DEBUG Mms - select WarehouseCode as value,WarehouseName as text from mms_warehouse where  ProjectCode =  '201306030001'
+2013-10-18 16:42:11,945 [15352] DEBUG Servicemms_lossReportDetail - 获取动态列表
+2013-10-18 16:42:11,946 [15352] DEBUG Mms - select 
+        A.*, C.MaterialName,C.Model,C.Material,D.Num as StockNum,D.UnitPrice as StockUnitPrice
+     from 
+        mms_LossReportDetail A
+        left join mms_LossReport B on B.BillNo = A.BillNo
+        left join mms_material C on C.MaterialCode = A.MaterialCode
+        left join mms_warehouseStock D on D.WarehouseCode = B.WarehouseCode and D.MaterialCode = A.MaterialCode
+     where  A.BillNo =  '201306060003' order by A.RowId
+2013-10-18 16:42:27,298 [9264] DEBUG Mms - SELECT Name as TableName FROM sys.tables order by Name
+2013-10-18 16:42:27,312 [13020] DEBUG Mms - 
+SELECT	sys.columns.name						AS ColumnName, 
+		type_name(sys.columns.system_type_id)	AS SqlTypeName,
+		sys.columns.max_length					AS MaxLength,
+		sys.columns.is_nullable					AS IsNullable,
+		sys.columns.is_identity					AS IsIdentity,
+		(case when exists(select 1  
+						 from   syscolumns 
+						 join   sysindexkeys on syscolumns.id  =sysindexkeys.id and syscolumns.colid=sysindexkeys.colid and syscolumns.id=sys.columns.object_id 
+						 join   sysindexes   on syscolumns.id  =sysindexes.id   and sysindexkeys.indid=sysindexes.indid   
+						 join   sysobjects   on sysindexes.name=sysobjects.name and sysobjects.xtype= 'PK '
+						 where syscolumns.name = sys.columns.name) then 1 else 0 end) AS IsPrimaryKey,
+		(select value from sys.extended_properties where sys.extended_properties.major_id = sys.columns.object_id and sys.extended_properties.minor_id = sys.columns.column_id) as Description
+FROM sys.columns    
+WHERE sys.columns.object_id = object_id('undefined')
+ORDER BY sys.columns.column_id
+2013-10-18 16:42:29,659 [6828] DEBUG Mms - 
+SELECT	sys.columns.name						AS ColumnName, 
+		type_name(sys.columns.system_type_id)	AS SqlTypeName,
+		sys.columns.max_length					AS MaxLength,
+		sys.columns.is_nullable					AS IsNullable,
+		sys.columns.is_identity					AS IsIdentity,
+		(case when exists(select 1  
+						 from   syscolumns 
+						 join   sysindexkeys on syscolumns.id  =sysindexkeys.id and syscolumns.colid=sysindexkeys.colid and syscolumns.id=sys.columns.object_id 
+						 join   sysindexes   on syscolumns.id  =sysindexes.id   and sysindexkeys.indid=sysindexes.indid   
+						 join   sysobjects   on sysindexes.name=sysobjects.name and sysobjects.xtype= 'PK '
+						 where syscolumns.name = sys.columns.name) then 1 else 0 end) AS IsPrimaryKey,
+		(select value from sys.extended_properties where sys.extended_properties.major_id = sys.columns.object_id and sys.extended_properties.minor_id = sys.columns.column_id) as Description
+FROM sys.columns    
+WHERE sys.columns.object_id = object_id('mms_lossReport')
+ORDER BY sys.columns.column_id
+2013-10-18 16:42:46,285 [7264] DEBUG Mms - 
+SELECT	sys.columns.name						AS ColumnName, 
+		type_name(sys.columns.system_type_id)	AS SqlTypeName,
+		sys.columns.max_length					AS MaxLength,
+		sys.columns.is_nullable					AS IsNullable,
+		sys.columns.is_identity					AS IsIdentity,
+		(case when exists(select 1  
+						 from   syscolumns 
+						 join   sysindexkeys on syscolumns.id  =sysindexkeys.id and syscolumns.colid=sysindexkeys.colid and syscolumns.id=sys.columns.object_id 
+						 join   sysindexes   on syscolumns.id  =sysindexes.id   and sysindexkeys.indid=sysindexes.indid   
+						 join   sysobjects   on sysindexes.name=sysobjects.name and sysobjects.xtype= 'PK '
+						 where syscolumns.name = sys.columns.name) then 1 else 0 end) AS IsPrimaryKey,
+		(select value from sys.extended_properties where sys.extended_properties.major_id = sys.columns.object_id and sys.extended_properties.minor_id = sys.columns.column_id) as Description
+FROM sys.columns    
+WHERE sys.columns.object_id = object_id('mms_lossReport')
+ORDER BY sys.columns.column_id
+2013-10-18 16:42:46,852 [9264] DEBUG Mms - 
+SELECT	sys.columns.name						AS ColumnName, 
+		type_name(sys.columns.system_type_id)	AS SqlTypeName,
+		sys.columns.max_length					AS MaxLength,
+		sys.columns.is_nullable					AS IsNullable,
+		sys.columns.is_identity					AS IsIdentity,
+		(case when exists(select 1  
+						 from   syscolumns 
+						 join   sysindexkeys on syscolumns.id  =sysindexkeys.id and syscolumns.colid=sysindexkeys.colid and syscolumns.id=sys.columns.object_id 
+						 join   sysindexes   on syscolumns.id  =sysindexes.id   and sysindexkeys.indid=sysindexes.indid   
+						 join   sysobjects   on sysindexes.name=sysobjects.name and sysobjects.xtype= 'PK '
+						 where syscolumns.name = sys.columns.name) then 1 else 0 end) AS IsPrimaryKey,
+		(select value from sys.extended_properties where sys.extended_properties.major_id = sys.columns.object_id and sys.extended_properties.minor_id = sys.columns.column_id) as Description
+FROM sys.columns    
+WHERE sys.columns.object_id = object_id('mms_lossReport')
+ORDER BY sys.columns.column_id
+2013-10-18 16:42:47,264 [7952] DEBUG Mms - 
+SELECT	sys.columns.name						AS ColumnName, 
+		type_name(sys.columns.system_type_id)	AS SqlTypeName,
+		sys.columns.max_length					AS MaxLength,
+		sys.columns.is_nullable					AS IsNullable,
+		sys.columns.is_identity					AS IsIdentity,
+		(case when exists(select 1  
+						 from   syscolumns 
+						 join   sysindexkeys on syscolumns.id  =sysindexkeys.id and syscolumns.colid=sysindexkeys.colid and syscolumns.id=sys.columns.object_id 
+						 join   sysindexes   on syscolumns.id  =sysindexes.id   and sysindexkeys.indid=sysindexes.indid   
+						 join   sysobjects   on sysindexes.name=sysobjects.name and sysobjects.xtype= 'PK '
+						 where syscolumns.name = sys.columns.name) then 1 else 0 end) AS IsPrimaryKey,
+		(select value from sys.extended_properties where sys.extended_properties.major_id = sys.columns.object_id and sys.extended_properties.minor_id = sys.columns.column_id) as Description
+FROM sys.columns    
+WHERE sys.columns.object_id = object_id('mms_lossReport')
+ORDER BY sys.columns.column_id
+2013-10-18 16:42:49,269 [6828] DEBUG Mms - 
+SELECT	sys.columns.name						AS ColumnName, 
+		type_name(sys.columns.system_type_id)	AS SqlTypeName,
+		sys.columns.max_length					AS MaxLength,
+		sys.columns.is_nullable					AS IsNullable,
+		sys.columns.is_identity					AS IsIdentity,
+		(case when exists(select 1  
+						 from   syscolumns 
+						 join   sysindexkeys on syscolumns.id  =sysindexkeys.id and syscolumns.colid=sysindexkeys.colid and syscolumns.id=sys.columns.object_id 
+						 join   sysindexes   on syscolumns.id  =sysindexes.id   and sysindexkeys.indid=sysindexes.indid   
+						 join   sysobjects   on sysindexes.name=sysobjects.name and sysobjects.xtype= 'PK '
+						 where syscolumns.name = sys.columns.name) then 1 else 0 end) AS IsPrimaryKey,
+		(select value from sys.extended_properties where sys.extended_properties.major_id = sys.columns.object_id and sys.extended_properties.minor_id = sys.columns.column_id) as Description
+FROM sys.columns    
+WHERE sys.columns.object_id = object_id('mms_lossReportDetail')
+ORDER BY sys.columns.column_id

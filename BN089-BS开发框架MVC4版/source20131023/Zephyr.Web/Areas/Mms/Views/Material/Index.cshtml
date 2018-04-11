@@ -1,0 +1,81 @@
+﻿@{
+    ViewBag.Title = "材料管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section head{
+        <style type="text/css">
+            div#navigation{background:white}
+            div#wrapper{float:right;width:100%;margin-left:-235px}
+            div#content{margin-left:235px}
+            div#navigation{float:left;width:230px}
+            .datagrid-cell a{color:black;}
+            .datagrid-cell a:hover{color:red;}
+        </style>
+}
+
+@section scripts{
+        <script src="~/Areas/Mms/ViewModels/mms.material.js"></script>
+        <script type="text/javascript">
+           using('validatebox');
+           var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+            ko.bindingViewModel(new viewModel());
+        </script>
+}
+
+<div id="container">
+    <div id="wrapper">
+        <div id="content">
+            <div class="z-toolbar">
+                <a id="a_refresh" href="#" plain="true" class="easyui-linkbutton" icon="icon-arrow_refresh" title="刷新" data-bind="click:refreshClick">刷新</a>
+                <a id="a_add"    href="#" plain="true" class="easyui-linkbutton" icon="icon-add" title="新增" data-bind="click:addClick">新增</a>
+                @*<a id="a_edit"   href="#" plain="true" class="easyui-linkbutton" icon="icon-edit" data-bind="click:editClick" title="编辑">编辑</a>*@
+                <a id="a_del"    href="#" plain="true" class="easyui-linkbutton" icon="icon-cross" title="删除" data-bind="click:deleteClick">删除</a>
+                <a id="a_save" href="#" plain="true" class="easyui-linkbutton" icon="icon-save" data-bind="click:saveClick" title="保存">保存</a>
+                <a id="a_save" href="#" plain="true" class="easyui-linkbutton" icon="icon-node_tree" data-bind="click:typeClick" title="管理类别">管理类别</a>
+            </div>
+
+            <table id="gridlist" data-bind="datagrid:grid">
+                 <thead>  
+                    <tr>  
+                        <th field="MaterialCode"       sortable="true" align="left"    width="100"  editor="{type:'validatebox',options:{required:true}}"  >材料编码  </th> 
+                        <th field="MaterialName"       sortable="true" align="left"    width="150"  editor="{type:'validatebox',options:{required:true}}"  >材料名称    </th> 
+                        <th field="Model"              sortable="true" align="left"    width="100" editor="text" >规格型号   </th>  
+                        <th field="Material"           sortable="true" align="left"    width="80"  editor="text" >材质       </th>   
+                        <th field="Unit"               sortable="true" align="left"    width="100"  editor="text">单位</th>  
+                        <th field="Remark"             sortable="true" align="left"    width="100"  editor="text"  >备注   </th>  
+                    </tr>                            
+                </thead>      
+            </table> 
+        </div>
+    </div>
+    <div id="navigation">
+        <div title="材料类别" style="width: 230px;" class="easyui-panel" data-options="title: '客商类别', iconCls: 'icon-node_tree', height: $(window).height() - 4 ">
+            <ul data-bind="easyuiTree:tree"></ul>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="type-template">
+    <style type="text/css">
+        .datagrid-wrap{border-width:0 0 1px 0;}
+        .datagrid-toolbar{background-color:#E0ECFF !important}
+    </style>
+
+    <table data-bind="treegrid:grid">
+        <thead>
+            <th field="MaterialType"        sortable="true" align="left"    width="120" editor="{type:'validatebox',options:{required:true}}">类别编码</th>
+            <th field="MaterialTypeName"    sortable="true" align="left"    width="150" editor="{type:'validatebox',options:{required:true}}">类别名称</th>
+            <th field="ParentCode"     sortable="true" align="left"    width="100" editor="text"  >上级编码   </th>  
+            <th field="Type"     sortable="true" align="left"    width="60" editor="text"  >属性   </th>  
+            <th field="Remark"             sortable="true" align="right"   width="100"  editor="text">备注       </th>  
+        </thead>
+    </table>
+    
+    <div style="text-align:center;margin:5px;">
+        <a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" data-bind="click:confirmClick" href="javascript:void(0)"  >确定</a>  
+        <a class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" data-bind="click:cancelClick" href="javascript:void(0)">取消</a> 
+    </div>
+</script> 
+        
+ 

@@ -1,0 +1,126 @@
+
+此组件( Gios Pdf.NET )网上文档非常少，故保留此demo  liuhuisheng 2012-08-20
+
+using System;
+using System.Data;
+using System.Collections;
+using System.Drawing;
+using Gios.Pdf;
+
+namespace Pdf_Example1
+{
+	class Class1
+	{
+		[STAThread]
+		static void Main(string[] args)
+		{
+			// Starting instantiate the document.
+			// Remember to set the Docuement Format. In this case, we specify width and height.
+			PdfDocument myPdfDocument=new PdfDocument(PdfDocumentFormat.InCentimeters(21,29.7));
+			
+			// Now we create a Table of 100 lines, 6 columns and 4 points of Padding.
+			PdfTable myPdfTable=myPdfDocument.NewTable(new Font("Verdana",12),200,6,4);
+
+			// Importing datas from the datatables... (also column names for the headers!)
+			myPdfTable.ImportDataTable(Table);
+
+			// Sets the format for correct date-time representation
+			myPdfTable.Columns[2].SetContentFormat("{0:dd/MM/yyyy}");
+
+			// Now we set our Graphic Design: Colors and Borders...
+			myPdfTable.HeadersRow.SetColors(Color.White,Color.Navy);
+			myPdfTable.SetColors(Color.Black,Color.White,Color.Gainsboro);
+			myPdfTable.SetBorders(Color.Black,1,BorderType.CompleteGrid);
+
+			// With just one method we can set the proportional width of the columns.
+			// It's a "percentage like" assignment, but the sum can be different from 100.
+			myPdfTable.SetColumnsWidth(new int[]{5,25,16,20,20,15});
+
+			// You can also set colors for a range of cells, in this case, a row:
+			myPdfTable.Rows[7].SetColors(Color.Black,Color.LightGreen);
+			
+			// Now we set some alignment... for the whole table and then, for a column.
+			myPdfTable.SetContentAlignment(ContentAlignment.MiddleCenter);
+			myPdfTable.Columns[1].SetContentAlignment(ContentAlignment.MiddleLeft);
+			
+			// Here we start the loop to generate the table...
+			while (!myPdfTable.AllTablePagesCreated)
+			{
+				// we create a new page to put the generation of the new TablePage:
+				PdfPage newPdfPage=myPdfDocument.NewPage();
+				PdfTablePage newPdfTablePage=
+					myPdfTable.CreateTablePage(new PdfArea(myPdfDocument,48,120,500,670));
+				
+				// we also put a Label 
+				PdfTextArea pta=new PdfTextArea(new Font("Verdana",26,FontStyle.Bold),Color.Red
+					,new PdfArea(myPdfDocument,0,20,595,120),ContentAlignment.MiddleCenter,"Contact List");
+				
+				// nice thing: we can put all the objects in the following lines, so we can have
+				// a great control of layer sequence... 
+				newPdfPage.Add(newPdfTablePage);
+				newPdfPage.Add(pta);
+				
+				// Now we create a loop for serching for people born in 1968. If we find
+				// one, we will draw a circle over the number. This is possible using the
+				// the CellArea, that is the Area occupied by a rasterized Cell.
+				for (int index=newPdfTablePage.FirstRow;index<=newPdfTablePage.LastRow;index++)
+					if (((DateTime)myPdfTable.Rows[index][2].Content).Year==1968)
+					{
+						PdfCircle pc=newPdfTablePage.CellArea(index,2).InnerCircle(Color.Blue,2);
+						pc.StrokeWidth=3.5;
+						newPdfPage.Add(pc);
+					}
+				// we save each generated page before start rendering the next.
+				newPdfPage.SaveToDocument();			
+			}
+			// Finally we save the docuement...
+			myPdfDocument.SaveToFile("Example1.pdf");
+		}
+		#region 2000 Rows Datatable Generation
+		static System.Random r=new Random();
+		static string GetAName
+		{
+			get
+			{
+				ArrayList al=new ArrayList();
+				al.Add("John Doe");
+				al.Add("Perry White");
+				al.Add("Jackson");
+				al.Add("Henry James Junior Ford");
+				al.Add("Bill Norton");
+				al.Add("Michal Johnathan Stewart ");
+				al.Add("George Wilson");
+				al.Add("Steven Edwards");
+				return al[r.Next(0,al.Count)].ToString();
+			}
+		}
+		static DataTable Table
+		{
+			get
+			{
+				DataTable dt=new DataTable();
+				dt.Columns.Add("ID");
+				dt.Columns.Add("Name");
+				dt.Columns.Add("Date of Birth",typeof(DateTime));
+				dt.Columns.Add("Phone Number");
+				dt.Columns.Add("Mobile Phone");
+				dt.Columns.Add("Password");
+				
+				for (int x=0;x<=2000;x++)
+				{
+					DataRow dr=dt.NewRow();
+					dr["ID"]=x.ToString();
+					dr["Name"]=GetAName;
+					dr["Date of Birth"]=new DateTime(r.Next(1940,1984),r.Next(1,12),r.Next(1,28));
+					dr["Phone Number"]="555-"+r.Next(100000,999999).ToString();
+					dr["Mobile Phone"]="444-"+r.Next(100000,999999).ToString();
+					dr["Password"]=r.Next(10000000,99999999).ToString();
+					dt.Rows.Add(dr);
+				}
+
+				return dt;
+			}
+		}
+		#endregion
+	}
+}

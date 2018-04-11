@@ -1,0 +1,140 @@
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+    <script src="/Areas/Mms/ViewModels/mms.com.js"></script>
+    <script src="/Areas/Mms/ViewModels/mms.viewModel.edit.js"></script>
+    <script type="text/javascript">
+        var viewModel = function (data) {
+            var self = this;
+            mms.viewModel.edit.apply(self, arguments);              //继承mms.viewModel.edit
+            this.grid.OnAfterCreateEditor = function(editors){      //在grid行编辑开始时绑定金额=单价*数量的计算 及 加上数量的验证
+                mms.com.bindCalcTotalMoney(self, "Num", "UnitPrice", "Money", "TotalMoney")(editors);
+                $.fn.validatebox.defaults.rules.checkNum = {
+                    validator:function(value,param){
+                        return parseFloat(value) <= parseFloat(editors['CheckNum'].target.numberbox('getValue'));
+                    },
+                    message:'入库数量不能大于验收数量！'
+                };
+            };
+        };
+        var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+        ko.bindingViewModel(new viewModel(data));
+    </script>
+}
+
+    <div class="z-toolbar">
+        <a id="a_save" href="#" plain="true" class="easyui-linkbutton" icon="icon-save" data-bind="click:saveClick,linkbuttonDisable:readonly" title="保存">保存</a>
+        <a id="a_undo" href="#" plain="true" class="easyui-linkbutton" icon="icon-undo" data-bind="click:rejectClick,linkbuttonDisable:readonly" title="撤消">撤消</a>
+        <a id="a_audit" href="#" plain="true" class="easyui-linkbutton" icon="icon-user-accept" data-bind="click:auditClick,easyuiLinkbutton:approveButton" title="审核">审核</a>
+        <a id="a_printer" href="#" plain="true" class="easyui-linkbutton" icon="icon-printer" title="打印" data-bind="click:printClick">打印</a>
+        <div class="datagrid-btn-separator"></div>
+        <a id="a_other" href="#" class="easyui-splitbutton" data-options="menu:'#divother',iconCls:'icon-application_go'" title="其他">其他</a>
+        <div class="datagrid-btn-separator"></div>
+        <a id="a_first" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_first" data-bind="click:firstClick,linkbuttonEnable:scrollKeys.firstEnable" title="第一条"></a> 
+        <a id="a_previous" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_previous" data-bind="click:previousClick,linkbuttonEnable:scrollKeys.previousEnable" title="上一条"></a> 
+        <a id="a_next" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_next" data-bind="click:nextClick,linkbuttonEnable:scrollKeys.nextEnable" title="下一条"></a> 
+        <a id="a_last" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_last" data-bind="click:lastClick,linkbuttonEnable:scrollKeys.lastEnable" title="最后一条"></a> 
+    </div>
+
+    <div id="divother" style="width:100px; display:none;">
+        <div data-options="iconCls:'icon-add'">新增</div>
+        <div data-options="iconCls:'icon-cross'">删除</div>
+        <div data-options="iconCls:'icon-arrow_refresh'">刷新</div>
+    </div>  
+
+    <div id="master" class="container_12" data-bind="inputwidth:0.9">
+        <div class="grid_1 lbl">单据编号</div>
+        <div class="grid_3 val"><input type="text" data-bind="value:form.BillNo,readOnly:true" class="z-txt readonly"/></div>
+        <div class="grid_1 lbl">单据日期</div>
+        <div class="grid_3 val"><input type="text" data-bind="dateboxValue:form.BillDate,dateboxReadOnly:readonly" class="z-txt easyui-datebox" /></div>
+        <div class="grid_1 lbl">经办人</div>
+        <div class="grid_3 val "><input type="text" data-bind="value:form.DoPerson,readOnly:readonly" class="z-txt easyui-validatebox" /></div>
+        
+        <div class="clear"></div>
+
+        <div class="grid_1 lbl required">供应商</div>
+        <div class="grid_3 val"><input type="text" data-bind="lookupValue:form.SupplierCode,lookupReadOnly:readonly" required="true" class="z-txt easyui-lookup" data-options="editable:false,lookupType:'merchants',queryParams:{MerchantsProperty:'\'采购\''}"/></div>
+        <div class="grid_1 lbl required">库房</div>
+        <div class="grid_3 val"><input type="text" data-bind="comboboxValue:form.WarehouseCode,datasource:dataSource.warehouseItems,comboboxReadOnly:readonly" class="z-txt easyui-combobox" required="true" /></div>
+        <div class="grid_1 lbl required">收料日期 </div>
+        <div class="grid_3 val"><input type="text" data-bind="dateboxValue:form.ReceiveDate,dateboxReadOnly:readonly" class="easyui-datebox z-txt"  required="true" /></div>
+        
+        <div class="clear"></div>
+
+        <div class="grid_1 lbl required">供应类型 </div>
+        <div class="grid_3 val"><input type="text" data-bind="comboboxValue:form.SupplyType,datasource:dataSource.supplyType,comboboxReadOnly:readonly" class="easyui-combobox z-txt"  required="true" /></div>
+        <div class="grid_1 lbl required">付款方式</div>
+        <div class="grid_3 val"><input type="text" data-bind="comboboxValue:form.PayKind,datasource:dataSource.payKinds,comboboxReadOnly:readonly" class="z-txt easyui-combobox" required="true"/></div>
+        <div class="grid_1 lbl">合同名称 </div>
+        <div class="grid_3 val required"><input type="text" data-bind="value:form.ContractCode,readOnly:readonly" class="z-txt"  /></div>
+       
+        <div class="clear"></div>
+
+        <div class="grid_1 lbl">原始票号</div>
+        <div class="grid_3 val"><input type="text" data-bind="value:form.OriginalNum,readOnly:readonly" class="z-txt" /></div>
+        <div class="grid_1 lbl">金额</div>
+        <div class="grid_3 val"><input type="text" data-bind="numberboxValue:form.TotalMoney,readOnly:true" class="z-txt easyui-numberbox readonly" data-options="min: 0, precision: 2"/></div>
+        <div class="grid_1 lbl">备注</div>
+        <div class="grid_3 val"><input type="text" data-bind="value:form.Remark,readOnly:readonly" class="z-txt" /></div>
+
+        <div class="clear"></div>
+    </div>
+ 
+    <div id="tt" class="easyui-tabs">  
+        <div title="材料明细">
+            <table id="list" data-bind="datagrid:grid">
+                <thead>
+                    <tr>
+                        <th field="BillNo" hidden="true"></th>  
+                        <th field="RowId"  hidden="true"></th> 
+                        <th field="MaterialCode"        sortable="true" align="left"    width="80"  >材料编码   </th>  
+                        <th field="MaterialName"        sortable="true" align="left"    width="100" >材料名称   </th>  
+                        <th field="Model"               sortable="true" align="center"    width="60" >规格型号   </th>  
+                        <th field="Unit"                sortable="true" align="left"    width="100" editor1="{type: 'combobox', options:{data:data.dataSource.measureUnit}}">单位</th>  
+                        <th field="CheckNum"            sortable="true" align="right"   width="70"  editor="{type: 'numberbox',options:{min: 0}}">验收数量</th>  
+                        <th field="Num"                 sortable="true" align="right"   width="70"  editor="{type: 'numberbox',options:{min: 0,validType:'checkNum'}}">入库数量</th>  
+                        <th field="UnitPrice"           sortable="true" align="right"   width="70"  editor="{type: 'numberbox',options:{min: 0, precision: 2}}"  formatter="com.formatMoney">入库单价</th>  
+                        <th field="Money"               sortable="true" align="right"   width="70"  editor="{type: 'numberbox',options:{min: 0, precision: 2}}" formatter="com.formatMoney">金额</th>  
+                        <th field="Remark"              sortable="true" align="left"    width="200" editor="text">备注</th>   
+                    </tr>
+                </thead>
+            </table>   
+
+            <div id="gridtb">
+                <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" data-bind="click:addRowClick,linkbuttonDisable:readonly">选择在库材料</a>
+                <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" data-bind="click:removeRowClick,linkbuttonDisable:readonly">删除材料</a>
+            </div>  
+        </div>
+        <div title="表单信息" class="hide" style="padding-top:2px;">
+            <div class="container_12" id="BillDetail" data-bind="inputwidth:0.9,autoheight:181"> 
+                <div class="clear"></div>
+
+                <div class="grid_1 lbl">审批状态</div>
+                <div class="grid_3 val"><input type="text" data-bind="value:form.ApproveState,readOnly:true" class="z-txt readonly"/></div>
+                <div class="grid_1 lbl">审批意见</div>
+                <div class="grid_3 val"><input type="text" data-bind="value:form.ApproveRemark,readOnly:true"  class="z-txt readonly"/></div>
+                <div class="grid_1 lbl">审批人 </div>
+                <div class="grid_3 val"><input type="text" data-bind="value:form.ApprovePerson,readOnly:true" class="z-txt readonly"/></div>
+
+                <div class="clear"></div>
+
+                <div class="grid_1 lbl">审批日期</div>
+                <div class="grid_3 val"><input type="text" data-bind="dateboxValue:form.ApproveDate,dateboxReadOnly:true"  class="z-txt easyui-datebox readonly"/></div>
+                <div class="grid_1 lbl">编制日期</div>
+                <div class="grid_3 val"><input type="text" data-bind="dateboxValue:form.CreateDate,dateboxReadOnly:true" class="z-txt easyui-datebox readonly" /></div>
+                <div class="grid_1 lbl">编制人</div>
+                <div class="grid_3 val "><input type="text" data-bind="value:form.CreatePerson,readOnly:true" class="z-txt readonly" /></div>
+                
+                <div class="clear"></div>
+
+                <div class="grid_1 lbl">修改日期</div>
+                <div class="grid_3 val"><input type="text" data-bind="dateboxValue:form.UpdateDate,dateboxReadOnly:true" class="z-txt easyui-datebox readonly" /></div>
+                <div class="grid_1 lbl">修改人</div>
+                <div class="grid_3 val "><input type="text" data-bind="value:form.UpdatePerson,readOnly:true" class="z-txt readonly" /></div>
+            </div>
+        </div> 
+    </div>  

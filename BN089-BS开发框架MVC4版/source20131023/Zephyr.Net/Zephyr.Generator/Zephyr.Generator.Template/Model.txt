@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Zephyr.Core;
+
+namespace Zephyr.Models
+{
+    public class {TableName}Service : ServiceBase<{TableName}>
+    {
+       
+    }
+
+    public class {TableName} : ModelBase
+    {
+		#FieldsStart#
+        public {FieldType} {FieldName}{ get; set; }
+		#FieldsEnd#
+    }
+}

@@ -1,0 +1,945 @@
+2013-09-25 10:45:52,040 [8716] DEBUG Servicesys_user - 获取实体对象
+2013-09-25 10:45:52,080 [8716] DEBUG Sys - select sys_user.* from sys_user where  UserCode =  'lhs'and Password =  'lhs'and IsEnable =  'True'
+2013-09-25 10:45:52,148 [8716] DEBUG Sys - 
+update sys_user
+set LoginCount = isnull(LoginCount,0) + 1
+   ,LastLoginDate = getdate()
+where UserCode = 'lhs' 
+2013-09-25 10:45:52,175 [8716] DEBUG Sys - insert into sys_loginHistory([UserCode],[UserName],[HostName],[HostIP],[LoginCity],[LoginDate]) values('lhs','刘会胜','LHS-PC','ILData[0]/localhost','福建省厦门市','2013-09-25 10:45:52')
+2013-09-25 10:45:52,181 [8716] DEBUG Servicemms_project - 获取实体对象
+2013-09-25 10:45:52,187 [8716] DEBUG Mms - select mms_project.* from mms_project where  ProjectCode =  '201306030001'
+2013-09-25 10:45:52,274 [7384] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-09-25 10:45:52,485 [9168] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-09-25 10:45:53,885 [13084] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/receive/Index','/Mms/receive')
+2013-09-25 10:45:53,895 [13084] DEBUG Servicemms_warehouse - 获取动态列表
+2013-09-25 10:45:53,895 [13084] DEBUG Mms - select WarehouseCode as value,WarehouseName as text from mms_warehouse where  ProjectCode =  '201306030001'
+2013-09-25 10:45:53,947 [13084] DEBUG Servicesys_code - 获取动态列表
+2013-09-25 10:45:53,947 [13084] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'SupplyType'
+2013-09-25 10:45:54,826 [13136] DEBUG Servicemms_receive - 获取动态列表
+2013-09-25 10:45:54,826 [13136] DEBUG Mms - select top 20 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName as WarehouseName, E.MerchantsName AS SupplierName
+     from 
+        mms_receive A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants     E on E.MerchantsCode    = A.SupplierCode
+     where  A.ProjectCode =  '201306030001' order by A.BillNo
+2013-09-25 10:45:54,861 [13136] DEBUG Mms - select count(*) from ( select 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName as WarehouseName, E.MerchantsName AS SupplierName
+     from 
+        mms_receive A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants     E on E.MerchantsCode    = A.SupplierCode
+     where  A.ProjectCode =  '201306030001' ) tb_temp
+2013-09-25 10:56:22,524 [8684] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 10:56:22,677 [8684] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 10:56:22,683 [8684] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 10:56:22,714 [8684] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 10:56:23,084 [11468] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/receive/Index','/Mms/receive')
+2013-09-25 10:56:23,100 [11468] DEBUG Servicemms_warehouse - 获取动态列表
+2013-09-25 10:56:23,114 [11468] DEBUG Mms - select WarehouseCode as value,WarehouseName as text from mms_warehouse where  ProjectCode =  '201306030001'
+2013-09-25 10:56:23,116 [11468] DEBUG Servicesys_code - 获取动态列表
+2013-09-25 10:56:23,116 [11468] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'SupplyType'
+2013-09-25 10:56:26,499 [6588] DEBUG Servicemms_receive - 获取动态列表
+2013-09-25 10:56:26,500 [6588] DEBUG Mms - select top 20 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName as WarehouseName, E.MerchantsName AS SupplierName
+     from 
+        mms_receive A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants     E on E.MerchantsCode    = A.SupplierCode
+     where  A.ProjectCode =  '201306030001' order by A.BillNo
+2013-09-25 10:56:26,519 [6588] DEBUG Mms - select count(*) from ( select 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName as WarehouseName, E.MerchantsName AS SupplierName
+     from 
+        mms_receive A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants     E on E.MerchantsCode    = A.SupplierCode
+     where  A.ProjectCode =  '201306030001' ) tb_temp
+2013-09-25 10:56:27,794 [12404] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/receive/edit')
+2013-09-25 10:56:27,810 [12404] DEBUG Servicemms_receive - 获取实体对象
+2013-09-25 10:56:27,814 [12404] DEBUG Mms - select mms_receive.* from mms_receive where  BillNo =  '201307020024'
+2013-09-25 10:56:27,832 [12404] DEBUG Servicemms_receive - 获取上一条下一条数据
+2013-09-25 10:56:27,867 [12404] DEBUG Servicemms_receive - 获取字段
+2013-09-25 10:56:27,869 [12404] DEBUG Mms - select top 1 BillNo from mms_receive where  ProjectCode =  '201306030001' order by BillNo
+2013-09-25 10:56:27,873 [12404] DEBUG Servicemms_receive - 获取字段
+2013-09-25 10:56:27,874 [12404] DEBUG Mms - select top 1 BillNo from mms_receive where  BillNo < '201307020024'and ProjectCode =  '201306030001' order by BillNo desc
+2013-09-25 10:56:27,877 [12404] DEBUG Servicemms_receive - 获取字段
+2013-09-25 10:56:27,877 [12404] DEBUG Mms - select top 1 BillNo from mms_receive where  BillNo >  '201307020024'and ProjectCode =  '201306030001' order by BillNo
+2013-09-25 10:56:27,880 [12404] DEBUG Servicemms_receive - 获取字段
+2013-09-25 10:56:27,880 [12404] DEBUG Mms - select top 1 BillNo from mms_receive where  ProjectCode =  '201306030001' order by BillNo desc
+2013-09-25 10:56:27,924 [12404] DEBUG Servicesys_code - 获取动态列表
+2013-09-25 10:56:27,924 [12404] DEBUG Sys - select Text as value,Text as text from sys_code where  CodeType =  'MeasureUnit'
+2013-09-25 10:56:27,926 [12404] DEBUG Servicesys_code - 获取动态列表
+2013-09-25 10:56:27,926 [12404] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'SupplyType'
+2013-09-25 10:56:27,927 [12404] DEBUG Servicesys_code - 获取动态列表
+2013-09-25 10:56:27,927 [12404] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'PayType'
+2013-09-25 10:56:27,928 [12404] DEBUG Servicemms_warehouse - 获取动态列表
+2013-09-25 10:56:27,928 [12404] DEBUG Mms - select WarehouseCode as value,WarehouseName as text from mms_warehouse where  ProjectCode =  '201306030001'
+2013-09-25 10:56:27,930 [12404] DEBUG Servicesys_code - 获取字段
+2013-09-25 10:56:27,930 [12404] DEBUG Sys - select top 1 Code from sys_code where  CodeType =  'SupplyType'and IsEnable =  'True'and IsDefault =  'True'
+2013-09-25 10:56:27,932 [12404] DEBUG Servicesys_code - 获取字段
+2013-09-25 10:56:27,933 [12404] DEBUG Sys - select top 1 Code from sys_code where  CodeType =  'PayType'and IsEnable =  'True'and IsDefault =  'True'
+2013-09-25 10:56:29,308 [7708] DEBUG ServiceModelBase - 获取动态列表
+2013-09-25 10:56:29,309 [7708] DEBUG Mms - select 
+    MerchantsCode   as   value,MerchantsName   as   text
+   from 
+    mms_merchants A
+    left join mms_merchantsType B on B.MerchantsTypeCode = A.MerchantsTypeCode
+   where  MerchantsCode in ('CG00301') order by MerchantsCode
+2013-09-25 10:56:29,952 [11468] DEBUG Servicemms_receive - 获取动态列表
+2013-09-25 10:56:29,953 [11468] DEBUG Mms - select 
+        A.*, B.MaterialName,B.Model,B.Material
+     from 
+        mms_receiveDetail A
+        left join mms_material B on B.MaterialCode = A.MaterialCode
+     where  BillNo =  '201307020024' order by A.MaterialCode
+2013-09-25 11:21:38,338 [8816] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 11:21:38,370 [8816] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 11:21:38,376 [8816] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 11:21:38,377 [8816] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 11:21:38,971 [3280] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-09-25 11:21:44,252 [1632] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-09-25 11:21:53,568 [9104] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/staff/Index','/Mms/staff')
+2013-09-25 11:21:53,592 [9104] DEBUG Servicesys_code - 获取动态列表
+2013-09-25 11:21:53,614 [9104] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'PersonType'
+2013-09-25 11:21:54,584 [9104] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/staff'
+2013-09-25 11:21:54,589 [9104] DEBUG Sys - 
+select *
+from sys_roleMenuColumnMap 
+where MenuCode = '9960'
+and RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+2013-09-25 11:21:54,639 [9104] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/staff'
+2013-09-25 11:21:54,641 [9104] DEBUG Sys - 
+select A.*
+from sys_button A
+inner join sys_roleMenuButtonMap B on B.MenuCode = '9960' and B.ButtonCode = A.ButtonCode
+where RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+order by ButtonSeq
+2013-09-25 11:21:56,638 [3280] DEBUG ServiceREMP_Staff - 获取动态列表
+2013-09-25 11:21:56,639 [3280] DEBUG Mms - select top 20 * from REMP_Staff order by EMPSID
+2013-09-25 11:21:56,763 [3280] DEBUG Mms - select count(*) from ( select * from REMP_Staff ) tb_temp
+2013-09-25 11:21:57,834 [3280] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/Staff/edit')
+2013-09-25 11:21:57,849 [3280] DEBUG ServiceREMP_Staff - 获取动态对象
+2013-09-25 11:21:57,852 [3280] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '3'
+2013-09-25 11:21:57,859 [3280] DEBUG ServiceREMP_Staff - 获取上一条下一条数据
+2013-09-25 11:21:57,897 [3280] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:21:57,899 [3280] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID
+2013-09-25 11:21:57,902 [3280] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:21:57,902 [3280] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID < '3' order by EMPSID desc
+2013-09-25 11:21:57,905 [3280] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:21:57,906 [3280] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID >  '3' order by EMPSID
+2013-09-25 11:21:57,910 [3280] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:21:57,910 [3280] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID desc
+2013-09-25 11:21:58,612 [3280] DEBUG ServiceREMP_Change - 获取动态列表
+2013-09-25 11:21:58,612 [3280] DEBUG Mms - select REMP_Change.* from REMP_Change where  EMPSID =  '3'
+2013-09-25 11:21:58,625 [3280] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-25 11:21:58,627 [3280] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '3'
+2013-09-25 11:21:58,646 [3280] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-25 11:21:58,647 [3280] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '3'
+2013-09-25 11:21:58,649 [3280] DEBUG Servicesys_code - 获取动态列表
+2013-09-25 11:21:58,649 [3280] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'PersonType'
+2013-09-25 11:21:58,650 [3280] DEBUG ServiceREMP_Department - 获取动态列表
+2013-09-25 11:21:58,651 [3280] DEBUG Mms - select deptname as text,DEPTID as value from REMP_Department
+2013-09-25 11:22:04,239 [2064] DEBUG ServiceREMP_Change - 获取新主键
+2013-09-25 11:22:04,241 [2064] DEBUG Mms - select isnull(max(CHANID),0) from REMP_Change  where 1 = 1  and  CHANID =  '3'
+2013-09-25 11:22:08,024 [13616] DEBUG ServiceREMP_Staff - 获取动态对象
+2013-09-25 11:22:08,024 [13616] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '1'
+2013-09-25 11:22:08,025 [13616] DEBUG ServiceREMP_Staff - 获取上一条下一条数据
+2013-09-25 11:22:08,026 [13616] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:22:08,026 [13616] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID
+2013-09-25 11:22:08,026 [13616] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:22:08,026 [13616] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID < '1' order by EMPSID desc
+2013-09-25 11:22:08,028 [13616] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:22:08,028 [13616] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID >  '1' order by EMPSID
+2013-09-25 11:22:08,030 [13616] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:22:08,030 [13616] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID desc
+2013-09-25 11:22:08,030 [13616] DEBUG ServiceREMP_Change - 获取动态列表
+2013-09-25 11:22:08,031 [13616] DEBUG Mms - select REMP_Change.* from REMP_Change where  EMPSID =  '1'
+2013-09-25 11:22:08,032 [13616] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-25 11:22:08,032 [13616] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '1'
+2013-09-25 11:22:08,034 [13616] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-25 11:22:08,034 [13616] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '1'
+2013-09-25 11:22:12,450 [13616] DEBUG ServiceREMP_Staff - 更新记录
+2013-09-25 11:22:12,464 [13616] DEBUG Mms - update REMP_Staff set [ApproveState] = 'reject', [ApproveRemark] = '', [ApprovePerson] = '刘会胜', [ApproveDate] = '2013-09-25 11:22:12' where  EMPSID =  '1'
+2013-09-25 11:22:23,590 [3280] DEBUG ServiceREMP_Change - 获取新主键
+2013-09-25 11:22:23,596 [3280] DEBUG Mms - select isnull(max(CHANID),0) from REMP_Change  where 1 = 1  and  CHANID =  '1'
+2013-09-25 11:22:48,042 [11900] DEBUG ServiceREMP_Change - 获取新主键
+2013-09-25 11:22:48,042 [11900] DEBUG Mms - select isnull(max(CHANID),0) from REMP_Change  where 1 = 1  and  CHANID =  '1'
+2013-09-25 11:24:37,310 [10444] DEBUG ServiceREMP_Staff - 获取动态对象
+2013-09-25 11:24:37,311 [10444] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '2'
+2013-09-25 11:24:37,312 [10444] DEBUG ServiceREMP_Staff - 获取上一条下一条数据
+2013-09-25 11:24:37,312 [10444] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:24:37,313 [10444] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID
+2013-09-25 11:24:37,313 [10444] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:24:37,313 [10444] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID < '2' order by EMPSID desc
+2013-09-25 11:24:37,315 [10444] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:24:37,315 [10444] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID >  '2' order by EMPSID
+2013-09-25 11:24:37,318 [10444] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:24:37,318 [10444] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID desc
+2013-09-25 11:24:37,318 [10444] DEBUG ServiceREMP_Change - 获取动态列表
+2013-09-25 11:24:37,319 [10444] DEBUG Mms - select REMP_Change.* from REMP_Change where  EMPSID =  '2'
+2013-09-25 11:24:37,319 [10444] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-25 11:24:37,319 [10444] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '2'
+2013-09-25 11:24:37,321 [10444] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-25 11:24:37,321 [10444] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '2'
+2013-09-25 11:28:04,249 [8816] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 11:28:04,285 [8816] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 11:28:04,292 [8816] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 11:28:04,293 [8816] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 11:28:04,656 [5132] DEBUG ServiceREMP_Change - 获取新主键
+2013-09-25 11:28:04,664 [5132] DEBUG Mms - select isnull(max(CHANID),0) from REMP_Change  where 1 = 1  and  CHANID =  '2'
+2013-09-25 11:39:53,463 [12188] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 11:39:53,496 [12188] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 11:39:53,503 [12188] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 11:39:53,504 [12188] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 11:39:54,056 [11688] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-09-25 11:39:59,103 [13436] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-09-25 11:40:06,090 [5376] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/staff/Index','/Mms/staff')
+2013-09-25 11:40:06,108 [5376] DEBUG Servicesys_code - 获取动态列表
+2013-09-25 11:40:06,129 [5376] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'PersonType'
+2013-09-25 11:40:07,328 [5376] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/staff'
+2013-09-25 11:40:07,332 [5376] DEBUG Sys - 
+select *
+from sys_roleMenuColumnMap 
+where MenuCode = '9960'
+and RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+2013-09-25 11:40:07,335 [5376] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/staff'
+2013-09-25 11:40:07,336 [5376] DEBUG Sys - 
+select A.*
+from sys_button A
+inner join sys_roleMenuButtonMap B on B.MenuCode = '9960' and B.ButtonCode = A.ButtonCode
+where RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+order by ButtonSeq
+2013-09-25 11:40:09,698 [11432] DEBUG ServiceREMP_Staff - 获取动态列表
+2013-09-25 11:40:09,698 [11432] DEBUG Mms - select top 20 * from REMP_Staff order by EMPSID
+2013-09-25 11:40:09,779 [11432] DEBUG Mms - select count(*) from ( select * from REMP_Staff ) tb_temp
+2013-09-25 11:40:11,291 [11688] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/staff/Index','/Mms/staff')
+2013-09-25 11:40:11,293 [11688] DEBUG Servicesys_code - 获取动态列表
+2013-09-25 11:40:11,293 [11688] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'PersonType'
+2013-09-25 11:40:11,307 [11688] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/staff'
+2013-09-25 11:40:11,308 [11688] DEBUG Sys - 
+select *
+from sys_roleMenuColumnMap 
+where MenuCode = '9960'
+and RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+2013-09-25 11:40:11,309 [11688] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/staff'
+2013-09-25 11:40:11,310 [11688] DEBUG Sys - 
+select A.*
+from sys_button A
+inner join sys_roleMenuButtonMap B on B.MenuCode = '9960' and B.ButtonCode = A.ButtonCode
+where RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+order by ButtonSeq
+2013-09-25 11:40:13,440 [8332] DEBUG ServiceREMP_Staff - 获取动态列表
+2013-09-25 11:40:13,440 [8332] DEBUG Mms - select top 20 * from REMP_Staff order by EMPSID
+2013-09-25 11:40:13,444 [8332] DEBUG Mms - select count(*) from ( select * from REMP_Staff ) tb_temp
+2013-09-25 11:40:14,448 [11688] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/Staff/edit')
+2013-09-25 11:40:14,455 [11688] DEBUG ServiceREMP_Staff - 获取动态对象
+2013-09-25 11:40:14,457 [11688] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '3'
+2013-09-25 11:40:14,461 [11688] DEBUG ServiceREMP_Staff - 获取上一条下一条数据
+2013-09-25 11:40:14,489 [11688] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:40:14,491 [11688] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID
+2013-09-25 11:40:14,493 [11688] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:40:14,494 [11688] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID < '3' order by EMPSID desc
+2013-09-25 11:40:14,495 [11688] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:40:14,496 [11688] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID >  '3' order by EMPSID
+2013-09-25 11:40:14,498 [11688] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:40:14,498 [11688] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID desc
+2013-09-25 11:40:15,176 [11688] DEBUG ServiceREMP_Change - 获取动态列表
+2013-09-25 11:40:15,176 [11688] DEBUG Mms - select REMP_Change.* from REMP_Change where  EMPSID =  '3'
+2013-09-25 11:40:15,178 [11688] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-25 11:40:15,180 [11688] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '3'
+2013-09-25 11:40:15,200 [11688] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-25 11:40:15,201 [11688] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '3'
+2013-09-25 11:40:15,203 [11688] DEBUG Servicesys_code - 获取动态列表
+2013-09-25 11:40:15,203 [11688] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'PersonType'
+2013-09-25 11:40:15,204 [11688] DEBUG ServiceREMP_Department - 获取动态列表
+2013-09-25 11:40:15,205 [11688] DEBUG Mms - select deptname as text,DEPTID as value from REMP_Department
+2013-09-25 11:40:20,012 [3304] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/Staff/edit')
+2013-09-25 11:40:20,015 [3304] DEBUG ServiceREMP_Staff - 获取动态对象
+2013-09-25 11:40:20,015 [3304] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '3'
+2013-09-25 11:40:20,016 [3304] DEBUG ServiceREMP_Staff - 获取上一条下一条数据
+2013-09-25 11:40:20,017 [3304] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:40:20,017 [3304] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID
+2013-09-25 11:40:20,017 [3304] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:40:20,017 [3304] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID < '3' order by EMPSID desc
+2013-09-25 11:40:20,018 [3304] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:40:20,018 [3304] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID >  '3' order by EMPSID
+2013-09-25 11:40:20,018 [3304] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:40:20,019 [3304] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID desc
+2013-09-25 11:40:20,019 [3304] DEBUG ServiceREMP_Change - 获取动态列表
+2013-09-25 11:40:20,019 [3304] DEBUG Mms - select REMP_Change.* from REMP_Change where  EMPSID =  '3'
+2013-09-25 11:40:20,020 [3304] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-25 11:40:20,020 [3304] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '3'
+2013-09-25 11:40:20,022 [3304] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-25 11:40:20,022 [3304] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '3'
+2013-09-25 11:40:20,024 [3304] DEBUG Servicesys_code - 获取动态列表
+2013-09-25 11:40:20,024 [3304] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'PersonType'
+2013-09-25 11:40:20,025 [3304] DEBUG ServiceREMP_Department - 获取动态列表
+2013-09-25 11:40:20,025 [3304] DEBUG Mms - select deptname as text,DEPTID as value from REMP_Department
+2013-09-25 11:40:24,409 [13436] DEBUG ServiceREMP_Change - 获取新主键
+2013-09-25 11:40:24,411 [13436] DEBUG Mms - select isnull(max(CHANID),0) from REMP_Change  where 1 = 1  and  CHANID =  '3'
+2013-09-25 11:40:28,473 [11432] DEBUG ServiceREMP_Change - 获取新主键
+2013-09-25 11:40:28,474 [11432] DEBUG Mms - select isnull(max(CHANID),0) from REMP_Change  where 1 = 1  and  CHANID =  '3'
+2013-09-25 11:40:29,824 [7476] DEBUG ServiceREMP_Change - 获取新主键
+2013-09-25 11:40:29,825 [7476] DEBUG Mms - select isnull(max(CHANID),0) from REMP_Change  where 1 = 1  and  CHANID =  '3'
+2013-09-25 11:40:34,654 [5132] DEBUG ServiceREMP_Staff - 获取动态对象
+2013-09-25 11:40:34,654 [5132] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '4'
+2013-09-25 11:40:34,656 [5132] DEBUG ServiceREMP_Staff - 获取上一条下一条数据
+2013-09-25 11:40:34,656 [5132] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:40:34,656 [5132] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID
+2013-09-25 11:40:34,656 [5132] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:40:34,657 [5132] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID < '4' order by EMPSID desc
+2013-09-25 11:40:34,658 [5132] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:40:34,658 [5132] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID >  '4' order by EMPSID
+2013-09-25 11:40:34,660 [5132] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:40:34,660 [5132] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID desc
+2013-09-25 11:40:34,661 [5132] DEBUG ServiceREMP_Change - 获取动态列表
+2013-09-25 11:40:34,661 [5132] DEBUG Mms - select REMP_Change.* from REMP_Change where  EMPSID =  '4'
+2013-09-25 11:40:34,661 [5132] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-25 11:40:34,662 [5132] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '4'
+2013-09-25 11:40:34,663 [5132] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-25 11:40:34,663 [5132] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '4'
+2013-09-25 11:40:36,632 [11432] DEBUG ServiceREMP_Change - 获取新主键
+2013-09-25 11:40:36,633 [11432] DEBUG Mms - select isnull(max(CHANID),0) from REMP_Change  where 1 = 1  and  CHANID =  '4'
+2013-09-25 11:40:38,120 [14888] DEBUG ServiceREMP_Change - 获取新主键
+2013-09-25 11:40:38,121 [14888] DEBUG Mms - select isnull(max(CHANID),0) from REMP_Change  where 1 = 1  and  CHANID =  '4'
+2013-09-25 11:41:38,334 [12188] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 11:41:38,363 [12188] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 11:41:38,369 [12188] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 11:41:38,369 [12188] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 11:41:38,924 [11688] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-09-25 11:41:43,903 [13436] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-09-25 11:41:58,087 [11432] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/staff/Index','/Mms/staff')
+2013-09-25 11:41:58,104 [11432] DEBUG Servicesys_code - 获取动态列表
+2013-09-25 11:41:58,126 [11432] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'PersonType'
+2013-09-25 11:41:59,340 [11432] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/staff'
+2013-09-25 11:41:59,344 [11432] DEBUG Sys - 
+select *
+from sys_roleMenuColumnMap 
+where MenuCode = '9960'
+and RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+2013-09-25 11:41:59,347 [11432] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/staff'
+2013-09-25 11:41:59,348 [11432] DEBUG Sys - 
+select A.*
+from sys_button A
+inner join sys_roleMenuButtonMap B on B.MenuCode = '9960' and B.ButtonCode = A.ButtonCode
+where RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+order by ButtonSeq
+2013-09-25 11:42:01,374 [4388] DEBUG ServiceREMP_Staff - 获取动态列表
+2013-09-25 11:42:01,374 [4388] DEBUG Mms - select top 20 * from REMP_Staff order by EMPSID
+2013-09-25 11:42:01,454 [4388] DEBUG Mms - select count(*) from ( select * from REMP_Staff ) tb_temp
+2013-09-25 11:42:02,419 [11432] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/Staff/edit')
+2013-09-25 11:42:02,430 [11432] DEBUG ServiceREMP_Staff - 获取动态对象
+2013-09-25 11:42:02,433 [11432] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '2'
+2013-09-25 11:42:02,438 [11432] DEBUG ServiceREMP_Staff - 获取上一条下一条数据
+2013-09-25 11:42:02,480 [11432] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:42:02,483 [11432] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID
+2013-09-25 11:42:02,485 [11432] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:42:02,486 [11432] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID < '2' order by EMPSID desc
+2013-09-25 11:42:02,488 [11432] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:42:02,488 [11432] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID >  '2' order by EMPSID
+2013-09-25 11:42:02,490 [11432] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:42:02,490 [11432] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID desc
+2013-09-25 11:42:03,186 [11432] DEBUG ServiceREMP_Change - 获取动态列表
+2013-09-25 11:42:03,186 [11432] DEBUG Mms - select REMP_Change.* from REMP_Change where  EMPSID =  '2'
+2013-09-25 11:42:03,188 [11432] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-25 11:42:03,191 [11432] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '2'
+2013-09-25 11:42:03,209 [11432] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-25 11:42:03,209 [11432] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '2'
+2013-09-25 11:42:03,211 [11432] DEBUG Servicesys_code - 获取动态列表
+2013-09-25 11:42:03,211 [11432] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'PersonType'
+2013-09-25 11:42:03,213 [11432] DEBUG ServiceREMP_Department - 获取动态列表
+2013-09-25 11:42:03,213 [11432] DEBUG Mms - select deptname as text,DEPTID as value from REMP_Department
+2013-09-25 11:42:17,380 [11688] DEBUG ServiceREMP_Change - 获取新主键
+2013-09-25 11:42:17,383 [11688] DEBUG Mms - select isnull(max(CHANID),0) from REMP_Change  where 1 = 1  and  EMPSID =  '2'
+2013-09-25 11:42:19,570 [4388] DEBUG ServiceREMP_Staff - 获取动态对象
+2013-09-25 11:42:19,571 [4388] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '3'
+2013-09-25 11:42:19,573 [4388] DEBUG ServiceREMP_Staff - 获取上一条下一条数据
+2013-09-25 11:42:19,573 [4388] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:42:19,573 [4388] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID
+2013-09-25 11:42:19,573 [4388] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:42:19,573 [4388] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID < '3' order by EMPSID desc
+2013-09-25 11:42:19,574 [4388] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:42:19,574 [4388] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID >  '3' order by EMPSID
+2013-09-25 11:42:19,574 [4388] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:42:19,574 [4388] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID desc
+2013-09-25 11:42:19,575 [4388] DEBUG ServiceREMP_Change - 获取动态列表
+2013-09-25 11:42:19,575 [4388] DEBUG Mms - select REMP_Change.* from REMP_Change where  EMPSID =  '3'
+2013-09-25 11:42:19,576 [4388] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-25 11:42:19,576 [4388] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '3'
+2013-09-25 11:42:19,578 [4388] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-25 11:42:19,578 [4388] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '3'
+2013-09-25 11:42:21,841 [11432] DEBUG ServiceREMP_Change - 获取新主键
+2013-09-25 11:42:21,841 [11432] DEBUG Mms - select isnull(max(CHANID),0) from REMP_Change  where 1 = 1  and  EMPSID =  '3'
+2013-09-25 11:42:26,758 [4388] DEBUG ServiceREMP_Change - 获取新主键
+2013-09-25 11:42:26,758 [4388] DEBUG Mms - select isnull(max(CHANID),0) from REMP_Change  where 1 = 1  and  EMPSID =  '3'
+2013-09-25 11:42:31,490 [11432] DEBUG ServiceREMP_Staff - 获取动态对象
+2013-09-25 11:42:31,490 [11432] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '2'
+2013-09-25 11:42:31,492 [11432] DEBUG ServiceREMP_Staff - 获取上一条下一条数据
+2013-09-25 11:42:31,492 [11432] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:42:31,492 [11432] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID
+2013-09-25 11:42:31,492 [11432] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:42:31,492 [11432] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID < '2' order by EMPSID desc
+2013-09-25 11:42:31,493 [11432] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:42:31,493 [11432] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID >  '2' order by EMPSID
+2013-09-25 11:42:31,493 [11432] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:42:31,493 [11432] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID desc
+2013-09-25 11:42:31,494 [11432] DEBUG ServiceREMP_Change - 获取动态列表
+2013-09-25 11:42:31,494 [11432] DEBUG Mms - select REMP_Change.* from REMP_Change where  EMPSID =  '2'
+2013-09-25 11:42:31,494 [11432] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-25 11:42:31,495 [11432] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '2'
+2013-09-25 11:42:31,496 [11432] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-25 11:42:31,496 [11432] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '2'
+2013-09-25 11:42:34,439 [11688] DEBUG ServiceREMP_Change - 获取新主键
+2013-09-25 11:42:34,439 [11688] DEBUG Mms - select isnull(max(CHANID),0) from REMP_Change  where 1 = 1  and  EMPSID =  '2'
+2013-09-25 11:42:35,839 [7704] DEBUG ServiceREMP_Change - 获取新主键
+2013-09-25 11:42:35,839 [7704] DEBUG Mms - select isnull(max(CHANID),0) from REMP_Change  where 1 = 1  and  EMPSID =  '2'
+2013-09-25 11:50:43,030 [5072] DEBUG ServiceREMP_Change - 获取新主键
+2013-09-25 11:50:43,036 [5072] DEBUG Mms - select isnull(max(CHANID),0) from REMP_Change  where 1 = 1  and  EMPSID =  '2'
+2013-09-25 11:50:45,643 [5072] DEBUG ServiceREMP_Change - 获取新主键
+2013-09-25 11:50:45,643 [5072] DEBUG Mms - select isnull(max(CHANID),0) from REMP_Change  where 1 = 1  and  EMPSID =  '2'
+2013-09-25 11:50:47,327 [10964] DEBUG ServiceREMP_Change - 获取新主键
+2013-09-25 11:50:47,327 [10964] DEBUG Mms - select isnull(max(CHANID),0) from REMP_Change  where 1 = 1  and  EMPSID =  '2'
+2013-09-25 11:55:50,287 [9368] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/Staff/edit')
+2013-09-25 11:55:50,289 [9368] DEBUG ServiceREMP_Staff - 获取动态对象
+2013-09-25 11:55:50,289 [9368] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '3'
+2013-09-25 11:55:50,291 [9368] DEBUG ServiceREMP_Staff - 获取上一条下一条数据
+2013-09-25 11:55:50,291 [9368] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:55:50,291 [9368] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID
+2013-09-25 11:55:50,291 [9368] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:55:50,292 [9368] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID < '3' order by EMPSID desc
+2013-09-25 11:55:50,292 [9368] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:55:50,292 [9368] DEBUG Mms - select top 1 EMPSID from REMP_Staff where  EMPSID >  '3' order by EMPSID
+2013-09-25 11:55:50,293 [9368] DEBUG ServiceREMP_Staff - 获取字段
+2013-09-25 11:55:50,293 [9368] DEBUG Mms - select top 1 EMPSID from REMP_Staff order by EMPSID desc
+2013-09-25 11:55:50,293 [9368] DEBUG ServiceREMP_Change - 获取动态列表
+2013-09-25 11:55:50,293 [9368] DEBUG Mms - select REMP_Change.* from REMP_Change where  EMPSID =  '3'
+2013-09-25 11:55:50,294 [9368] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-25 11:55:50,294 [9368] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '3'
+2013-09-25 11:55:50,296 [9368] DEBUG ServiceREMP_Staff - 获取实体对象
+2013-09-25 11:55:50,296 [9368] DEBUG Mms - select REMP_Staff.* from REMP_Staff where  EMPSID =  '3'
+2013-09-25 11:55:50,298 [9368] DEBUG Servicesys_code - 获取动态列表
+2013-09-25 11:55:50,298 [9368] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'PersonType'
+2013-09-25 11:55:50,299 [9368] DEBUG ServiceREMP_Department - 获取动态列表
+2013-09-25 11:55:50,299 [9368] DEBUG Mms - select deptname as text,DEPTID as value from REMP_Department
+2013-09-25 11:56:25,774 [7316] DEBUG ServiceREMP_Staff - 编辑记录
+2013-09-25 11:56:25,793 [7316] DEBUG Mms - select 
+        REMP_Staff
+    .* from 
+        REMP_Staff
+     where  EMPSID =  '3'
+2013-09-25 11:56:25,809 [7316] DEBUG Mms - update 
+        REMP_Staff
+     set [Nationality] = '1' where  EMPSID =  '3'
+2013-09-25 11:56:29,710 [12880] DEBUG ServiceREMP_Change - 获取新主键
+2013-09-25 11:56:29,716 [12880] DEBUG Mms - select isnull(max(CHANID),0) from REMP_Change  where 1 = 1  and  EMPSID =  '3'
+2013-09-25 11:56:34,697 [11688] DEBUG ServiceREMP_Staff - 编辑记录
+2013-09-25 11:56:34,698 [11688] DEBUG Mms - select REMP_Change.* from REMP_Change where  CHANID =  '11'
+2013-09-25 11:56:34,709 [11688] DEBUG Mms - insert into REMP_Change([CHANID],[EMPSID],[changedate],[changetype],[createtime]) values('11','3','2013-09-04','','')
+2013-09-25 11:56:35,035 [11688] ERROR ServiceREMP_Staff - 编辑记录失败
+System.Data.SqlClient.SqlException (0x80131904): 当 IDENTITY_INSERT 设置为 OFF 时，不能为表 'REMP_Change' 中的标识列插入显式值。
+   在 Zephyr.Data.ExecuteQueryHandler.HandleQueryException(Exception exception) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\Handlers\ExecuteQueryHandler.cs:行号 107
+   在 Zephyr.Data.ExecuteQueryHandler.ExecuteQuery(Boolean useReader, Action action) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\Handlers\ExecuteQueryHandler.cs:行号 28
+   在 Zephyr.Data.DbCommand.Execute() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\PartialClasses\Execute.cs:行号 9
+   在 Zephyr.Data.BaseInsertBuilder.Execute() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Builders\Insert\BaseInsertBuilder.cs:行号 22
+   在 Zephyr.Core.ServiceBase`1.<EditPage>b__a(RequestWrapper x) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEditPage.cs:行号 68
+   在 Zephyr.Core.ServiceBase`1.<>c__DisplayClassf.<EditPage>b__b() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEditPage.cs:行号 182
+   在 Zephyr.Core.LogHelper.Logger(ILog log, String function, ErrorHandle errorHandleType, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Logs\LogHelper.cs:行号 44
+ClientConnectionId:6c08234e-2a91-4c62-997b-e1b21a9d174c
+2013-09-25 11:56:46,353 [11688] ERROR /api/Mms/Staff/edit/ - System.Data.SqlClient.SqlException (0x80131904): 当 IDENTITY_INSERT 设置为 OFF 时，不能为表 'REMP_Change' 中的标识列插入显式值。
+   在 Zephyr.Core.LogHelper.Logger(ILog log, String function, ErrorHandle errorHandleType, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Logs\LogHelper.cs:行号 54
+   在 Zephyr.Core.ServiceBase`1.Logger(String function, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseLog.cs:行号 23
+   在 Zephyr.Core.ServiceBase`1.EditPage(JObject data, RequestWrapper formWrapper, List`1 tabsWrapper) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEditPage.cs:行号 72
+   在 CallSite.Target(Closure , CallSite , REMP_StaffService , Object , RequestWrapper , List`1 )
+   在 Zephyr.Areas.Mms.Controllers.StaffApiController.Edit(Object data) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Mms\Controllers\StaffController.cs:行号 220
+   在 lambda_method(Closure , Object , Object[] )
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.<>c__DisplayClassf.<GetExecutor>b__9(Object instance, Object[] methodParameters)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.Execute(Object instance, Object[] arguments)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.<>c__DisplayClass5.<ExecuteAsync>b__4()
+   在 System.Threading.Tasks.TaskHelpers.RunSynchronously[TResult](Func`1 func, CancellationToken cancellationToken)
+ClientConnectionId:6c08234e-2a91-4c62-997b-e1b21a9d174c
+2013-09-25 12:05:49,044 [14244] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 12:05:49,076 [14244] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 12:05:49,083 [14244] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 12:05:49,083 [14244] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 12:05:49,384 [12372] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Sys/generator/Index','/Sys/generator')
+2013-09-25 12:05:59,477 [12656] DEBUG Mms - SELECT Name as TableName FROM sys.tables order by Name
+2013-09-25 12:05:59,490 [4116] DEBUG Mms - 
+SELECT	sys.columns.name						AS ColumnName, 
+		type_name(sys.columns.system_type_id)	AS SqlTypeName,
+		sys.columns.max_length					AS MaxLength,
+		sys.columns.is_nullable					AS IsNullable,
+		sys.columns.is_identity					AS IsIdentity,
+		(case when exists(select 1  
+						 from   syscolumns 
+						 join   sysindexkeys on syscolumns.id  =sysindexkeys.id and syscolumns.colid=sysindexkeys.colid and syscolumns.id=sys.columns.object_id 
+						 join   sysindexes   on syscolumns.id  =sysindexes.id   and sysindexkeys.indid=sysindexes.indid   
+						 join   sysobjects   on sysindexes.name=sysobjects.name and sysobjects.xtype= 'PK '
+						 where syscolumns.name = sys.columns.name) then 1 else 0 end) AS IsPrimaryKey,
+		(select value from sys.extended_properties where sys.extended_properties.major_id = sys.columns.object_id and sys.extended_properties.minor_id = sys.columns.column_id) as Description
+FROM sys.columns    
+WHERE sys.columns.object_id = object_id('undefined')
+ORDER BY sys.columns.column_id
+2013-09-25 12:06:03,606 [12656] DEBUG Mms - 
+SELECT	sys.columns.name						AS ColumnName, 
+		type_name(sys.columns.system_type_id)	AS SqlTypeName,
+		sys.columns.max_length					AS MaxLength,
+		sys.columns.is_nullable					AS IsNullable,
+		sys.columns.is_identity					AS IsIdentity,
+		(case when exists(select 1  
+						 from   syscolumns 
+						 join   sysindexkeys on syscolumns.id  =sysindexkeys.id and syscolumns.colid=sysindexkeys.colid and syscolumns.id=sys.columns.object_id 
+						 join   sysindexes   on syscolumns.id  =sysindexes.id   and sysindexkeys.indid=sysindexes.indid   
+						 join   sysobjects   on sysindexes.name=sysobjects.name and sysobjects.xtype= 'PK '
+						 where syscolumns.name = sys.columns.name) then 1 else 0 end) AS IsPrimaryKey,
+		(select value from sys.extended_properties where sys.extended_properties.major_id = sys.columns.object_id and sys.extended_properties.minor_id = sys.columns.column_id) as Description
+FROM sys.columns    
+WHERE sys.columns.object_id = object_id('REMP_Staff')
+ORDER BY sys.columns.column_id
+2013-09-25 12:06:09,454 [12656] DEBUG Mms - 
+SELECT	sys.columns.name						AS ColumnName, 
+		type_name(sys.columns.system_type_id)	AS SqlTypeName,
+		sys.columns.max_length					AS MaxLength,
+		sys.columns.is_nullable					AS IsNullable,
+		sys.columns.is_identity					AS IsIdentity,
+		(case when exists(select 1  
+						 from   syscolumns 
+						 join   sysindexkeys on syscolumns.id  =sysindexkeys.id and syscolumns.colid=sysindexkeys.colid and syscolumns.id=sys.columns.object_id 
+						 join   sysindexes   on syscolumns.id  =sysindexes.id   and sysindexkeys.indid=sysindexes.indid   
+						 join   sysobjects   on sysindexes.name=sysobjects.name and sysobjects.xtype= 'PK '
+						 where syscolumns.name = sys.columns.name) then 1 else 0 end) AS IsPrimaryKey,
+		(select value from sys.extended_properties where sys.extended_properties.major_id = sys.columns.object_id and sys.extended_properties.minor_id = sys.columns.column_id) as Description
+FROM sys.columns    
+WHERE sys.columns.object_id = object_id('REMP_Staff')
+ORDER BY sys.columns.column_id
+2013-09-25 12:06:09,461 [14420] DEBUG Mms - 
+SELECT	sys.columns.name						AS ColumnName, 
+		type_name(sys.columns.system_type_id)	AS SqlTypeName,
+		sys.columns.max_length					AS MaxLength,
+		sys.columns.is_nullable					AS IsNullable,
+		sys.columns.is_identity					AS IsIdentity,
+		(case when exists(select 1  
+						 from   syscolumns 
+						 join   sysindexkeys on syscolumns.id  =sysindexkeys.id and syscolumns.colid=sysindexkeys.colid and syscolumns.id=sys.columns.object_id 
+						 join   sysindexes   on syscolumns.id  =sysindexes.id   and sysindexkeys.indid=sysindexes.indid   
+						 join   sysobjects   on sysindexes.name=sysobjects.name and sysobjects.xtype= 'PK '
+						 where syscolumns.name = sys.columns.name) then 1 else 0 end) AS IsPrimaryKey,
+		(select value from sys.extended_properties where sys.extended_properties.major_id = sys.columns.object_id and sys.extended_properties.minor_id = sys.columns.column_id) as Description
+FROM sys.columns    
+WHERE sys.columns.object_id = object_id('REMP_Staff')
+ORDER BY sys.columns.column_id
+2013-09-25 12:06:26,224 [11012] DEBUG Mms - 
+SELECT	sys.columns.name						AS ColumnName, 
+		type_name(sys.columns.system_type_id)	AS SqlTypeName,
+		sys.columns.max_length					AS MaxLength,
+		sys.columns.is_nullable					AS IsNullable,
+		sys.columns.is_identity					AS IsIdentity,
+		(case when exists(select 1  
+						 from   syscolumns 
+						 join   sysindexkeys on syscolumns.id  =sysindexkeys.id and syscolumns.colid=sysindexkeys.colid and syscolumns.id=sys.columns.object_id 
+						 join   sysindexes   on syscolumns.id  =sysindexes.id   and sysindexkeys.indid=sysindexes.indid   
+						 join   sysobjects   on sysindexes.name=sysobjects.name and sysobjects.xtype= 'PK '
+						 where syscolumns.name = sys.columns.name) then 1 else 0 end) AS IsPrimaryKey,
+		(select value from sys.extended_properties where sys.extended_properties.major_id = sys.columns.object_id and sys.extended_properties.minor_id = sys.columns.column_id) as Description
+FROM sys.columns    
+WHERE sys.columns.object_id = object_id('REMP_Change')
+ORDER BY sys.columns.column_id
+2013-09-25 12:06:33,065 [12656] DEBUG Mms - 
+SELECT	sys.columns.name						AS ColumnName, 
+		type_name(sys.columns.system_type_id)	AS SqlTypeName,
+		sys.columns.max_length					AS MaxLength,
+		sys.columns.is_nullable					AS IsNullable,
+		sys.columns.is_identity					AS IsIdentity,
+		(case when exists(select 1  
+						 from   syscolumns 
+						 join   sysindexkeys on syscolumns.id  =sysindexkeys.id and syscolumns.colid=sysindexkeys.colid and syscolumns.id=sys.columns.object_id 
+						 join   sysindexes   on syscolumns.id  =sysindexes.id   and sysindexkeys.indid=sysindexes.indid   
+						 join   sysobjects   on sysindexes.name=sysobjects.name and sysobjects.xtype= 'PK '
+						 where syscolumns.name = sys.columns.name) then 1 else 0 end) AS IsPrimaryKey,
+		(select value from sys.extended_properties where sys.extended_properties.major_id = sys.columns.object_id and sys.extended_properties.minor_id = sys.columns.column_id) as Description
+FROM sys.columns    
+WHERE sys.columns.object_id = object_id('REMP_Staff')
+ORDER BY sys.columns.column_id
+2013-09-25 12:06:33,092 [12656] DEBUG Mms - sp_pkeys 'REMP_Staff'
+2013-09-25 12:09:11,348 [6608] DEBUG Mms - 
+SELECT	sys.columns.name						AS ColumnName, 
+		type_name(sys.columns.system_type_id)	AS SqlTypeName,
+		sys.columns.max_length					AS MaxLength,
+		sys.columns.is_nullable					AS IsNullable,
+		sys.columns.is_identity					AS IsIdentity,
+		(case when exists(select 1  
+						 from   syscolumns 
+						 join   sysindexkeys on syscolumns.id  =sysindexkeys.id and syscolumns.colid=sysindexkeys.colid and syscolumns.id=sys.columns.object_id 
+						 join   sysindexes   on syscolumns.id  =sysindexes.id   and sysindexkeys.indid=sysindexes.indid   
+						 join   sysobjects   on sysindexes.name=sysobjects.name and sysobjects.xtype= 'PK '
+						 where syscolumns.name = sys.columns.name) then 1 else 0 end) AS IsPrimaryKey,
+		(select value from sys.extended_properties where sys.extended_properties.major_id = sys.columns.object_id and sys.extended_properties.minor_id = sys.columns.column_id) as Description
+FROM sys.columns    
+WHERE sys.columns.object_id = object_id('REMP_Staff')
+ORDER BY sys.columns.column_id
+2013-09-25 12:09:11,370 [6608] DEBUG Mms - sp_pkeys 'REMP_Staff'
+2013-09-25 12:11:44,548 [10268] DEBUG Mms - 
+SELECT	sys.columns.name						AS ColumnName, 
+		type_name(sys.columns.system_type_id)	AS SqlTypeName,
+		sys.columns.max_length					AS MaxLength,
+		sys.columns.is_nullable					AS IsNullable,
+		sys.columns.is_identity					AS IsIdentity,
+		(case when exists(select 1  
+						 from   syscolumns 
+						 join   sysindexkeys on syscolumns.id  =sysindexkeys.id and syscolumns.colid=sysindexkeys.colid and syscolumns.id=sys.columns.object_id 
+						 join   sysindexes   on syscolumns.id  =sysindexes.id   and sysindexkeys.indid=sysindexes.indid   
+						 join   sysobjects   on sysindexes.name=sysobjects.name and sysobjects.xtype= 'PK '
+						 where syscolumns.name = sys.columns.name) then 1 else 0 end) AS IsPrimaryKey,
+		(select value from sys.extended_properties where sys.extended_properties.major_id = sys.columns.object_id and sys.extended_properties.minor_id = sys.columns.column_id) as Description
+FROM sys.columns    
+WHERE sys.columns.object_id = object_id('REMP_Staff')
+ORDER BY sys.columns.column_id
+2013-09-25 12:11:44,594 [10268] DEBUG Mms - sp_pkeys 'REMP_Staff'
+2013-09-25 13:42:17,667 [8816] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 13:42:17,703 [8816] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 13:42:17,710 [8816] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 13:42:17,710 [8816] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-25 13:42:18,129 [7344] DEBUG Mms - 
+SELECT	sys.columns.name						AS ColumnName, 
+		type_name(sys.columns.system_type_id)	AS SqlTypeName,
+		sys.columns.max_length					AS MaxLength,
+		sys.columns.is_nullable					AS IsNullable,
+		sys.columns.is_identity					AS IsIdentity,
+		(case when exists(select 1  
+						 from   syscolumns 
+						 join   sysindexkeys on syscolumns.id  =sysindexkeys.id and syscolumns.colid=sysindexkeys.colid and syscolumns.id=sys.columns.object_id 
+						 join   sysindexes   on syscolumns.id  =sysindexes.id   and sysindexkeys.indid=sysindexes.indid   
+						 join   sysobjects   on sysindexes.name=sysobjects.name and sysobjects.xtype= 'PK '
+						 where syscolumns.name = sys.columns.name) then 1 else 0 end) AS IsPrimaryKey,
+		(select value from sys.extended_properties where sys.extended_properties.major_id = sys.columns.object_id and sys.extended_properties.minor_id = sys.columns.column_id) as Description
+FROM sys.columns    
+WHERE sys.columns.object_id = object_id('REMP_Staff')
+ORDER BY sys.columns.column_id
+2013-09-25 13:42:18,134 [6224] DEBUG Mms - 
+SELECT	sys.columns.name						AS ColumnName, 
+		type_name(sys.columns.system_type_id)	AS SqlTypeName,
+		sys.columns.max_length					AS MaxLength,
+		sys.columns.is_nullable					AS IsNullable,
+		sys.columns.is_identity					AS IsIdentity,
+		(case when exists(select 1  
+						 from   syscolumns 
+						 join   sysindexkeys on syscolumns.id  =sysindexkeys.id and syscolumns.colid=sysindexkeys.colid and syscolumns.id=sys.columns.object_id 
+						 join   sysindexes   on syscolumns.id  =sysindexes.id   and sysindexkeys.indid=sysindexes.indid   
+						 join   sysobjects   on sysindexes.name=sysobjects.name and sysobjects.xtype= 'PK '
+						 where syscolumns.name = sys.columns.name) then 1 else 0 end) AS IsPrimaryKey,
+		(select value from sys.extended_properties where sys.extended_properties.major_id = sys.columns.object_id and sys.extended_properties.minor_id = sys.columns.column_id) as Description
+FROM sys.columns    
+WHERE sys.columns.object_id = object_id('REMP_Change')
+ORDER BY sys.columns.column_id
+2013-09-25 13:42:18,138 [14784] DEBUG Mms - 
+SELECT	sys.columns.name						AS ColumnName, 
+		type_name(sys.columns.system_type_id)	AS SqlTypeName,
+		sys.columns.max_length					AS MaxLength,
+		sys.columns.is_nullable					AS IsNullable,
+		sys.columns.is_identity					AS IsIdentity,
+		(case when exists(select 1  
+						 from   syscolumns 
+						 join   sysindexkeys on syscolumns.id  =sysindexkeys.id and syscolumns.colid=sysindexkeys.colid and syscolumns.id=sys.columns.object_id 
+						 join   sysindexes   on syscolumns.id  =sysindexes.id   and sysindexkeys.indid=sysindexes.indid   
+						 join   sysobjects   on sysindexes.name=sysobjects.name and sysobjects.xtype= 'PK '
+						 where syscolumns.name = sys.columns.name) then 1 else 0 end) AS IsPrimaryKey,
+		(select value from sys.extended_properties where sys.extended_properties.major_id = sys.columns.object_id and sys.extended_properties.minor_id = sys.columns.column_id) as Description
+FROM sys.columns    
+WHERE sys.columns.object_id = object_id('REMP_Staff')
+ORDER BY sys.columns.column_id
+2013-09-25 13:42:18,140 [5376] DEBUG Mms - 
+SELECT	sys.columns.name						AS ColumnName, 
+		type_name(sys.columns.system_type_id)	AS SqlTypeName,
+		sys.columns.max_length					AS MaxLength,
+		sys.columns.is_nullable					AS IsNullable,
+		sys.columns.is_identity					AS IsIdentity,
+		(case when exists(select 1  
+						 from   syscolumns 
+						 join   sysindexkeys on syscolumns.id  =sysindexkeys.id and syscolumns.colid=sysindexkeys.colid and syscolumns.id=sys.columns.object_id 
+						 join   sysindexes   on syscolumns.id  =sysindexes.id   and sysindexkeys.indid=sysindexes.indid   
+						 join   sysobjects   on sysindexes.name=sysobjects.name and sysobjects.xtype= 'PK '
+						 where syscolumns.name = sys.columns.name) then 1 else 0 end) AS IsPrimaryKey,
+		(select value from sys.extended_properties where sys.extended_properties.major_id = sys.columns.object_id and sys.extended_properties.minor_id = sys.columns.column_id) as Description
+FROM sys.columns    
+WHERE sys.columns.object_id = object_id('REMP_Change')
+ORDER BY sys.columns.column_id
+2013-09-25 13:42:36,082 [7344] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/staff/Index','/Mms/staff')
+2013-09-25 13:42:36,098 [7344] DEBUG Servicesys_code - 获取动态列表
+2013-09-25 13:42:36,118 [7344] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'PersonType'
+2013-09-25 13:42:37,955 [7344] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/staff'
+2013-09-25 13:42:37,960 [7344] DEBUG Sys - 
+select *
+from sys_roleMenuColumnMap 
+where MenuCode = '9960'
+and RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+2013-09-25 13:42:37,965 [7344] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/staff'
+2013-09-25 13:42:37,966 [7344] DEBUG Sys - 
+select A.*
+from sys_button A
+inner join sys_roleMenuButtonMap B on B.MenuCode = '9960' and B.ButtonCode = A.ButtonCode
+where RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+order by ButtonSeq
+2013-09-25 13:42:41,271 [14784] DEBUG ServiceREMP_Staff - 获取动态列表
+2013-09-25 13:42:41,271 [14784] DEBUG Mms - select top 20 * from REMP_Staff order by EMPSID
+2013-09-25 13:42:41,352 [14784] DEBUG Mms - select count(*) from ( select * from REMP_Staff ) tb_temp
+2013-09-25 13:44:20,268 [9280] DEBUG ServiceREMP_Staff - 获取动态列表
+2013-09-25 13:44:20,268 [9280] DEBUG Mms - select top 20 * from REMP_Staff order by DEPTID asc
+2013-09-25 13:44:20,274 [9280] DEBUG Mms - select count(*) from ( select * from REMP_Staff ) tb_temp
+2013-09-25 13:44:21,780 [11096] DEBUG ServiceREMP_Staff - 获取动态列表
+2013-09-25 13:44:21,780 [11096] DEBUG Mms - select top 20 * from REMP_Staff order by DEPTID desc
+2013-09-25 13:44:21,786 [11096] DEBUG Mms - select count(*) from ( select * from REMP_Staff ) tb_temp
+2013-09-25 13:44:22,753 [11096] DEBUG ServiceREMP_Staff - 获取动态列表
+2013-09-25 13:44:22,754 [11096] DEBUG Mms - select top 20 * from REMP_Staff order by DEPTID asc
+2013-09-25 13:44:22,756 [11096] DEBUG Mms - select count(*) from ( select * from REMP_Staff ) tb_temp
+2013-09-25 13:44:25,581 [9280] DEBUG ServiceREMP_Staff - 获取动态列表
+2013-09-25 13:44:25,581 [9280] DEBUG Mms - select top 20 * from REMP_Staff order by DEPTID desc
+2013-09-25 13:44:25,584 [9280] DEBUG Mms - select count(*) from ( select * from REMP_Staff ) tb_temp
+2013-09-25 13:44:26,333 [11096] DEBUG ServiceREMP_Staff - 获取动态列表
+2013-09-25 13:44:26,333 [11096] DEBUG Mms - select top 20 * from REMP_Staff order by DEPTID asc
+2013-09-25 13:44:26,336 [11096] DEBUG Mms - select count(*) from ( select * from REMP_Staff ) tb_temp
+2013-09-25 13:44:26,953 [14784] DEBUG ServiceREMP_Staff - 获取动态列表
+2013-09-25 13:44:26,953 [14784] DEBUG Mms - select top 20 * from REMP_Staff order by EMPSID asc
+2013-09-25 13:44:26,958 [14784] DEBUG Mms - select count(*) from ( select * from REMP_Staff ) tb_temp
+2013-09-25 13:44:35,746 [4180] DEBUG ServiceREMP_Staff - 获取动态列表
+2013-09-25 13:44:35,746 [4180] DEBUG Mms - select top 20 * from REMP_Staff order by EMPSID desc
+2013-09-25 13:44:35,751 [4180] DEBUG Mms - select count(*) from ( select * from REMP_Staff ) tb_temp
+2013-09-25 13:44:36,515 [4180] DEBUG ServiceREMP_Staff - 获取动态列表
+2013-09-25 13:44:36,516 [4180] DEBUG Mms - select top 20 * from REMP_Staff order by EMPSID asc
+2013-09-25 13:44:36,518 [4180] DEBUG Mms - select count(*) from ( select * from REMP_Staff ) tb_temp

@@ -1,0 +1,418 @@
+﻿@{
+    ViewBag.Title = "代码生成";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section head{
+    <link href="~/Content/js/jquery-plugin/smartwizard/smart_wizard.css" rel="stylesheet" />
+    <style type="text/css">
+        div#navigation{float: left;width: 180px;}
+        div#wrapper{float: right;width: 100%;margin-left: -185px;}
+        div#wizard{margin-left: 185px;}
+        ul.anchor{margin:0 0 10px 0 !important;}
+        ul li{margin-left:-16px;}
+        .grid .z-txt{margin:0 -3px;width:90%;} 
+        .grid input{width:90%;}
+        .grid input[type=checkbox]{cursor:default;}
+        .grid select{width:80%;padding:0 !important;height:22px;}
+        .grid select + a{margin:5px;}
+       
+        .tDnD_whileDrag{background-color: #FBEC88 !important;}
+    </style>
+}
+
+@section scripts{
+    <script src="~/Content/js/jquery-plugin/smartwizard/jquery.smartWizard.js"></script>
+    <script src="~/Content/js/jquery-extend/jquery.tablednd.js"></script>
+    <script src="~/Areas/Sys/ViewModels/Generator.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            ko.applyBindings(new viewModel());
+        });
+    </script>
+}
+
+<div id="container">
+    <div id="navigation">
+        <div class="panel-header" style="width: 168px; border-width: 0; background: #FAFAFA;">
+            代码类别 
+            <input type="text" class="z-txt" data-bind="easyuiCombobox:codetype" />
+            <div style="margin:1px;"></div>
+            数据库名 
+            <input type="text" class="z-txt" data-bind="easyuiCombobox:database" />
+
+            <div style="margin:5px;"></div>
+             <div  data-bind="autoheight:60"  style="width: 172px; border-width: 0;margin:0;padding:0; background: #FAFAFA; overflow:auto;">
+                <ul data-bind="easyuiTree:tabletree"></ul>
+            </div>
+        </div>
+    </div>
+    <div id="wrapper">
+        <div id="wizard" class="swMain" style="width:100%"></div>
+    </div>
+</div>
+
+<script id="template-searchEdit" type="text/html">
+    <ul>
+        <li><a href="#step-1">
+            <label class="stepNumber">1</label>
+            <span class="stepDesc">设置条件部<br />
+                <small>定义查询条件</small>
+            </span>
+        </a></li>
+        <li><a href="#step-2">
+            <label class="stepNumber">2</label>
+            <span class="stepDesc">设置数据列<br />
+                <small>定义查询显示的数据字段</small>
+            </span>
+        </a></li>
+        <li><a href="#step-3">
+            <label class="stepNumber">3</label>
+            <span class="stepDesc">其它设置<br />
+                <small>修改其它代码生成设置</small>
+            </span>
+        </a></li>
+    </ul>
+
+    <div id="step-1" class="step">
+        <h2 class="StepTitle">第一步 请勾选要查询的字段</h2>
+        <div>  
+            <div style="width:200px;float:left;overflow:auto;" data-bind="autoheight:172">
+                    <ul data-bind="easyuiTree:searchEdit.columntree"></ul>
+            </div>  
+            <div style="float:left;overflow:auto" data-bind="autoheight:172,autowidth:405">
+                <table class="grid">
+                    <thead>
+                        <tr>
+				            <th style="width:50px">字段</th>
+                            <th style="width:120px">显示名称</th>
+                            <th style="width:120px">控件类型</th>
+				            @*<th >参数</th>*@
+                            <th style="width:80px">查询逻辑</th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach:form.conditions">
+                        <tr data-bind="attr:{id:$index}">
+                            <td data-bind="text:field" style="text-align:left"></td>
+                            <td><input type="text" class="z-txt" data-bind="value:title"/></td>
+                            <td><select class="z-txt"  data-bind="options:$root.data.input,value:type"></select></td>
+                            @*<td><input type="text" class="z-txt" data-bind="value:options"/></td>*@
+                            <td><select class="z-txt"  data-bind="options:$root.data.compare,value:cp"></select></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>  
+        </div>
+    </div>
+    <div id="step-2" class="step">
+        <h2 class="StepTitle">第二步 请勾选要显示的数据字段</h2>
+        <div style="width:200px;float:left;overflow:auto;" data-bind="autoheight:172">
+            <ul data-bind="easyuiTree:searchEdit.columntree2"></ul>
+        </div>  
+        <div style="float:left;overflow:auto" data-bind="autoheight:172,autowidth:405">
+            <table class="grid">
+                <thead>
+                    <tr>
+				        <th style="width:50px">字段</th>
+                        <th style="width:100px">题头</th>
+                        <th style="width:30px">隐藏</th>
+                        <th style="width:30px">排序</th>
+                        <th style="width:50px">对齐</th>
+                        <th style="width:40px">宽度</th>
+                        <th style="width:50px">格式化</th>
+                        <th style="width:50px">编辑器</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach:form.columns">
+                    <tr data-bind="attr:{id:$index}">
+                        <td data-bind="text:field" style="text-align:left"></td>
+                        <td><input type="text" class="z-txt" data-bind="value:title" /></td>
+                        <td><input type="checkbox" data-bind="checked:hidden"/></td>
+                        <td><input type="checkbox" data-bind="checked:sortable"/></td>
+                        <td><select class="z-txt"  data-bind="options:$root.data.align,value:align" ></select></td>
+                        <td><input type="text" class="z-txt" data-bind="value:width" /></td>
+                        <td><select class="z-txt"  data-bind="options:$root.data.formatter,optionsText:'text',optionsValue:'value',value:formatter" ></select></td>
+                        <td><select class="z-txt"  data-bind="options:$root.data.editor,optionsText:'text',optionsValue:'value',value:editor" ></select></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>  
+    </div>
+
+     <div id="step-3" class="step">
+        <h2 class="StepTitle">第三步 其它设置</h2>
+
+        <div class="container_12">
+            <div class="grid_1 lbl">业务区域</div>
+            <div class="grid_2 val"><input type="text" class="z-txt" data-bind="value:form.area"/></div>
+
+            <div class="clear"></div>
+
+            <div class="grid_1 lbl">控制器名称</div>
+            <div class="grid_2 val"><input type="text" class="z-txt" data-bind="value:form.controller"/></div>
+
+            <div class="clear"></div>
+
+            <div class="grid_1 lbl">生成路径</div>
+            <div class="grid_2 val"><input type="text" class="z-txt" data-bind="value:form.path"/></div>
+        </div>
+    </div>
+</script>
+
+<script id="template-search" type="text/html">
+    <ul>
+        <li><a href="#step-1">
+            <label class="stepNumber">1</label>
+            <span class="stepDesc">设置条件部<br />
+                <small>定义查询条件</small>
+            </span>
+        </a></li>
+        <li><a href="#step-2">
+            <label class="stepNumber">2</label>
+            <span class="stepDesc">设置数据列<br />
+                <small>定义查询显示的数据字段</small>
+            </span>
+        </a></li>
+        <li><a href="#step-3">
+            <label class="stepNumber">3</label>
+            <span class="stepDesc">其它设置<br />
+                <small>修改其它代码生成设置</small>
+            </span>
+        </a></li>
+    </ul>
+
+    <div id="step-1" class="step">
+        <h2 class="StepTitle">第一步 请勾选要查询的字段</h2>
+        <div>  
+            <div style="width:200px;float:left;overflow:auto;" data-bind="autoheight:172">
+                    <ul data-bind="easyuiTree:searchEdit.columntree"></ul>
+            </div>  
+            <div style="float:left;overflow:auto" data-bind="autoheight:172,autowidth:405">
+                <table class="grid">
+                    <thead>
+                        <tr>
+				            <th style="width:50px">字段</th>
+                            <th style="width:120px">显示名称</th>
+                            <th style="width:120px">控件类型</th>
+				            @*<th >参数</th>*@
+                            <th style="width:80px">查询逻辑</th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach:form.conditions">
+                        <tr data-bind="attr:{id:$index}">
+                            <td data-bind="text:field" style="text-align:left"></td>
+                            <td><input type="text" class="z-txt" data-bind="value:title"/></td>
+                            <td><select class="z-txt"  data-bind="options:$root.data.input,value:type"></select></td>
+                            @*<td><input type="text" class="z-txt" data-bind="value:options"/></td>*@
+                            <td><select class="z-txt"  data-bind="options:$root.data.compare,value:cp"></select></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>  
+        </div>
+    </div>
+    <div id="step-2" class="step">
+        <h2 class="StepTitle">第二步 请勾选要显示的数据字段</h2>
+        <div style="width:200px;float:left;overflow:auto;" data-bind="autoheight:172">
+            <ul data-bind="easyuiTree:searchEdit.columntree2"></ul>
+        </div>  
+        <div style="float:left;overflow:auto" data-bind="autoheight:172,autowidth:405">
+            <table class="grid">
+                <thead>
+                    <tr>
+				        <th style="width:50px">字段</th>
+                        <th style="width:100px">题头</th>
+                        <th style="width:30px">隐藏</th>
+                        <th style="width:30px">排序</th>
+                        <th style="width:50px">对齐</th>
+                        <th style="width:40px">宽度</th>
+                        <th style="width:50px">格式化</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach:form.columns">
+                    <tr data-bind="attr:{id:$index}">
+                        <td data-bind="text:field" style="text-align:left"></td>
+                        <td><input type="text" class="z-txt" data-bind="value:title" /></td>
+                        <td><input type="checkbox" data-bind="checked:hidden"/></td>
+                        <td><input type="checkbox" data-bind="checked:sortable"/></td>
+                        <td><select class="z-txt"  data-bind="options:$root.data.align,value:align" ></select></td>
+                        <td><input type="text" class="z-txt" data-bind="value:width" /></td>
+                        <td><select class="z-txt"  data-bind="options:$root.data.formatter,optionsText:'text',optionsValue:'value',value:formatter" ></select></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>  
+    </div>
+
+     <div id="step-3" class="step">
+        <h2 class="StepTitle">第三步 其它设置</h2>
+
+        <div class="container_12">
+            <div class="grid_1 lbl">业务区域</div>
+            <div class="grid_2 val"><input type="text" class="z-txt" data-bind="value:form.area"/></div>
+
+            <div class="clear"></div>
+
+            <div class="grid_1 lbl">控制器名称</div>
+            <div class="grid_2 val"><input type="text" class="z-txt" data-bind="value:form.controller"/></div>
+
+            <div class="clear"></div>
+
+            <div class="grid_1 lbl">生成路径</div>
+            <div class="grid_2 val"><input type="text" class="z-txt" data-bind="value:form.path"/></div>
+        </div>
+    </div>
+</script>
+
+<script id="template-edit" type="text/html">
+    <ul>
+        <li><a href="#step-1">
+            <label class="stepNumber">1</label>
+            <span class="stepDesc">设置主表编辑区<br />
+                <small>定义主表编辑字段</small>
+            </span>
+        </a></li>
+        <li><a href="#step-2">
+            <label class="stepNumber">2</label>
+            <span class="stepDesc">设置明细数据页签<br />
+                <small>定义明细表及页签</small>
+            </span>
+        </a></li>
+        <li><a href="#step-3">
+            <label class="stepNumber">3</label>
+            <span class="stepDesc">其它设置<br />
+                <small>修改其它代码生成设置</small>
+            </span>
+        </a></li>
+    </ul>
+
+    <div id="step-1" class="step">
+        <h2 class="StepTitle">第一步 请勾选要编辑的字段</h2>
+        <div>  
+            <div style="width:200px;float:left;overflow:auto;" data-bind="autoheight:172">
+                    <ul data-bind="easyuiTree:searchEdit.columntree"></ul>
+            </div>  
+            <div style="float:left;overflow:auto" data-bind="autoheight:172,autowidth:405">
+                <table class="grid">
+                    <thead>
+                        <tr>
+				            <th style="width:20%">字段</th>
+                            <th style="width:40%">标签名称</th>
+                            <th style="width:30%">控件类型</th>
+                            <th style="width:10%">只读</th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach:form.conditions">
+                        <tr data-bind="attr:{id:$index}">
+                            <td data-bind="text:field" style="text-align:left"></td>
+                            <td><input type="text" class="z-txt" data-bind="value:title"/></td>
+                            <td><select class="z-txt"  data-bind="options:$root.data.input,value:type" style="width:60%"></select><a href="#">高级</a></td>
+                            <td><input type="checkbox" data-bind="checked:readonly"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>  
+        </div>
+    </div>
+    <div id="step-2" class="step">
+        <h2 class="StepTitle">第二步 请设置页面中的tab页签</h2>
+         
+        <div style="float:left;overflow:auto;width:150px;" data-bind="autoheight:172">
+            <a href="#" class="buttonNext" style="float:left;margin:5px 3px 5px 0" data-bind="click:edit.addTab">添加Tab页签</a>
+            <table class="grid">
+                <thead>
+                    <tr>
+                        <th style="width:30%">#</th>
+                        <th style="width:70%">名称</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach:form.tabs">
+                    <tr data-bind="attr:{id:$index}">
+                        <td><a href="#" data-bind="click:$parent.edit.removeTab">删除</a></td>
+                        <td><input type="text" class="z-txt" data-bind="value:title,click:$parent.edit.clickTab" style="width:90%"/></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>  
+
+         <div id="edit-tab-setting" style="float:left;overflow:auto;" data-bind="autoheight:172,autowidth:355,visible:edit.selectedTitle()!=null">
+ 
+        </div> 
+    </div>
+
+     <div id="step-3" class="step">
+        <h2 class="StepTitle">第三步 其它设置</h2>
+
+        <div class="container_12">
+            <div class="grid_1 lbl">业务区域</div>
+            <div class="grid_2 val"><input type="text" class="z-txt" data-bind="value:form.area"/></div>
+
+            <div class="clear"></div>
+
+            <div class="grid_1 lbl">控制器名称</div>
+            <div class="grid_2 val"><input type="text" class="z-txt" data-bind="value:form.controller"/></div>
+
+            <div class="clear"></div>
+
+            <div class="grid_1 lbl">生成路径</div>
+            <div class="grid_2 val"><input type="text" class="z-txt" data-bind="value:form.path"/></div>
+        </div>
+    </div>
+</script>
+
+<script type="text/html" id="template-edit-tab-setting">
+     <div style="padding:8px;clear:both">
+        <span>页签类型 </span>
+        <select class="z-txt" style="padding:0;height:22px;" data-bind="value:edit.selectedTab.type">
+            <option value="empty">empty</option>
+            <option value="grid">grid</option>
+            <option value="form">form</option>
+        </select> 
+
+        <span data-bind="visible:edit.selectedTab.type()!='empty'"> 数据表 </span>
+        <select class="z-txt" style="padding:0;height:22px;" data-bind="options:data.table,optionsText:'text',optionsValue:'id',value:edit.selectedTab.subtable,visible:edit.selectedTab.type()!='empty'"></select>
+
+        <span data-bind="visible:edit.selectedTab.type()!='empty'">与主表的关联</span>
+        <select class="z-txt" style="padding:0;height:22px;" data-bind="options:data.tablekey,value:edit.selectedTab.relationship,visible:edit.selectedTab.type()!='empty'"></select>
+    </div>
+
+    <div style="width:180px;float:left;overflow:auto;margin-right:-18px;" data-bind="autoheight:212,visible:edit.selectedTab.type()!='empty'">
+        <ul data-bind="easyuiTree:edit.columntree2"></ul>
+    </div> 
+    
+    <div style="float:right;overflow:auto;" data-bind="autoheight:210,autowidth:535,visible:edit.selectedTab.type()!='empty'">
+        <table class="grid">
+            <thead>
+                <tr>
+				    <th style="width:50px">字段</th>
+                    <th style="width:100px">题头</th>
+                    <th style="width:30px" data-bind="visible:edit.selectedTab.type()=='grid'">隐藏</th>
+                    <th style="width:30px" data-bind="visible:edit.selectedTab.type()=='grid'">排序</th>
+                    <th style="width:50px" data-bind="visible:edit.selectedTab.type()=='grid'">对齐</th>
+                    <th style="width:40px" data-bind="visible:edit.selectedTab.type()=='grid'">宽度</th>
+                    <th style="width:50px" data-bind="visible:edit.selectedTab.type()=='grid'">格式化</th>
+                    <th style="width:50px" data-bind="visible:edit.selectedTab.type()=='grid'">编辑器</th>
+                    <th style="width:50px" data-bind="visible:edit.selectedTab.type()=='form'">控件类型</th>
+                    <th style="width:10px" data-bind="visible:edit.selectedTab.type()=='form'">只读</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach:edit.selectedTab.columns">
+                <tr data-bind="attr:{id:$index}">
+                    <td data-bind="text:field" style="text-align:left"></td>
+                    <td><input type="text" class="z-txt" data-bind="value:title" /></td>
+                    <td data-bind="visible:$parent.edit.selectedTab.type()=='grid'"><input type="checkbox" data-bind="checked:hidden"/></td>
+                    <td data-bind="visible:$parent.edit.selectedTab.type()=='grid'"><input type="checkbox" data-bind="checked:sortable"/></td>
+                    <td data-bind="visible:$parent.edit.selectedTab.type()=='grid'"><select class="z-txt"  data-bind="options:$root.data.align,value:align" ></select></td>
+                    <td data-bind="visible:$parent.edit.selectedTab.type()=='grid'"><input type="text" class="z-txt" data-bind="value:width" /></td>
+                    <td data-bind="visible:$parent.edit.selectedTab.type()=='grid'"><select class="z-txt"  data-bind="options:$root.data.formatter,optionsText:'text',optionsValue:'value',value:formatter" ></select></td>
+                    <td data-bind="visible:$parent.edit.selectedTab.type()=='grid'"><select class="z-txt"  data-bind="options:$root.data.editor,optionsText:'text',optionsValue:'value',value:editor" ></select></td>
+                    <td data-bind="visible:$parent.edit.selectedTab.type()=='form'"><select class="z-txt"  data-bind="options:$root.data.input,value:type"></select></td>
+                    <td data-bind="visible:$parent.edit.selectedTab.type()=='form'"><input type="checkbox" data-bind="checked:readonly"/></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</script>
+ 

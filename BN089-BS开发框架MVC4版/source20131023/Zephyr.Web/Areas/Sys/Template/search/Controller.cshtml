@@ -1,0 +1,90 @@
+﻿@{
+    var area = Model.Area;
+    var condtions = Model.Data["conditions"];
+    var columns = Model.Data["columns"];
+    var controller = Model.Data["controller"];
+    var count1 = condtions.Count;
+    var count2 = columns.Count;
+    var PrimaryKey = Model.PrimaryKeys[0];
+}
+using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Net.Http;
+using System.Web.Http;
+using System.Web.Mvc;
+using Zephyr.Core;
+using Zephyr.Models;
+
+namespace Zephyr.Areas.@(area).Controllers
+{
+    public class @(controller)Controller : Controller
+    {
+        public ActionResult Index()
+        {
+            var model = new
+            {
+                urls = new {
+                    query = "/api/@area/@controller",
+                    remove = "/api/@area/@controller/",
+                    billno = "/api/@area/@controller/getnewbillno",
+                    audit = "/api/@area/@controller/audit/",
+                    edit = "/@area/@controller/edit/"
+                },
+                resx = new {
+                    detailTitle = "单据明细",
+                    noneSelect = "请先选择一条单据！",
+                    deleteConfirm = "确定要删除选中的单据吗？",
+                    deleteSuccess = "删除成功！",
+                    auditSuccess = "单据已审核！"
+                },
+                dataSource = new{
+                    //dsPurpose = new sys_codeService().GetValueTextListByType("Purpose")
+                },
+                form = new{
+                @for (var i = 0; i < count1; i++)
+                {
+                @:    @condtions[i].field = "" @if (i < count1 - 1) {@(",")}
+                }
+                },
+                idField="@PrimaryKey"
+            };
+
+            return View(model);
+        }
+    }
+
+    public class @(controller)ApiController : ApiController
+    {
+        @*public List<dynamic> GetDoPerson(string q)
+        {
+            var @(controller)Service = new mms_@(controller)Service();
+            var pQuery = ParamQuery.Instance().Select("top 10 DoPerson").AndWhere("DoPerson", q, Cp.StartWithPY);
+            return @(controller)Service.GetDynamicList(pQuery);
+        }*@
+
+        public string GetNewBillNo()
+        {
+            return new @(Model.TableName)Service.GetNewKey("@PrimaryKey", "dateplus");
+        }
+
+        public dynamic Get(RequestWrapper query)
+        {
+            query.LoadSettingXmlString(@@"
+<settings defaultOrderBy='@PrimaryKey'>
+    <select>*</select>
+    <from>@Model.TableName</from>
+    <where defaultForAll='true' defaultCp='equal' defaultIgnoreEmpty='true' >
+    @foreach(var item in condtions)
+    {
+        <field name='@item.field'@Raw("\t\t")cp='@item.cp'></field>   
+    }
+    </where>
+</settings>");
+            var service = new @(Model.TableName)Service();
+            var pQuery = query.ToParamQuery();
+            var result = service.GetDynamicListWithPaging(pQuery);
+            return result;
+        }
+    }
+}

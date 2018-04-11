@@ -1,0 +1,161 @@
+﻿@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+    <script src="~/Areas/Psi/ViewModels/com.psi.js"></script>
+    <script src="~/Areas/Psi/ViewModels/com.viewModel.edit.js"></script>
+    <script type="text/javascript">
+        using('numberbox');
+        var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+            var viewModel = function (data) {
+                com.viewModel.edit.apply(this, arguments);
+                var self = this;
+                this.grid.OnAfterCreateEditor = function(editors){
+                    com.readOnlyHandler("input")(editors["ContractNo"].target,true);
+                };
+                this.grid.toolbar = [
+                    {
+                    text: '新增',
+                    iconCls: 'icon-add1',
+                    handler: function () {
+                        com.ajax({
+                            type: 'GET',
+                            url: '/api/mms/repair/getnewrowid/1',
+                            success: function (d) {
+                                var row = $.extend({ CustomerId: self.scrollKeys.current(), ContractNo: d }, self.defaultRow);
+                                self.gridEdit.addnew(row);
+                            }
+                        });}
+                }, '-',
+                {
+                    text: '删除',
+                    iconCls: 'icon-remove',
+                    handler: self.gridEdit.deleterow
+                }
+                ];
+
+                this.grid.size = { w: 6, h: 151 };
+                //this.grid.toolbar.push("-");
+                //this.grid.toolbar.push(com.psi.selectGoodsButton(this, '/api/psi/goods'));
+                //this.grid.OnAfterCreateEditor = com.psi.bindCalcTotalMoney(this, "Num", "UnitPrice", "Money", "TotalMoney");
+                //var self = this;
+                this.saveClick = function () {
+                    var post = {};
+                    post.form = com.formChanges(self.form, data.form, self.setting.postFormKeys);
+                    post.list = self.gridEdit.getChanges();
+                    if ((self.gridEdit.ended() && com.formValidate()) && (post.form._changed || post.list._changed)) {
+                        com.ajax({
+                            url: self.urls.edit,
+                            data: ko.toJSON(post),
+                            success: function (d) {
+                                com.message('success', self.resx.editSuccess);
+                                ko.mapping.fromJS(post.form, {}, data.form); //更新旧值
+                                self.gridEdit.accept();
+                            }
+                        });
+                    }
+                };
+            };
+            ko.bindingViewModel(new viewModel(data));
+    </script>
+}
+
+<div class="z-toolbar">
+    <a id="a_save" href="#" plain="true" class="easyui-linkbutton" icon="icon-save" data-bind="click:saveClick" title="保存">保存</a>
+    <a id="a_undo" href="#" plain="true" class="easyui-linkbutton" icon="icon-undo" data-bind="click:rejectClick" title="撤消">撤消</a>
+    <a id="a_audit" href="#" plain="true" class="easyui-linkbutton" icon="icon-folder_key" data-bind="click:auditClick" title="审核">审核</a>
+    <a id="a_printer" href="#" plain="true" class="easyui-linkbutton" icon="icon-printer" title="打印" data-bind="click:printClick">打印</a>
+    <div class="datagrid-btn-separator"></div>
+    <a id="a_other" href="#" class="easyui-splitbutton" data-options="menu:'#divother',iconCls:'icon-application_go'" title="其他">其他</a>
+    <div class="datagrid-btn-separator"></div>
+    <a id="a_first" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_first" data-bind="click:firstClick,linkbuttonEnable:scrollKeys.firstEnable" title="第一条"></a>
+    <a id="a_previous" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_previous" data-bind="click:previousClick,linkbuttonEnable:scrollKeys.previousEnable" title="上一条"></a>
+    <a id="a_next" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_next" data-bind="click:nextClick,linkbuttonEnable:scrollKeys.nextEnable" title="下一条"></a>
+    <a id="a_last" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_last" data-bind="click:lastClick,linkbuttonEnable:scrollKeys.lastEnable" title="最后一条"></a>
+</div>
+
+<div id="divother" style="width: 100px; display: none;">
+    <div id="a_add" data-options="iconCls:'icon-add'">新增</div>
+    <div id="a_del" data-options="iconCls:'icon-cross'">删除</div>
+    <div id="a_refresh" data-options="iconCls:'icon-arrow_refresh'">刷新</div>
+</div>
+
+<div id="master" class="container_12" data-bind="inputwidth:0.9">
+    <div class="grid_1 lbl">客户编码</div>
+    <div class="grid_3 val">
+        <input type="text" data-bind="value:form.Id,readOnly:true" class="z-txt readonly" /></div>
+    <div class="grid_1 lbl">客户名称</div>
+    <div class="grid_3 val">
+        <input type="text" data-bind="value:form.Name" class="z-txt" /></div>
+
+    <div class="grid_1 lbl">客户类别 </div>
+    <div class="grid_3 val required">
+        <input type="text" data-bind="value:form.Catagory" class="z-txt" /></div>
+
+    <div class="clear"></div>
+
+    <div class="grid_1 lbl">负责人</div>
+    <div class="grid_3 val ">
+        <input type="text" data-bind="value:form.ChargePerson" class="z-txt easyui-validatebox" /></div>
+    <div class="grid_1 lbl required">联系电话</div>
+    <div class="grid_3 val">
+        <input type="text" data-bind="value:form.Tel" required="true" class="z-txt" /></div>
+    <div class="grid_1 lbl required">联系地址</div>
+    <div class="grid_3 val">
+        <input type="text" data-bind="value:form.Addr" class="z-txt" /></div>
+    <div class="clear"></div>
+
+    <div class="grid_1 lbl required">创建日期 </div>
+    <div class="grid_3 val">
+        <input type="text" data-bind="dateboxValue:form.CreateDate" class="easyui-datebox z-txt" required="true" /></div>
+    <div class="grid_1 lbl">备注</div>
+    <div class="grid_3 val">
+        <input type="text" data-bind="value:form.Remark" class="z-txt" /></div>
+
+    <div class="clear"></div>
+</div>
+
+<div id="tt" class="easyui-tabs">
+    <div title="签约合同">
+        <table data-bind="datagrid:grid">
+            <thead>
+                <tr>
+                    <th field="ContractNo" sortable="true" align="left" width="80" editor="text">合同编码   </th>
+                    <th field="ContractName" sortable="true" align="left" width="150" editor="text">合同名称     </th>
+                    <th field="Catagory" sortable="true" align="left" width="100" editor="text">类别   </th>
+                    <th field="ContractState" sortable="true" align="left" width="100" editor="text">状态   </th>
+                    <th field="PayKind" sortable="true" align="left" width="100" editor="text">付款方式   </th>
+                    <th field="ContractAmount" sortable="true" align="right" width="70" editor="{type: 'numberbox',options:{min: 0, precision: 2}}" formatter="com.formatMoney">合同金额       </th>
+                    <th field="PrePay" sortable="true" align="right" width="70" editor="{type: 'numberbox',options:{min: 0, precision: 2}}" formatter="com.formatMoney">预付       </th>
+                    <th field="Payed" sortable="true" align="right" width="70" editor="{type: 'numberbox',options:{min: 0, precision: 2}}" formatter="com.formatMoney">已付       </th>
+                    <th field="NoPay" sortable="true" align="right" width="70" editor="{type: 'numberbox',options:{min: 0, precision: 2}}" formatter="com.formatMoney">未付       </th>
+                    <th field="BeginDate" sortable="true" align="left" width="80" editor="{type:'datebox'}" formtter="com.formatDate">合同开始日期   </th>
+                    <th field="Deadline" sortable="true" align="left" width="80" editor="{type: 'numberbox',options:{min: 0}}">合同期限(月)   </th>
+                    <th field="Remark" sortable="true" align="left" width="200" editor="text">备注       </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div title="跟踪履历" class="hide" style="padding-top: 2px;">
+        <table data-bind1="datagrid1:grid">
+            <thead>
+                <tr>
+                    <th field="BillNo" hidden="true"></th>
+                    <th field="RowId" hidden="true"></th>
+                    <th field="GoodNo" sortable="true" align="left" width="80" editor="text">货物编码   </th>
+                    <th field="Name" sortable="true" align="left" width="150">货物名称     </th>
+                    <th field="Catagory" sortable="true" align="left" width="100">类别   </th>
+                    <th field="Brand" sortable="true" align="left" width="100">品牌   </th>
+                    <th field="Model" sortable="true" align="left" width="100">型号规格   </th>
+                    <th field="Unit" sortable="true" align="left" width="80" editor="text">计量单位   </th>
+                    <th field="Num" sortable="true" align="right" width="70" editor="{type: 'numberbox',options:{min: 0}}">接收数量       </th>
+                    <th field="UnitPrice" sortable="true" align="right" width="70" editor="{type: 'numberbox',options:{min: 0, precision: 2}}" formatter="com.formatMoney">单价       </th>
+                    <th field="Money" sortable="true" align="right" width="70" editor="{type: 'numberbox',options:{min: 0, precision: 2}}" formatter="com.formatMoney">金额       </th>
+                    <th field="Remark" sortable="true" align="left" width="200" editor="text">备注       </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>

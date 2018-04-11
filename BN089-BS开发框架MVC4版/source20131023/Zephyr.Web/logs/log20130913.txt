@@ -1,0 +1,1230 @@
+2013-09-13 17:30:46,783 [7972] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 17:30:46,815 [7972] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 17:30:46,822 [7972] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 17:30:46,823 [7972] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 17:30:54,049 [11256] DEBUG Servicesys_user - 获取实体对象
+2013-09-13 17:30:54,067 [11256] DEBUG Sys - select sys_user.* from sys_user where  UserCode =  'lhs'and Password =  'lhs'and IsEnable =  'True'
+2013-09-13 17:30:54,156 [11256] DEBUG Sys - 
+update sys_user
+set LoginCount = isnull(LoginCount,0) + 1
+   ,LastLoginDate = getdate()
+where UserCode = 'lhs' 
+2013-09-13 17:30:54,207 [11256] DEBUG Sys - insert into sys_loginHistory([UserCode],[UserName],[HostName],[HostIP],[LoginCity],[LoginDate]) values('lhs','刘会胜','LHS-PC','ILData[0]/localhost','福建省厦门市','2013-09-13 17:30:54')
+2013-09-13 17:30:54,210 [11256] DEBUG Servicemms_project - 获取实体对象
+2013-09-13 17:30:54,211 [11256] DEBUG Mms - select mms_project.* from mms_project where  ProjectCode =  '201306030001'
+2013-09-13 17:30:54,409 [12732] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-09-13 17:30:58,117 [11648] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-09-13 17:31:09,235 [12392] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/send/Index','/Mms/send')
+2013-09-13 17:31:09,250 [12392] DEBUG Servicemms_warehouse - 获取动态列表
+2013-09-13 17:31:09,251 [12392] DEBUG Mms - select WarehouseCode as value,WarehouseName as text from mms_warehouse where  ProjectCode =  '201306030001'
+2013-09-13 17:31:09,253 [12392] DEBUG Servicesys_code - 获取动态列表
+2013-09-13 17:31:09,253 [12392] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'Pricing'
+2013-09-13 17:31:09,254 [12392] DEBUG Servicesys_code - 获取动态列表
+2013-09-13 17:31:09,254 [12392] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'MaterialUse'
+2013-09-13 17:31:10,546 [12392] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/send'
+2013-09-13 17:31:10,549 [12392] DEBUG Sys - 
+select *
+from sys_roleMenuColumnMap 
+where MenuCode = '1001'
+and RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+2013-09-13 17:31:10,554 [12392] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/send'
+2013-09-13 17:31:10,555 [12392] DEBUG Sys - 
+select A.*
+from sys_button A
+inner join sys_roleMenuButtonMap B on B.MenuCode = '1001' and B.ButtonCode = A.ButtonCode
+where RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+order by ButtonSeq
+2013-09-13 17:31:12,406 [14192] DEBUG Servicemms_send - 获取动态列表
+2013-09-13 17:31:12,407 [14192] DEBUG Mms - select top 20 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName,E.MerchantsName as PickUnitName
+     from 
+        mms_send A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants E on E.MerchantsCode=A.PickUnit
+     where  A.ProjectCode =  '201306030001' order by A.BillNo
+2013-09-13 17:31:12,484 [14192] DEBUG Mms - select count(*) from ( select 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName,E.MerchantsName as PickUnitName
+     from 
+        mms_send A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants E on E.MerchantsCode=A.PickUnit
+     where  A.ProjectCode =  '201306030001' ) tb_temp
+2013-09-13 17:31:16,519 [12392] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/send/edit')
+2013-09-13 17:31:16,525 [12392] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:31:16,526 [12392] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 17:31:16,531 [12392] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 17:31:16,557 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:16,559 [12392] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 17:31:16,561 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:16,561 [12392] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307110001' order by BillNo desc
+2013-09-13 17:31:16,563 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:16,563 [12392] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307110001' order by BillNo
+2013-09-13 17:31:16,565 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:16,565 [12392] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 17:31:17,230 [12392] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 17:31:17,231 [12392] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307110001'
+2013-09-13 17:31:17,232 [12392] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 17:31:17,232 [12392] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307110001'
+2013-09-13 17:31:17,233 [12392] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:31:17,233 [12392] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 17:31:17,235 [12392] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:31:17,235 [12392] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 17:31:17,235 [12392] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 17:31:17,236 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:17,236 [12392] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 17:31:17,236 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:17,236 [12392] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307110001' order by BillNo desc
+2013-09-13 17:31:17,237 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:17,237 [12392] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307110001' order by BillNo
+2013-09-13 17:31:17,237 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:17,237 [12392] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 17:31:17,238 [12392] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 17:31:17,238 [12392] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307110001'
+2013-09-13 17:31:17,238 [12392] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 17:31:17,238 [12392] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307110001'
+2013-09-13 17:31:17,239 [12392] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:31:17,239 [12392] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 17:31:24,109 [11648] DEBUG Mms - update mms_send set [ApproveState] = 'reject', [ApproveRemark] = 'aaabbaaa', [ApprovePerson] = '刘会胜', [ApproveDate] = '2013-09-13 17:31:24' where  BillNo =  '201307110001'
+2013-09-13 17:31:24,120 [11648] DEBUG Mms - 
+select A.*,B.WarehouseCode,B.ProjectCode 
+from mms_sendDetail A 
+left join mms_send B on B.BillNo = A.BillNo 
+where A.BillNo='201307110001'
+2013-09-13 17:31:26,922 [8544] DEBUG Servicemms_send - 编辑记录
+2013-09-13 17:31:26,954 [8544] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 17:31:26,961 [8544] DEBUG Mms - update mms_send set [WarehouseCode] = '2013060300022', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 17:31:26' where  BillNo =  '201307110001'
+2013-09-13 17:31:29,615 [14192] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:31:29,615 [14192] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230011'
+2013-09-13 17:31:29,616 [14192] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 17:31:29,616 [14192] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:29,616 [14192] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 17:31:29,616 [14192] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:29,616 [14192] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307230011' order by BillNo desc
+2013-09-13 17:31:29,617 [14192] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:29,617 [14192] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307230011' order by BillNo
+2013-09-13 17:31:29,617 [14192] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:29,617 [14192] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 17:31:29,618 [14192] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 17:31:29,618 [14192] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307230011'
+2013-09-13 17:31:29,618 [14192] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 17:31:29,619 [14192] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307230011'
+2013-09-13 17:31:29,619 [14192] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:31:29,619 [14192] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230011'
+2013-09-13 17:31:31,301 [11648] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:31:31,302 [11648] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 17:31:31,302 [11648] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 17:31:31,303 [11648] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:31,303 [11648] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 17:31:31,303 [11648] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:31,303 [11648] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307110001' order by BillNo desc
+2013-09-13 17:31:31,304 [11648] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:31,304 [11648] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307110001' order by BillNo
+2013-09-13 17:31:31,304 [11648] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:31,304 [11648] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 17:31:31,305 [11648] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 17:31:31,305 [11648] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307110001'
+2013-09-13 17:31:31,306 [11648] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 17:31:31,306 [11648] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307110001'
+2013-09-13 17:31:31,306 [11648] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:31:31,307 [11648] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 17:31:34,742 [12392] DEBUG Servicemms_send - 编辑记录
+2013-09-13 17:31:34,743 [12392] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 17:31:34,744 [12392] DEBUG Mms - update mms_send set [WarehouseCode] = '201306030002', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 17:31:34' where  BillNo =  '201307110001'
+2013-09-13 17:31:35,881 [12392] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:31:35,881 [12392] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230011'
+2013-09-13 17:31:35,882 [12392] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 17:31:35,882 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:35,882 [12392] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 17:31:35,882 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:35,883 [12392] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307230011' order by BillNo desc
+2013-09-13 17:31:35,883 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:35,883 [12392] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307230011' order by BillNo
+2013-09-13 17:31:35,883 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:35,883 [12392] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 17:31:35,884 [12392] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 17:31:35,884 [12392] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307230011'
+2013-09-13 17:31:35,885 [12392] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 17:31:35,885 [12392] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307230011'
+2013-09-13 17:31:35,885 [12392] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:31:35,886 [12392] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230011'
+2013-09-13 17:31:37,471 [9516] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:31:37,471 [9516] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 17:31:37,472 [9516] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 17:31:37,472 [9516] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:37,472 [9516] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 17:31:37,473 [9516] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:37,473 [9516] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307110001' order by BillNo desc
+2013-09-13 17:31:37,473 [9516] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:37,473 [9516] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307110001' order by BillNo
+2013-09-13 17:31:37,473 [9516] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:37,474 [9516] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 17:31:37,474 [9516] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 17:31:37,474 [9516] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307110001'
+2013-09-13 17:31:37,474 [9516] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 17:31:37,475 [9516] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307110001'
+2013-09-13 17:31:37,475 [9516] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:31:37,475 [9516] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 17:31:40,483 [8544] DEBUG Servicemms_sendDetail - 获取新主键
+2013-09-13 17:31:40,485 [8544] DEBUG Mms - select isnull(max(RowId),0) from mms_sendDetail  where 1 = 1  and  BillNo =  '201307110001'
+2013-09-13 17:31:50,369 [14192] DEBUG Servicemms_send - 编辑记录
+2013-09-13 17:31:50,370 [14192] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307110001'and RowId =  '1'
+2013-09-13 17:31:50,381 [14192] DEBUG Mms - insert into mms_sendDetail([BillNo],[RowId],[MaterialCode],[Unit],[UnitPrice],[Num],[RemainNum],[Money],[UpdatePerson],[UpdateDate],[CreatePerson],[CreateDate]) values('201307110001','1','1','2','3','4','5','6','刘会胜','2013-09-13 17:31:50','刘会胜','2013-09-13 17:31:50')
+2013-09-13 17:31:53,193 [14192] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:31:53,193 [14192] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-13 17:31:53,194 [14192] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 17:31:53,194 [14192] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:53,194 [14192] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 17:31:53,194 [14192] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:53,194 [14192] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307040001' order by BillNo desc
+2013-09-13 17:31:53,195 [14192] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:53,195 [14192] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307040001' order by BillNo
+2013-09-13 17:31:53,195 [14192] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:53,195 [14192] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 17:31:53,196 [14192] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 17:31:53,196 [14192] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307040001'
+2013-09-13 17:31:53,196 [14192] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 17:31:53,197 [14192] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307040001'
+2013-09-13 17:31:53,197 [14192] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:31:53,197 [14192] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-13 17:31:54,429 [11256] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:31:54,429 [11256] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 17:31:54,430 [11256] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 17:31:54,430 [11256] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:54,430 [11256] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 17:31:54,431 [11256] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:54,431 [11256] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307110001' order by BillNo desc
+2013-09-13 17:31:54,431 [11256] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:54,432 [11256] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307110001' order by BillNo
+2013-09-13 17:31:54,432 [11256] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:31:54,432 [11256] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 17:31:54,432 [11256] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 17:31:54,433 [11256] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307110001'
+2013-09-13 17:31:54,433 [11256] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 17:31:54,433 [11256] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307110001'
+2013-09-13 17:31:54,434 [11256] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:31:54,434 [11256] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 17:32:00,640 [9516] DEBUG Servicemms_send - 编辑记录
+2013-09-13 17:32:00,641 [9516] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307110001'and RowId =  '1'
+2013-09-13 17:32:00,644 [9516] DEBUG Mms - update mms_sendBatches set [MaterialCode] = '1234', [Money] = '22', [Num] = '3', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 17:32:00' where  BillNo =  '201307110001'and RowId =  '1'
+2013-09-13 17:32:03,131 [12392] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:32:03,131 [12392] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-13 17:32:03,132 [12392] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 17:32:03,132 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:32:03,132 [12392] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 17:32:03,133 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:32:03,133 [12392] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307040001' order by BillNo desc
+2013-09-13 17:32:03,133 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:32:03,133 [12392] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307040001' order by BillNo
+2013-09-13 17:32:03,134 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:32:03,134 [12392] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 17:32:03,134 [12392] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 17:32:03,134 [12392] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307040001'
+2013-09-13 17:32:03,135 [12392] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 17:32:03,135 [12392] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307040001'
+2013-09-13 17:32:03,135 [12392] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:32:03,136 [12392] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-13 17:32:05,045 [12392] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:32:05,046 [12392] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 17:32:05,046 [12392] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 17:32:05,047 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:32:05,047 [12392] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 17:32:05,047 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:32:05,047 [12392] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307110001' order by BillNo desc
+2013-09-13 17:32:05,047 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:32:05,048 [12392] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307110001' order by BillNo
+2013-09-13 17:32:05,048 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:32:05,048 [12392] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 17:32:05,048 [12392] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 17:32:05,049 [12392] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307110001'
+2013-09-13 17:32:05,049 [12392] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 17:32:05,049 [12392] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307110001'
+2013-09-13 17:32:05,050 [12392] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:32:05,050 [12392] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 17:32:12,201 [12392] DEBUG Servicemms_send - 编辑记录
+2013-09-13 17:32:12,202 [12392] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 17:32:12,205 [12392] DEBUG Mms - update mms_send set [ApproveDate] = '2013-09-04', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 17:32:12' where  BillNo =  '201307110001'
+2013-09-13 17:32:13,836 [14208] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:32:13,837 [14208] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-13 17:32:13,837 [14208] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 17:32:13,838 [14208] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:32:13,838 [14208] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 17:32:13,838 [14208] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:32:13,838 [14208] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307040001' order by BillNo desc
+2013-09-13 17:32:13,838 [14208] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:32:13,839 [14208] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307040001' order by BillNo
+2013-09-13 17:32:13,839 [14208] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:32:13,839 [14208] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 17:32:13,840 [14208] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 17:32:13,840 [14208] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307040001'
+2013-09-13 17:32:13,840 [14208] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 17:32:13,841 [14208] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307040001'
+2013-09-13 17:32:13,841 [14208] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:32:13,841 [14208] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-13 17:32:15,728 [12392] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:32:15,729 [12392] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 17:32:15,729 [12392] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 17:32:15,730 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:32:15,730 [12392] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 17:32:15,730 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:32:15,730 [12392] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307110001' order by BillNo desc
+2013-09-13 17:32:15,730 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:32:15,731 [12392] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307110001' order by BillNo
+2013-09-13 17:32:15,731 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:32:15,731 [12392] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 17:32:15,731 [12392] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 17:32:15,732 [12392] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307110001'
+2013-09-13 17:32:15,732 [12392] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 17:32:15,732 [12392] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307110001'
+2013-09-13 17:32:15,733 [12392] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:32:15,733 [12392] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 17:32:22,699 [12392] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:32:22,700 [12392] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240020'
+2013-09-13 17:32:22,701 [12392] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 17:32:22,701 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:32:22,701 [12392] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 17:32:22,701 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:32:22,701 [12392] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307240020' order by BillNo desc
+2013-09-13 17:32:22,703 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:32:22,703 [12392] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307240020' order by BillNo
+2013-09-13 17:32:22,705 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:32:22,705 [12392] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 17:32:22,705 [12392] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 17:32:22,705 [12392] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307240020'
+2013-09-13 17:32:22,706 [12392] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 17:32:22,706 [12392] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307240020'
+2013-09-13 17:32:22,706 [12392] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:32:22,707 [12392] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240020'
+2013-09-13 17:32:47,249 [14192] DEBUG Servicemms_send - 编辑记录
+2013-09-13 17:32:47,250 [14192] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240020'
+2013-09-13 17:32:47,250 [14192] DEBUG Mms - update mms_send set [Purpose] = '123', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 17:32:47' where  BillNo =  '201307240020'
+2013-09-13 17:33:16,531 [14192] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:33:16,532 [14192] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240019'
+2013-09-13 17:33:16,533 [14192] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 17:33:16,533 [14192] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:16,533 [14192] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 17:33:16,533 [14192] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:16,533 [14192] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307240019' order by BillNo desc
+2013-09-13 17:33:16,535 [14192] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:16,535 [14192] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307240019' order by BillNo
+2013-09-13 17:33:16,537 [14192] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:16,537 [14192] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 17:33:16,537 [14192] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 17:33:16,538 [14192] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307240019'
+2013-09-13 17:33:16,538 [14192] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 17:33:16,538 [14192] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307240019'
+2013-09-13 17:33:16,539 [14192] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:33:16,539 [14192] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240019'
+2013-09-13 17:33:18,126 [11256] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:33:18,126 [11256] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240017'
+2013-09-13 17:33:18,127 [11256] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 17:33:18,127 [11256] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:18,127 [11256] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 17:33:18,128 [11256] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:18,128 [11256] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307240017' order by BillNo desc
+2013-09-13 17:33:18,129 [11256] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:18,130 [11256] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307240017' order by BillNo
+2013-09-13 17:33:18,131 [11256] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:18,131 [11256] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 17:33:18,132 [11256] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 17:33:18,132 [11256] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307240017'
+2013-09-13 17:33:18,133 [11256] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 17:33:18,133 [11256] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307240017'
+2013-09-13 17:33:18,134 [11256] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:33:18,134 [11256] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240017'
+2013-09-13 17:33:20,124 [11256] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:33:20,125 [11256] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240007'
+2013-09-13 17:33:20,126 [11256] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 17:33:20,126 [11256] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:20,126 [11256] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 17:33:20,126 [11256] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:20,127 [11256] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307240007' order by BillNo desc
+2013-09-13 17:33:20,128 [11256] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:20,128 [11256] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307240007' order by BillNo
+2013-09-13 17:33:20,130 [11256] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:20,130 [11256] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 17:33:20,131 [11256] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 17:33:20,131 [11256] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307240007'
+2013-09-13 17:33:20,132 [11256] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 17:33:20,132 [11256] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307240007'
+2013-09-13 17:33:20,133 [11256] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:33:20,133 [11256] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240007'
+2013-09-13 17:33:21,915 [11256] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:33:21,915 [11256] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240006'
+2013-09-13 17:33:21,916 [11256] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 17:33:21,916 [11256] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:21,916 [11256] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 17:33:21,916 [11256] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:21,917 [11256] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307240006' order by BillNo desc
+2013-09-13 17:33:21,918 [11256] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:21,918 [11256] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307240006' order by BillNo
+2013-09-13 17:33:21,919 [11256] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:21,920 [11256] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 17:33:21,920 [11256] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 17:33:21,920 [11256] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307240006'
+2013-09-13 17:33:21,921 [11256] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 17:33:21,922 [11256] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307240006'
+2013-09-13 17:33:21,922 [11256] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:33:21,923 [11256] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240006'
+2013-09-13 17:33:23,181 [12392] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:33:23,181 [12392] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230019'
+2013-09-13 17:33:23,182 [12392] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 17:33:23,182 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:23,182 [12392] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 17:33:23,182 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:23,182 [12392] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307230019' order by BillNo desc
+2013-09-13 17:33:23,184 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:23,184 [12392] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307230019' order by BillNo
+2013-09-13 17:33:23,185 [12392] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:23,186 [12392] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 17:33:23,186 [12392] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 17:33:23,186 [12392] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307230019'
+2013-09-13 17:33:23,187 [12392] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 17:33:23,187 [12392] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307230019'
+2013-09-13 17:33:23,188 [12392] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:33:23,188 [12392] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230019'
+2013-09-13 17:33:24,708 [14192] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:33:24,708 [14192] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240006'
+2013-09-13 17:33:24,709 [14192] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 17:33:24,709 [14192] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:24,709 [14192] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 17:33:24,709 [14192] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:24,710 [14192] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307240006' order by BillNo desc
+2013-09-13 17:33:24,710 [14192] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:24,710 [14192] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307240006' order by BillNo
+2013-09-13 17:33:24,711 [14192] DEBUG Servicemms_send - 获取字段
+2013-09-13 17:33:24,711 [14192] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 17:33:24,711 [14192] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 17:33:24,711 [14192] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307240006'
+2013-09-13 17:33:24,712 [14192] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 17:33:24,712 [14192] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307240006'
+2013-09-13 17:33:24,713 [14192] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 17:33:24,713 [14192] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240006'
+2013-09-13 17:33:27,089 [8544] DEBUG Servicemms_sendDetail - 获取新主键
+2013-09-13 17:33:27,090 [8544] DEBUG Mms - select isnull(max(RowId),0) from mms_sendDetail  where 1 = 1  and  BillNo =  '201307240006'
+2013-09-13 17:33:35,242 [12392] DEBUG Servicemms_send - 编辑记录
+2013-09-13 17:33:35,243 [12392] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307240006'and RowId =  '2'
+2013-09-13 17:33:35,244 [12392] DEBUG Mms - insert into mms_sendDetail([BillNo],[RowId],[MaterialCode],[Unit],[UnitPrice],[Num],[RemainNum],[Money],[UpdatePerson],[UpdateDate],[CreatePerson],[CreateDate]) values('201307240006','2','','','','','','','刘会胜','2013-09-13 17:33:35','刘会胜','2013-09-13 17:33:35')
+2013-09-13 17:33:35,502 [12392] ERROR Servicemms_send - 编辑记录失败
+System.Data.SqlClient.SqlException (0x80131904): 从数据类型 nvarchar 转换为 numeric 时出错。
+   在 Zephyr.Data.ExecuteQueryHandler.HandleQueryException(Exception exception) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\Handlers\ExecuteQueryHandler.cs:行号 107
+   在 Zephyr.Data.ExecuteQueryHandler.ExecuteQuery(Boolean useReader, Action action) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\Handlers\ExecuteQueryHandler.cs:行号 28
+   在 Zephyr.Data.DbCommand.Execute() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\PartialClasses\Execute.cs:行号 9
+   在 Zephyr.Data.BaseInsertBuilder.Execute() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Builders\Insert\BaseInsertBuilder.cs:行号 22
+   在 Zephyr.Core.ServiceBase`1.<Edit>b__38(RequestWrapper x) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEdit.cs:行号 99
+   在 Zephyr.Core.ServiceBase`1.<>c__DisplayClass3d.<Edit>b__39() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEdit.cs:行号 208
+   在 Zephyr.Core.LogHelper.Logger(ILog log, String function, ErrorHandle errorHandleType, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Logs\LogHelper.cs:行号 44
+ClientConnectionId:f4c4e0cc-68ac-4903-a369-d511567503bf
+2013-09-13 17:33:38,473 [12392] ERROR /api/Mms/Send/edit/ - System.Data.SqlClient.SqlException (0x80131904): 从数据类型 nvarchar 转换为 numeric 时出错。
+   在 Zephyr.Core.LogHelper.Logger(ILog log, String function, ErrorHandle errorHandleType, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Logs\LogHelper.cs:行号 54
+   在 Zephyr.Core.ServiceBase`1.Logger(String function, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseLog.cs:行号 23
+   在 Zephyr.Core.ServiceBase`1.Edit(JObject data, RequestWrapper formWrapper, List`1 tabsWrapper) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEdit.cs:行号 103
+   在 CallSite.Target(Closure , CallSite , mms_sendService , Object , RequestWrapper , List`1 )
+   在 Zephyr.Areas.Mms.Controllers.SendApiController.Edit(Object data) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Mms\Controllers\SendController.cs:行号 259
+   在 lambda_method(Closure , Object , Object[] )
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.<>c__DisplayClassf.<GetExecutor>b__9(Object instance, Object[] methodParameters)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.Execute(Object instance, Object[] arguments)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.<>c__DisplayClass5.<ExecuteAsync>b__4()
+   在 System.Threading.Tasks.TaskHelpers.RunSynchronously[TResult](Func`1 func, CancellationToken cancellationToken)
+ClientConnectionId:f4c4e0cc-68ac-4903-a369-d511567503bf
+2013-09-13 18:03:38,939 [7972] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 18:03:38,968 [7972] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 18:03:38,975 [7972] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 18:03:38,975 [7972] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 18:03:39,508 [10200] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-09-13 18:03:44,376 [15548] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-09-13 18:03:54,531 [9708] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/send/Index','/Mms/send')
+2013-09-13 18:03:54,549 [9708] DEBUG Servicemms_warehouse - 获取动态列表
+2013-09-13 18:03:54,571 [9708] DEBUG Mms - select WarehouseCode as value,WarehouseName as text from mms_warehouse where  ProjectCode =  '201306030001'
+2013-09-13 18:03:54,572 [9708] DEBUG Servicesys_code - 获取动态列表
+2013-09-13 18:03:54,573 [9708] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'Pricing'
+2013-09-13 18:03:54,574 [9708] DEBUG Servicesys_code - 获取动态列表
+2013-09-13 18:03:54,574 [9708] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'MaterialUse'
+2013-09-13 18:03:55,747 [9708] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/send'
+2013-09-13 18:03:55,751 [9708] DEBUG Sys - 
+select *
+from sys_roleMenuColumnMap 
+where MenuCode = '1001'
+and RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+2013-09-13 18:03:55,756 [9708] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/send'
+2013-09-13 18:03:55,757 [9708] DEBUG Sys - 
+select A.*
+from sys_button A
+inner join sys_roleMenuButtonMap B on B.MenuCode = '1001' and B.ButtonCode = A.ButtonCode
+where RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+order by ButtonSeq
+2013-09-13 18:03:57,743 [9708] DEBUG Servicemms_send - 获取动态列表
+2013-09-13 18:03:57,744 [9708] DEBUG Mms - select top 20 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName,E.MerchantsName as PickUnitName
+     from 
+        mms_send A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants E on E.MerchantsCode=A.PickUnit
+     where  A.ProjectCode =  '201306030001' order by A.BillNo
+2013-09-13 18:03:57,822 [9708] DEBUG Mms - select count(*) from ( select 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName,E.MerchantsName as PickUnitName
+     from 
+        mms_send A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants E on E.MerchantsCode=A.PickUnit
+     where  A.ProjectCode =  '201306030001' ) tb_temp
+2013-09-13 18:04:02,102 [15548] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/send/edit')
+2013-09-13 18:04:02,109 [15548] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 18:04:02,111 [15548] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-13 18:04:02,117 [15548] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 18:04:02,150 [15548] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:04:02,152 [15548] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 18:04:02,154 [15548] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:04:02,154 [15548] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307040001' order by BillNo desc
+2013-09-13 18:04:02,156 [15548] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:04:02,156 [15548] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307040001' order by BillNo
+2013-09-13 18:04:02,158 [15548] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:04:02,158 [15548] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 18:04:02,824 [15548] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 18:04:02,825 [15548] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307040001'
+2013-09-13 18:04:02,826 [15548] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 18:04:02,827 [15548] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307040001'
+2013-09-13 18:04:02,827 [15548] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 18:04:02,828 [15548] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-13 18:04:02,829 [15548] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 18:04:02,829 [15548] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-13 18:04:02,830 [15548] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 18:04:02,830 [15548] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:04:02,830 [15548] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 18:04:02,831 [15548] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:04:02,831 [15548] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307040001' order by BillNo desc
+2013-09-13 18:04:02,831 [15548] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:04:02,832 [15548] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307040001' order by BillNo
+2013-09-13 18:04:02,832 [15548] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:04:02,832 [15548] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 18:04:02,833 [15548] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 18:04:02,833 [15548] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307040001'
+2013-09-13 18:04:02,833 [15548] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 18:04:02,834 [15548] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307040001'
+2013-09-13 18:04:02,834 [15548] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 18:04:02,835 [15548] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-13 18:04:14,159 [9708] DEBUG Servicemms_send - 编辑记录
+2013-09-13 18:04:14,183 [9708] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-13 18:04:14,201 [9708] DEBUG Mms - update mms_send set [Purpose] = '12', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:04:14' where  BillNo =  '201307040001'
+2013-09-13 18:04:14,212 [9708] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307040001'and RowId =  '1'
+2013-09-13 18:04:14,214 [9708] DEBUG Mms - update mms_sendDetail set [MaterialCode] = '0101010103', [Unit] = '吨', [UnitPrice] = '71', [Num] = '1', [RemainNum] = '1', [Money] = '7', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:04:14' where  BillNo =  '201307040001'and RowId =  '1'
+2013-09-13 18:11:36,013 [14492] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 18:11:36,045 [14492] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 18:11:36,052 [14492] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 18:11:36,053 [14492] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 18:11:36,718 [9956] DEBUG Mms - update mms_send set [ApproveState] = 'passed', [ApproveRemark] = 'abc', [ApprovePerson] = '刘会胜', [ApproveDate] = '2013-09-13 18:11:36' where  BillNo =  '201307040001'
+2013-09-13 18:11:36,734 [9956] DEBUG Mms - 
+select A.*,B.WarehouseCode,B.ProjectCode 
+from mms_sendDetail A 
+left join mms_send B on B.BillNo = A.BillNo 
+where A.BillNo='201307040001'
+2013-09-13 18:11:37,050 [9956] DEBUG Mms - select * from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:11:37,077 [9956] DEBUG Mms - update mms_warehouseStock set [Unit] = '吨', [Num] = '10.00', [UnitPrice] = '-1.74', [Money] = '-17.4000', [WarnStockDown] = '', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-04 10:07:13', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:11:37', [Remark] = '' where [WarehouseCode] = '201306030001' and [MaterialCode] = '0101010103'
+2013-09-13 18:11:37,192 [9956] DEBUG Mms - select * from mms_materialWarnning where ProjectCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:11:37,202 [9956] DEBUG Mms - update mms_materialWarnning set [LowerNum] = '0.00', [UpperNum] = '0.00', [Num] = '-20.00', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-05 17:58:00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:11:37', [Remark] = '' where [ProjectCode] = '201306030001' and [MaterialCode] = '0101010103'
+2013-09-13 18:11:37,457 [9956] DEBUG Mms - select Num,UnitPrice from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:11:37,469 [9956] DEBUG Mms - insert into mms_warehouseStockHistory([SrcBillType],[SrcBillNo],[SrcRowId],[MaterialCode],[WarehouseCode],[Num],[UnitPrice],[Money],[StockNum],[StockUnitPrice],[StockMoney],[Remark],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate]) values('send','201307040001','1','0101010103','201306030001','-1.00','71.00','-71.0000','10.00','-1.74','','','刘会胜','2013-09-13 18:11:37','刘会胜','2013-09-13 18:11:37')
+2013-09-13 18:11:37,516 [9956] DEBUG Mms - select * from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:11:37,517 [9956] DEBUG Mms - update mms_warehouseStock set [Unit] = '吨', [Num] = '24.00', [UnitPrice] = '16.916666666666666666666666667', [Money] = '406.0000', [WarnStockDown] = '', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-04 10:07:13', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:11:37', [Remark] = '' where [WarehouseCode] = '201306030001' and [MaterialCode] = '0101010102'
+2013-09-13 18:11:37,524 [9956] DEBUG Mms - select * from mms_materialWarnning where ProjectCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:11:37,526 [9956] DEBUG Mms - update mms_materialWarnning set [LowerNum] = '0.00', [UpperNum] = '0.00', [Num] = '24.00', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-05 17:58:00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:11:37', [Remark] = '' where [ProjectCode] = '201306030001' and [MaterialCode] = '0101010102'
+2013-09-13 18:11:37,526 [9956] DEBUG Mms - select Num,UnitPrice from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:11:37,527 [9956] DEBUG Mms - insert into mms_warehouseStockHistory([SrcBillType],[SrcBillNo],[SrcRowId],[MaterialCode],[WarehouseCode],[Num],[UnitPrice],[Money],[StockNum],[StockUnitPrice],[StockMoney],[Remark],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate]) values('send','201307040001','2','0101010102','201306030001','-1.00','6.00','-6.0000','24.00','16.92','','','刘会胜','2013-09-13 18:11:37','刘会胜','2013-09-13 18:11:37')
+2013-09-13 18:11:40,878 [13168] DEBUG Mms - update mms_send set [ApproveState] = 'reject', [ApproveRemark] = 'abc', [ApprovePerson] = '刘会胜', [ApproveDate] = '2013-09-13 18:11:40' where  BillNo =  '201307040001'
+2013-09-13 18:11:40,878 [13168] DEBUG Mms - 
+select A.*,B.WarehouseCode,B.ProjectCode 
+from mms_sendDetail A 
+left join mms_send B on B.BillNo = A.BillNo 
+where A.BillNo='201307040001'
+2013-09-13 18:11:41,067 [13168] DEBUG Mms - select * from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:11:41,068 [13168] DEBUG Mms - update mms_warehouseStock set [Unit] = '吨', [Num] = '11.00', [UnitPrice] = '4.8727272727272727272727272727', [Money] = '53.6000', [WarnStockDown] = '', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-04 10:07:13', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:11:41', [Remark] = '' where [WarehouseCode] = '201306030001' and [MaterialCode] = '0101010103'
+2013-09-13 18:11:41,150 [13168] DEBUG Mms - select * from mms_materialWarnning where ProjectCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:11:41,152 [13168] DEBUG Mms - update mms_materialWarnning set [LowerNum] = '0.00', [UpperNum] = '0.00', [Num] = '-19.00', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-05 17:58:00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:11:41', [Remark] = '' where [ProjectCode] = '201306030001' and [MaterialCode] = '0101010103'
+2013-09-13 18:11:41,385 [13168] DEBUG Mms - select Num,UnitPrice from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:11:41,386 [13168] DEBUG Mms - insert into mms_warehouseStockHistory([SrcBillType],[SrcBillNo],[SrcRowId],[MaterialCode],[WarehouseCode],[Num],[UnitPrice],[Money],[StockNum],[StockUnitPrice],[StockMoney],[Remark],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate]) values('send','201307040001','1','0101010103','201306030001','1.00','71.00','71.0000','11.00','4.87','','','刘会胜','2013-09-13 18:11:41','刘会胜','2013-09-13 18:11:41')
+2013-09-13 18:11:41,387 [13168] DEBUG Mms - select * from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:11:41,388 [13168] DEBUG Mms - update mms_warehouseStock set [Unit] = '吨', [Num] = '25.00', [UnitPrice] = '16.48', [Money] = '412.0000', [WarnStockDown] = '', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-04 10:07:13', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:11:41', [Remark] = '' where [WarehouseCode] = '201306030001' and [MaterialCode] = '0101010102'
+2013-09-13 18:11:41,394 [13168] DEBUG Mms - select * from mms_materialWarnning where ProjectCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:11:41,395 [13168] DEBUG Mms - update mms_materialWarnning set [LowerNum] = '0.00', [UpperNum] = '0.00', [Num] = '25.00', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-05 17:58:00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:11:41', [Remark] = '' where [ProjectCode] = '201306030001' and [MaterialCode] = '0101010102'
+2013-09-13 18:11:41,396 [13168] DEBUG Mms - select Num,UnitPrice from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:11:41,397 [13168] DEBUG Mms - insert into mms_warehouseStockHistory([SrcBillType],[SrcBillNo],[SrcRowId],[MaterialCode],[WarehouseCode],[Num],[UnitPrice],[Money],[StockNum],[StockUnitPrice],[StockMoney],[Remark],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate]) values('send','201307040001','2','0101010102','201306030001','1.00','6.00','6.0000','25.00','16.48','','','刘会胜','2013-09-13 18:11:41','刘会胜','2013-09-13 18:11:41')
+2013-09-13 18:11:43,586 [13168] DEBUG Mms - update mms_send set [ApproveState] = 'passed', [ApproveRemark] = 'abc', [ApprovePerson] = '刘会胜', [ApproveDate] = '2013-09-13 18:11:43' where  BillNo =  '201307040001'
+2013-09-13 18:11:43,586 [13168] DEBUG Mms - 
+select A.*,B.WarehouseCode,B.ProjectCode 
+from mms_sendDetail A 
+left join mms_send B on B.BillNo = A.BillNo 
+where A.BillNo='201307040001'
+2013-09-13 18:11:43,766 [13168] DEBUG Mms - select * from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:11:43,767 [13168] DEBUG Mms - update mms_warehouseStock set [Unit] = '吨', [Num] = '10.00', [UnitPrice] = '-1.74', [Money] = '-17.4000', [WarnStockDown] = '', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-04 10:07:13', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:11:43', [Remark] = '' where [WarehouseCode] = '201306030001' and [MaterialCode] = '0101010103'
+2013-09-13 18:11:43,841 [13168] DEBUG Mms - select * from mms_materialWarnning where ProjectCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:11:43,842 [13168] DEBUG Mms - update mms_materialWarnning set [LowerNum] = '0.00', [UpperNum] = '0.00', [Num] = '-20.00', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-05 17:58:00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:11:43', [Remark] = '' where [ProjectCode] = '201306030001' and [MaterialCode] = '0101010103'
+2013-09-13 18:11:44,075 [13168] DEBUG Mms - select Num,UnitPrice from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:11:44,076 [13168] DEBUG Mms - insert into mms_warehouseStockHistory([SrcBillType],[SrcBillNo],[SrcRowId],[MaterialCode],[WarehouseCode],[Num],[UnitPrice],[Money],[StockNum],[StockUnitPrice],[StockMoney],[Remark],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate]) values('send','201307040001','1','0101010103','201306030001','-1.00','71.00','-71.0000','10.00','-1.74','','','刘会胜','2013-09-13 18:11:44','刘会胜','2013-09-13 18:11:44')
+2013-09-13 18:11:44,077 [13168] DEBUG Mms - select * from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:11:44,078 [13168] DEBUG Mms - update mms_warehouseStock set [Unit] = '吨', [Num] = '24.00', [UnitPrice] = '16.916666666666666666666666667', [Money] = '406.0000', [WarnStockDown] = '', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-04 10:07:13', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:11:44', [Remark] = '' where [WarehouseCode] = '201306030001' and [MaterialCode] = '0101010102'
+2013-09-13 18:11:44,079 [13168] DEBUG Mms - select * from mms_materialWarnning where ProjectCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:11:44,080 [13168] DEBUG Mms - update mms_materialWarnning set [LowerNum] = '0.00', [UpperNum] = '0.00', [Num] = '24.00', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-05 17:58:00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:11:44', [Remark] = '' where [ProjectCode] = '201306030001' and [MaterialCode] = '0101010102'
+2013-09-13 18:11:44,081 [13168] DEBUG Mms - select Num,UnitPrice from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:11:44,082 [13168] DEBUG Mms - insert into mms_warehouseStockHistory([SrcBillType],[SrcBillNo],[SrcRowId],[MaterialCode],[WarehouseCode],[Num],[UnitPrice],[Money],[StockNum],[StockUnitPrice],[StockMoney],[Remark],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate]) values('send','201307040001','2','0101010102','201306030001','-1.00','6.00','-6.0000','24.00','16.92','','','刘会胜','2013-09-13 18:11:44','刘会胜','2013-09-13 18:11:44')
+2013-09-13 18:11:52,668 [10280] DEBUG Mms - update mms_send set [ApproveState] = 'reject', [ApproveRemark] = 'abc', [ApprovePerson] = '刘会胜', [ApproveDate] = '2013-09-13 18:11:52' where  BillNo =  '201307040001'
+2013-09-13 18:11:52,669 [10280] DEBUG Mms - 
+select A.*,B.WarehouseCode,B.ProjectCode 
+from mms_sendDetail A 
+left join mms_send B on B.BillNo = A.BillNo 
+where A.BillNo='201307040001'
+2013-09-13 18:11:52,855 [10280] DEBUG Mms - select * from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:11:52,856 [10280] DEBUG Mms - update mms_warehouseStock set [Unit] = '吨', [Num] = '11.00', [UnitPrice] = '4.8727272727272727272727272727', [Money] = '53.6000', [WarnStockDown] = '', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-04 10:07:13', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:11:52', [Remark] = '' where [WarehouseCode] = '201306030001' and [MaterialCode] = '0101010103'
+2013-09-13 18:11:52,932 [10280] DEBUG Mms - select * from mms_materialWarnning where ProjectCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:11:52,933 [10280] DEBUG Mms - update mms_materialWarnning set [LowerNum] = '0.00', [UpperNum] = '0.00', [Num] = '-19.00', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-05 17:58:00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:11:52', [Remark] = '' where [ProjectCode] = '201306030001' and [MaterialCode] = '0101010103'
+2013-09-13 18:11:53,152 [10280] DEBUG Mms - select Num,UnitPrice from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:11:53,153 [10280] DEBUG Mms - insert into mms_warehouseStockHistory([SrcBillType],[SrcBillNo],[SrcRowId],[MaterialCode],[WarehouseCode],[Num],[UnitPrice],[Money],[StockNum],[StockUnitPrice],[StockMoney],[Remark],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate]) values('send','201307040001','1','0101010103','201306030001','1.00','71.00','71.0000','11.00','4.87','','','刘会胜','2013-09-13 18:11:53','刘会胜','2013-09-13 18:11:53')
+2013-09-13 18:11:53,155 [10280] DEBUG Mms - select * from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:11:53,156 [10280] DEBUG Mms - update mms_warehouseStock set [Unit] = '吨', [Num] = '25.00', [UnitPrice] = '16.48', [Money] = '412.0000', [WarnStockDown] = '', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-04 10:07:13', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:11:53', [Remark] = '' where [WarehouseCode] = '201306030001' and [MaterialCode] = '0101010102'
+2013-09-13 18:11:53,157 [10280] DEBUG Mms - select * from mms_materialWarnning where ProjectCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:11:53,158 [10280] DEBUG Mms - update mms_materialWarnning set [LowerNum] = '0.00', [UpperNum] = '0.00', [Num] = '25.00', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-05 17:58:00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:11:53', [Remark] = '' where [ProjectCode] = '201306030001' and [MaterialCode] = '0101010102'
+2013-09-13 18:11:53,158 [10280] DEBUG Mms - select Num,UnitPrice from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:11:53,159 [10280] DEBUG Mms - insert into mms_warehouseStockHistory([SrcBillType],[SrcBillNo],[SrcRowId],[MaterialCode],[WarehouseCode],[Num],[UnitPrice],[Money],[StockNum],[StockUnitPrice],[StockMoney],[Remark],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate]) values('send','201307040001','2','0101010102','201306030001','1.00','6.00','6.0000','25.00','16.48','','','刘会胜','2013-09-13 18:11:53','刘会胜','2013-09-13 18:11:53')
+2013-09-13 18:11:58,013 [9956] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 18:11:58,018 [9956] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201306270002'
+2013-09-13 18:11:58,024 [9956] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 18:11:58,055 [9956] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:11:58,057 [9956] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 18:11:58,061 [9956] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:11:58,061 [9956] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201306270002' order by BillNo desc
+2013-09-13 18:11:58,063 [9956] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:11:58,063 [9956] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201306270002' order by BillNo
+2013-09-13 18:11:58,065 [9956] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:11:58,065 [9956] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 18:11:58,740 [9956] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 18:11:58,742 [9956] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201306270002'
+2013-09-13 18:11:58,743 [9956] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 18:11:58,744 [9956] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201306270002'
+2013-09-13 18:11:58,744 [9956] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 18:11:58,745 [9956] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201306270002'
+2013-09-13 18:12:00,267 [13168] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 18:12:00,267 [13168] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-13 18:12:00,267 [13168] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 18:12:00,268 [13168] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:12:00,268 [13168] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 18:12:00,268 [13168] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:12:00,268 [13168] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307040001' order by BillNo desc
+2013-09-13 18:12:00,269 [13168] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:12:00,269 [13168] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307040001' order by BillNo
+2013-09-13 18:12:00,269 [13168] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:12:00,269 [13168] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 18:12:00,270 [13168] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 18:12:00,270 [13168] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307040001'
+2013-09-13 18:12:00,271 [13168] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 18:12:00,271 [13168] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307040001'
+2013-09-13 18:12:00,271 [13168] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 18:12:00,271 [13168] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-13 18:12:04,344 [10280] DEBUG Mms - update mms_send set [ApproveState] = 'passed', [ApproveRemark] = 'abcd', [ApprovePerson] = '刘会胜', [ApproveDate] = '2013-09-13 18:12:04' where  BillNo =  '201307040001'
+2013-09-13 18:12:04,348 [10280] DEBUG Mms - 
+select A.*,B.WarehouseCode,B.ProjectCode 
+from mms_sendDetail A 
+left join mms_send B on B.BillNo = A.BillNo 
+where A.BillNo='201307040001'
+2013-09-13 18:12:04,538 [10280] DEBUG Mms - select * from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:12:04,539 [10280] DEBUG Mms - update mms_warehouseStock set [Unit] = '吨', [Num] = '10.00', [UnitPrice] = '-1.74', [Money] = '-17.4000', [WarnStockDown] = '', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-04 10:07:13', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:12:04', [Remark] = '' where [WarehouseCode] = '201306030001' and [MaterialCode] = '0101010103'
+2013-09-13 18:12:04,622 [10280] DEBUG Mms - select * from mms_materialWarnning where ProjectCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:12:04,623 [10280] DEBUG Mms - update mms_materialWarnning set [LowerNum] = '0.00', [UpperNum] = '0.00', [Num] = '-20.00', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-05 17:58:00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:12:04', [Remark] = '' where [ProjectCode] = '201306030001' and [MaterialCode] = '0101010103'
+2013-09-13 18:12:04,857 [10280] DEBUG Mms - select Num,UnitPrice from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:12:04,859 [10280] DEBUG Mms - insert into mms_warehouseStockHistory([SrcBillType],[SrcBillNo],[SrcRowId],[MaterialCode],[WarehouseCode],[Num],[UnitPrice],[Money],[StockNum],[StockUnitPrice],[StockMoney],[Remark],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate]) values('send','201307040001','1','0101010103','201306030001','-1.00','71.00','-71.0000','10.00','-1.74','','','刘会胜','2013-09-13 18:12:04','刘会胜','2013-09-13 18:12:04')
+2013-09-13 18:12:04,859 [10280] DEBUG Mms - select * from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:12:04,861 [10280] DEBUG Mms - update mms_warehouseStock set [Unit] = '吨', [Num] = '24.00', [UnitPrice] = '16.916666666666666666666666667', [Money] = '406.0000', [WarnStockDown] = '', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-04 10:07:13', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:12:04', [Remark] = '' where [WarehouseCode] = '201306030001' and [MaterialCode] = '0101010102'
+2013-09-13 18:12:04,861 [10280] DEBUG Mms - select * from mms_materialWarnning where ProjectCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:12:04,862 [10280] DEBUG Mms - update mms_materialWarnning set [LowerNum] = '0.00', [UpperNum] = '0.00', [Num] = '24.00', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-05 17:58:00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:12:04', [Remark] = '' where [ProjectCode] = '201306030001' and [MaterialCode] = '0101010102'
+2013-09-13 18:12:04,863 [10280] DEBUG Mms - select Num,UnitPrice from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:12:04,864 [10280] DEBUG Mms - insert into mms_warehouseStockHistory([SrcBillType],[SrcBillNo],[SrcRowId],[MaterialCode],[WarehouseCode],[Num],[UnitPrice],[Money],[StockNum],[StockUnitPrice],[StockMoney],[Remark],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate]) values('send','201307040001','2','0101010102','201306030001','-1.00','6.00','-6.0000','24.00','16.92','','','刘会胜','2013-09-13 18:12:04','刘会胜','2013-09-13 18:12:04')
+2013-09-13 18:12:09,468 [9956] DEBUG Mms - update mms_send set [ApproveState] = 'reject', [ApproveRemark] = 'abcd', [ApprovePerson] = '刘会胜', [ApproveDate] = '2013-09-13 18:12:09' where  BillNo =  '201307040001'
+2013-09-13 18:12:09,469 [9956] DEBUG Mms - 
+select A.*,B.WarehouseCode,B.ProjectCode 
+from mms_sendDetail A 
+left join mms_send B on B.BillNo = A.BillNo 
+where A.BillNo='201307040001'
+2013-09-13 18:12:09,650 [9956] DEBUG Mms - select * from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:12:09,652 [9956] DEBUG Mms - update mms_warehouseStock set [Unit] = '吨', [Num] = '11.00', [UnitPrice] = '4.8727272727272727272727272727', [Money] = '53.6000', [WarnStockDown] = '', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-04 10:07:13', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:12:09', [Remark] = '' where [WarehouseCode] = '201306030001' and [MaterialCode] = '0101010103'
+2013-09-13 18:12:09,728 [9956] DEBUG Mms - select * from mms_materialWarnning where ProjectCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:12:09,729 [9956] DEBUG Mms - update mms_materialWarnning set [LowerNum] = '0.00', [UpperNum] = '0.00', [Num] = '-19.00', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-05 17:58:00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:12:09', [Remark] = '' where [ProjectCode] = '201306030001' and [MaterialCode] = '0101010103'
+2013-09-13 18:12:09,949 [9956] DEBUG Mms - select Num,UnitPrice from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:12:09,950 [9956] DEBUG Mms - insert into mms_warehouseStockHistory([SrcBillType],[SrcBillNo],[SrcRowId],[MaterialCode],[WarehouseCode],[Num],[UnitPrice],[Money],[StockNum],[StockUnitPrice],[StockMoney],[Remark],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate]) values('send','201307040001','1','0101010103','201306030001','1.00','71.00','71.0000','11.00','4.87','','','刘会胜','2013-09-13 18:12:09','刘会胜','2013-09-13 18:12:09')
+2013-09-13 18:12:09,951 [9956] DEBUG Mms - select * from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:12:09,952 [9956] DEBUG Mms - update mms_warehouseStock set [Unit] = '吨', [Num] = '25.00', [UnitPrice] = '16.48', [Money] = '412.0000', [WarnStockDown] = '', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-04 10:07:13', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:12:09', [Remark] = '' where [WarehouseCode] = '201306030001' and [MaterialCode] = '0101010102'
+2013-09-13 18:12:09,953 [9956] DEBUG Mms - select * from mms_materialWarnning where ProjectCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:12:09,954 [9956] DEBUG Mms - update mms_materialWarnning set [LowerNum] = '0.00', [UpperNum] = '0.00', [Num] = '25.00', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-05 17:58:00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:12:09', [Remark] = '' where [ProjectCode] = '201306030001' and [MaterialCode] = '0101010102'
+2013-09-13 18:12:09,955 [9956] DEBUG Mms - select Num,UnitPrice from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:12:09,956 [9956] DEBUG Mms - insert into mms_warehouseStockHistory([SrcBillType],[SrcBillNo],[SrcRowId],[MaterialCode],[WarehouseCode],[Num],[UnitPrice],[Money],[StockNum],[StockUnitPrice],[StockMoney],[Remark],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate]) values('send','201307040001','2','0101010102','201306030001','1.00','6.00','6.0000','25.00','16.48','','','刘会胜','2013-09-13 18:12:09','刘会胜','2013-09-13 18:12:09')
+2013-09-13 18:17:35,683 [14492] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 18:17:35,717 [14492] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 18:17:35,724 [14492] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 18:17:35,724 [14492] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 18:17:36,353 [15204] DEBUG Mms - update mms_send set [ApproveState] = 'passed', [ApproveRemark] = 'abcdabc', [ApprovePerson] = '刘会胜', [ApproveDate] = '2013-09-13 18:17:36' where  BillNo =  '201307040001'
+2013-09-13 18:17:36,367 [15204] DEBUG Mms - 
+select A.*,B.WarehouseCode,B.ProjectCode 
+from mms_sendDetail A 
+left join mms_send B on B.BillNo = A.BillNo 
+where A.BillNo='201307040001'
+2013-09-13 18:17:36,659 [15204] DEBUG Mms - select * from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:17:36,682 [15204] DEBUG Mms - update mms_warehouseStock set [Unit] = '吨', [Num] = '10.00', [UnitPrice] = '-1.74', [Money] = '-17.4000', [WarnStockDown] = '', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-04 10:07:13', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:17:36', [Remark] = '' where [WarehouseCode] = '201306030001' and [MaterialCode] = '0101010103'
+2013-09-13 18:17:36,775 [15204] DEBUG Mms - select * from mms_materialWarnning where ProjectCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:17:36,782 [15204] DEBUG Mms - update mms_materialWarnning set [LowerNum] = '0.00', [UpperNum] = '0.00', [Num] = '-20.00', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-05 17:58:00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:17:36', [Remark] = '' where [ProjectCode] = '201306030001' and [MaterialCode] = '0101010103'
+2013-09-13 18:17:37,010 [15204] DEBUG Mms - select Num,UnitPrice from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:17:37,021 [15204] DEBUG Mms - insert into mms_warehouseStockHistory([SrcBillType],[SrcBillNo],[SrcRowId],[MaterialCode],[WarehouseCode],[Num],[UnitPrice],[Money],[StockNum],[StockUnitPrice],[StockMoney],[Remark],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate]) values('send','201307040001','1','0101010103','201306030001','-1.00','71.00','-71.0000','10.00','-1.74','','','刘会胜','2013-09-13 18:17:37','刘会胜','2013-09-13 18:17:37')
+2013-09-13 18:17:37,022 [15204] DEBUG Mms - select * from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:17:37,023 [15204] DEBUG Mms - update mms_warehouseStock set [Unit] = '吨', [Num] = '24.00', [UnitPrice] = '16.916666666666666666666666667', [Money] = '406.0000', [WarnStockDown] = '', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-04 10:07:13', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:17:37', [Remark] = '' where [WarehouseCode] = '201306030001' and [MaterialCode] = '0101010102'
+2013-09-13 18:17:37,024 [15204] DEBUG Mms - select * from mms_materialWarnning where ProjectCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:17:37,025 [15204] DEBUG Mms - update mms_materialWarnning set [LowerNum] = '0.00', [UpperNum] = '0.00', [Num] = '24.00', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-05 17:58:00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:17:37', [Remark] = '' where [ProjectCode] = '201306030001' and [MaterialCode] = '0101010102'
+2013-09-13 18:17:37,026 [15204] DEBUG Mms - select Num,UnitPrice from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:17:37,027 [15204] DEBUG Mms - insert into mms_warehouseStockHistory([SrcBillType],[SrcBillNo],[SrcRowId],[MaterialCode],[WarehouseCode],[Num],[UnitPrice],[Money],[StockNum],[StockUnitPrice],[StockMoney],[Remark],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate]) values('send','201307040001','2','0101010102','201306030001','-1.00','6.00','-6.0000','24.00','16.92','','','刘会胜','2013-09-13 18:17:37','刘会胜','2013-09-13 18:17:37')
+2013-09-13 18:19:23,082 [12064] DEBUG Mms - update mms_send set [ApproveState] = 'reject', [ApproveRemark] = 'abcdabc', [ApprovePerson] = '刘会胜', [ApproveDate] = '2013-09-13 18:19:23' where  BillNo =  '201307040001'
+2013-09-13 18:19:23,083 [12064] DEBUG Mms - 
+select A.*,B.WarehouseCode,B.ProjectCode 
+from mms_sendDetail A 
+left join mms_send B on B.BillNo = A.BillNo 
+where A.BillNo='201307040001'
+2013-09-13 18:19:23,261 [12064] DEBUG Mms - select * from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:19:23,263 [12064] DEBUG Mms - update mms_warehouseStock set [Unit] = '吨', [Num] = '11.00', [UnitPrice] = '4.8727272727272727272727272727', [Money] = '53.6000', [WarnStockDown] = '', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-04 10:07:13', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:19:23', [Remark] = '' where [WarehouseCode] = '201306030001' and [MaterialCode] = '0101010103'
+2013-09-13 18:19:23,336 [12064] DEBUG Mms - select * from mms_materialWarnning where ProjectCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:19:23,337 [12064] DEBUG Mms - update mms_materialWarnning set [LowerNum] = '0.00', [UpperNum] = '0.00', [Num] = '-19.00', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-05 17:58:00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:19:23', [Remark] = '' where [ProjectCode] = '201306030001' and [MaterialCode] = '0101010103'
+2013-09-13 18:19:23,559 [12064] DEBUG Mms - select Num,UnitPrice from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010103'
+2013-09-13 18:19:23,560 [12064] DEBUG Mms - insert into mms_warehouseStockHistory([SrcBillType],[SrcBillNo],[SrcRowId],[MaterialCode],[WarehouseCode],[Num],[UnitPrice],[Money],[StockNum],[StockUnitPrice],[StockMoney],[Remark],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate]) values('send','201307040001','1','0101010103','201306030001','1.00','71.00','71.0000','11.00','4.87','','','刘会胜','2013-09-13 18:19:23','刘会胜','2013-09-13 18:19:23')
+2013-09-13 18:19:23,561 [12064] DEBUG Mms - select * from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:19:23,562 [12064] DEBUG Mms - update mms_warehouseStock set [Unit] = '吨', [Num] = '25.00', [UnitPrice] = '16.48', [Money] = '412.0000', [WarnStockDown] = '', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-04 10:07:13', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:19:23', [Remark] = '' where [WarehouseCode] = '201306030001' and [MaterialCode] = '0101010102'
+2013-09-13 18:19:23,563 [12064] DEBUG Mms - select * from mms_materialWarnning where ProjectCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:19:23,564 [12064] DEBUG Mms - update mms_materialWarnning set [LowerNum] = '0.00', [UpperNum] = '0.00', [Num] = '25.00', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-05 17:58:00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:19:23', [Remark] = '' where [ProjectCode] = '201306030001' and [MaterialCode] = '0101010102'
+2013-09-13 18:19:23,565 [12064] DEBUG Mms - select Num,UnitPrice from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:19:23,566 [12064] DEBUG Mms - insert into mms_warehouseStockHistory([SrcBillType],[SrcBillNo],[SrcRowId],[MaterialCode],[WarehouseCode],[Num],[UnitPrice],[Money],[StockNum],[StockUnitPrice],[StockMoney],[Remark],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate]) values('send','201307040001','2','0101010102','201306030001','1.00','6.00','6.0000','25.00','16.48','','','刘会胜','2013-09-13 18:19:23','刘会胜','2013-09-13 18:19:23')
+2013-09-13 18:27:55,643 [14492] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 18:27:55,669 [14492] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 18:27:55,675 [14492] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 18:27:55,675 [14492] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 18:27:56,013 [9272] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-09-13 18:27:59,058 [11432] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-09-13 18:28:01,461 [3304] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/receive/Index','/Mms/receive')
+2013-09-13 18:28:01,474 [3304] DEBUG Servicemms_warehouse - 获取动态列表
+2013-09-13 18:28:01,490 [3304] DEBUG Mms - select WarehouseCode as value,WarehouseName as text from mms_warehouse where  ProjectCode =  '201306030001'
+2013-09-13 18:28:01,491 [3304] DEBUG Servicesys_code - 获取动态列表
+2013-09-13 18:28:01,492 [3304] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'SupplyType'
+2013-09-13 18:28:03,026 [6544] DEBUG Servicemms_receive - 获取动态列表
+2013-09-13 18:28:03,026 [6544] DEBUG Mms - select top 20 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName as WarehouseName, E.MerchantsName AS SupplierName
+     from 
+        mms_receive A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants     E on E.MerchantsCode    = A.SupplierCode
+     where  A.ProjectCode =  '201306030001' order by A.BillNo
+2013-09-13 18:28:03,042 [6544] DEBUG Mms - select count(*) from ( select 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName as WarehouseName, E.MerchantsName AS SupplierName
+     from 
+        mms_receive A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants     E on E.MerchantsCode    = A.SupplierCode
+     where  A.ProjectCode =  '201306030001' ) tb_temp
+2013-09-13 18:28:03,671 [13656] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/receive/edit')
+2013-09-13 18:28:03,681 [13656] DEBUG Servicemms_receive - 获取实体对象
+2013-09-13 18:28:03,684 [13656] DEBUG Mms - select mms_receive.* from mms_receive where  BillNo =  '201307020014'
+2013-09-13 18:28:03,691 [13656] DEBUG Servicemms_receive - 获取上一条下一条数据
+2013-09-13 18:28:03,715 [13656] DEBUG Servicemms_receive - 获取字段
+2013-09-13 18:28:03,717 [13656] DEBUG Mms - select top 1 BillNo from mms_receive where  ProjectCode =  '201306030001' order by BillNo
+2013-09-13 18:28:03,719 [13656] DEBUG Servicemms_receive - 获取字段
+2013-09-13 18:28:03,720 [13656] DEBUG Mms - select top 1 BillNo from mms_receive where  BillNo < '201307020014'and ProjectCode =  '201306030001' order by BillNo desc
+2013-09-13 18:28:03,722 [13656] DEBUG Servicemms_receive - 获取字段
+2013-09-13 18:28:03,722 [13656] DEBUG Mms - select top 1 BillNo from mms_receive where  BillNo >  '201307020014'and ProjectCode =  '201306030001' order by BillNo
+2013-09-13 18:28:03,724 [13656] DEBUG Servicemms_receive - 获取字段
+2013-09-13 18:28:03,724 [13656] DEBUG Mms - select top 1 BillNo from mms_receive where  ProjectCode =  '201306030001' order by BillNo desc
+2013-09-13 18:28:03,750 [13656] DEBUG Servicesys_code - 获取动态列表
+2013-09-13 18:28:03,750 [13656] DEBUG Sys - select Text as value,Text as text from sys_code where  CodeType =  'MeasureUnit'
+2013-09-13 18:28:03,751 [13656] DEBUG Servicesys_code - 获取动态列表
+2013-09-13 18:28:03,751 [13656] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'SupplyType'
+2013-09-13 18:28:03,751 [13656] DEBUG Servicesys_code - 获取动态列表
+2013-09-13 18:28:03,751 [13656] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'PayType'
+2013-09-13 18:28:03,751 [13656] DEBUG Servicemms_warehouse - 获取动态列表
+2013-09-13 18:28:03,752 [13656] DEBUG Mms - select WarehouseCode as value,WarehouseName as text from mms_warehouse where  ProjectCode =  '201306030001'
+2013-09-13 18:28:03,752 [13656] DEBUG Servicesys_code - 获取字段
+2013-09-13 18:28:03,752 [13656] DEBUG Sys - select top 1 Code from sys_code where  CodeType =  'SupplyType'and IsEnable =  'True'and IsDefault =  'True'
+2013-09-13 18:28:03,753 [13656] DEBUG Servicesys_code - 获取字段
+2013-09-13 18:28:03,753 [13656] DEBUG Sys - select top 1 Code from sys_code where  CodeType =  'PayType'and IsEnable =  'True'and IsDefault =  'True'
+2013-09-13 18:28:04,431 [11432] DEBUG ServiceModelBase - 获取动态列表
+2013-09-13 18:28:04,431 [11432] DEBUG Mms - select 
+    MerchantsCode   as   value,MerchantsName   as   text
+   from 
+    mms_merchants A
+    left join mms_merchantsType B on B.MerchantsTypeCode = A.MerchantsTypeCode
+   where  MerchantsCode in ('CG00301') order by MerchantsCode
+2013-09-13 18:28:04,812 [3304] DEBUG Servicemms_receive - 获取动态列表
+2013-09-13 18:28:04,813 [3304] DEBUG Mms - select 
+        A.*, B.MaterialName,B.Model,B.Material
+     from 
+        mms_receiveDetail A
+        left join mms_material B on B.MaterialCode = A.MaterialCode
+     where  BillNo =  '201307020014' order by A.MaterialCode
+2013-09-13 18:28:47,686 [13656] DEBUG Mms - update mms_receive set [ApproveState] = 'reject', [ApproveRemark] = '', [ApprovePerson] = '刘会胜', [ApproveDate] = '2013-09-13 18:28:47' where  BillNo =  '201307020014'
+2013-09-13 18:28:47,701 [13656] DEBUG Mms - 
+select A.*,B.WarehouseCode,B.ProjectCode 
+from mms_receiveDetail A 
+left join mms_receive B on B.BillNo = A.BillNo 
+where A.BillNo='201307020014'
+2013-09-13 18:28:47,728 [13656] DEBUG Mms - select * from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:28:47,743 [13656] DEBUG Mms - update mms_warehouseStock set [Unit] = '吨', [Num] = '24.00', [UnitPrice] = '17.166666666666666666666666667', [Money] = '412.0000', [WarnStockDown] = '', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-04 10:07:13', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:28:47', [Remark] = '' where [WarehouseCode] = '201306030001' and [MaterialCode] = '0101010102'
+2013-09-13 18:28:47,759 [13656] DEBUG Mms - select * from mms_materialWarnning where ProjectCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:28:47,764 [13656] DEBUG Mms - update mms_materialWarnning set [LowerNum] = '0.00', [UpperNum] = '0.00', [Num] = '24.00', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-05 17:58:00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:28:47', [Remark] = '' where [ProjectCode] = '201306030001' and [MaterialCode] = '0101010102'
+2013-09-13 18:28:47,785 [13656] DEBUG Mms - select Num,UnitPrice from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010102'
+2013-09-13 18:28:47,794 [13656] DEBUG Mms - insert into mms_warehouseStockHistory([SrcBillType],[SrcBillNo],[SrcRowId],[MaterialCode],[WarehouseCode],[Num],[UnitPrice],[Money],[StockNum],[StockUnitPrice],[StockMoney],[Remark],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate]) values('receive','201307020014','17','0101010102','201306030001','-1.00','0.00','0.0000','24.00','17.17','','','刘会胜','2013-09-13 18:28:47','刘会胜','2013-09-13 18:28:47')
+2013-09-13 18:38:31,468 [11432] DEBUG Servicemms_receive - 编辑记录
+2013-09-13 18:38:31,484 [11432] DEBUG Servicemms_receive - 获取动态对象
+2013-09-13 18:38:31,487 [11432] DEBUG Mms - select mms_receive.* from mms_receive where  BillNo =  '201307020014'
+2013-09-13 18:38:31,497 [11432] DEBUG Mms - update mms_receive set [TotalMoney] = '222', [OriginalNum] = '111', [ProjectCode] = '201306030001', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:38:31' where  BillNo =  '201307020014'
+2013-09-13 18:38:31,520 [11432] DEBUG Servicemms_receive - 获取动态对象
+2013-09-13 18:38:31,520 [11432] DEBUG Mms - select mms_receiveDetail.* from mms_receiveDetail where  BillNo =  '201307020014'and RowId =  '17'
+2013-09-13 18:38:31,523 [11432] DEBUG Mms - update mms_receiveDetail set [MaterialCode] = '0101010102', [Unit] = '吨', [CheckNum] = '1', [Num] = '1', [UnitPrice] = '222.00', [PrePay] = '0', [Money] = '222.00', [Remark] = '', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:38:31' where  BillNo =  '201307020014'and RowId =  '17'
+2013-09-13 18:49:14,109 [9272] DEBUG Servicemms_receive - 编辑记录
+2013-09-13 18:49:14,109 [9272] DEBUG Servicemms_receive - 获取动态对象
+2013-09-13 18:49:14,115 [9272] DEBUG Mms - select mms_receive.* from mms_receive where  BillNo =  '201307020014'
+2013-09-13 18:49:14,116 [9272] DEBUG Mms - update mms_receive set [PayKind] = '086', [OriginalNum] = '222', [ProjectCode] = '201306030001', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:49:14' where  BillNo =  '201307020014'
+2013-09-13 18:49:22,974 [16024] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/send/Index','/Mms/send')
+2013-09-13 18:49:22,978 [16024] DEBUG Servicemms_warehouse - 获取动态列表
+2013-09-13 18:49:22,979 [16024] DEBUG Mms - select WarehouseCode as value,WarehouseName as text from mms_warehouse where  ProjectCode =  '201306030001'
+2013-09-13 18:49:22,979 [16024] DEBUG Servicesys_code - 获取动态列表
+2013-09-13 18:49:22,979 [16024] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'Pricing'
+2013-09-13 18:49:22,980 [16024] DEBUG Servicesys_code - 获取动态列表
+2013-09-13 18:49:22,980 [16024] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'MaterialUse'
+2013-09-13 18:49:23,779 [16024] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/send'
+2013-09-13 18:49:23,780 [16024] DEBUG Sys - 
+select *
+from sys_roleMenuColumnMap 
+where MenuCode = '1001'
+and RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+2013-09-13 18:49:23,784 [16024] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/send'
+2013-09-13 18:49:23,785 [16024] DEBUG Sys - 
+select A.*
+from sys_button A
+inner join sys_roleMenuButtonMap B on B.MenuCode = '1001' and B.ButtonCode = A.ButtonCode
+where RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+order by ButtonSeq
+2013-09-13 18:49:24,414 [3304] DEBUG Servicemms_send - 获取动态列表
+2013-09-13 18:49:24,414 [3304] DEBUG Mms - select top 20 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName,E.MerchantsName as PickUnitName
+     from 
+        mms_send A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants E on E.MerchantsCode=A.PickUnit
+     where  A.ProjectCode =  '201306030001' order by A.BillNo
+2013-09-13 18:49:24,424 [3304] DEBUG Mms - select count(*) from ( select 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName,E.MerchantsName as PickUnitName
+     from 
+        mms_send A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants E on E.MerchantsCode=A.PickUnit
+     where  A.ProjectCode =  '201306030001' ) tb_temp
+2013-09-13 18:49:26,899 [11432] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/send/edit')
+2013-09-13 18:49:26,905 [11432] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 18:49:26,906 [11432] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 18:49:26,910 [11432] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 18:49:26,911 [11432] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:49:26,912 [11432] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 18:49:26,913 [11432] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:49:26,913 [11432] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307110001' order by BillNo desc
+2013-09-13 18:49:26,915 [11432] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:49:26,915 [11432] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307110001' order by BillNo
+2013-09-13 18:49:26,917 [11432] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:49:26,918 [11432] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 18:49:26,964 [11432] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 18:49:26,965 [11432] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307110001'
+2013-09-13 18:49:26,966 [11432] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 18:49:26,967 [11432] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307110001'
+2013-09-13 18:49:26,968 [11432] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 18:49:26,968 [11432] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 18:49:26,969 [11432] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 18:49:26,969 [11432] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 18:49:26,970 [11432] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 18:49:26,970 [11432] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:49:26,970 [11432] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 18:49:26,971 [11432] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:49:26,971 [11432] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307110001' order by BillNo desc
+2013-09-13 18:49:26,972 [11432] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:49:26,972 [11432] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307110001' order by BillNo
+2013-09-13 18:49:26,972 [11432] DEBUG Servicemms_send - 获取字段
+2013-09-13 18:49:26,972 [11432] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 18:49:26,973 [11432] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 18:49:26,973 [11432] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307110001'
+2013-09-13 18:49:26,974 [11432] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 18:49:26,974 [11432] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307110001'
+2013-09-13 18:49:26,974 [11432] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 18:49:26,975 [11432] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 18:49:30,851 [13656] DEBUG Servicemms_send - 编辑记录
+2013-09-13 18:49:30,864 [13656] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 18:49:30,868 [13656] DEBUG Mms - update mms_send set [WarehouseCode] = '201306030002q', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:49:30' where  BillNo =  '201307110001'
+2013-09-13 18:50:17,725 [3304] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/receive/Index','/Mms/receive')
+2013-09-13 18:50:17,727 [3304] DEBUG Servicemms_warehouse - 获取动态列表
+2013-09-13 18:50:17,728 [3304] DEBUG Mms - select WarehouseCode as value,WarehouseName as text from mms_warehouse where  ProjectCode =  '201306030001'
+2013-09-13 18:50:17,728 [3304] DEBUG Servicesys_code - 获取动态列表
+2013-09-13 18:50:17,729 [3304] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'SupplyType'
+2013-09-13 18:50:18,503 [11432] DEBUG Servicemms_receive - 获取动态列表
+2013-09-13 18:50:18,503 [11432] DEBUG Mms - select top 20 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName as WarehouseName, E.MerchantsName AS SupplierName
+     from 
+        mms_receive A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants     E on E.MerchantsCode    = A.SupplierCode
+     where  A.ProjectCode =  '201306030001' order by A.BillNo
+2013-09-13 18:50:18,505 [11432] DEBUG Mms - select count(*) from ( select 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName as WarehouseName, E.MerchantsName AS SupplierName
+     from 
+        mms_receive A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants     E on E.MerchantsCode    = A.SupplierCode
+     where  A.ProjectCode =  '201306030001' ) tb_temp
+2013-09-13 18:50:36,226 [16024] DEBUG Servicemms_send - 编辑记录
+2013-09-13 18:50:36,227 [16024] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 18:50:36,228 [16024] DEBUG Mms - update mms_send set [Purpose] = '004511113121232222221', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:50:36' where  BillNo =  '201307110001'
+2013-09-13 18:50:36,234 [16024] ERROR Servicemms_send - 编辑记录失败
+System.Data.SqlClient.SqlException (0x80131904): 将截断字符串或二进制数据。
+语句已终止。
+   在 Zephyr.Data.ExecuteQueryHandler.HandleQueryException(Exception exception) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\Handlers\ExecuteQueryHandler.cs:行号 107
+   在 Zephyr.Data.ExecuteQueryHandler.ExecuteQuery(Boolean useReader, Action action) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\Handlers\ExecuteQueryHandler.cs:行号 28
+   在 Zephyr.Data.DbCommand.Execute() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\PartialClasses\Execute.cs:行号 9
+   在 Zephyr.Data.BaseUpdateBuilder.Execute() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Builders\Update\BaseUpdateBuilder.cs:行号 29
+   在 Zephyr.Core.ServiceBase`1.<EditPage>b__9(RequestWrapper x) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEditPage.cs:行号 67
+   在 Zephyr.Core.ServiceBase`1.<>c__DisplayClassf.<EditPage>b__b() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEditPage.cs:行号 110
+   在 Zephyr.Core.LogHelper.Logger(ILog log, String function, ErrorHandle errorHandleType, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Logs\LogHelper.cs:行号 44
+ClientConnectionId:bc8db9d1-2f24-4741-b51a-5737dff2508c
+2013-09-13 18:50:36,277 [16024] ERROR /api/Mms/Send/edit/ - System.Data.SqlClient.SqlException (0x80131904): 将截断字符串或二进制数据。
+语句已终止。
+   在 Zephyr.Core.LogHelper.Logger(ILog log, String function, ErrorHandle errorHandleType, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Logs\LogHelper.cs:行号 54
+   在 Zephyr.Core.ServiceBase`1.Logger(String function, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseLog.cs:行号 23
+   在 Zephyr.Core.ServiceBase`1.EditPage(JObject data, RequestWrapper formWrapper, List`1 tabsWrapper) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEditPage.cs:行号 72
+   在 CallSite.Target(Closure , CallSite , mms_sendService , Object , RequestWrapper , List`1 )
+   在 Zephyr.Areas.Mms.Controllers.SendApiController.Edit(Object data) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Mms\Controllers\SendController.cs:行号 259
+   在 lambda_method(Closure , Object , Object[] )
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.<>c__DisplayClassf.<GetExecutor>b__9(Object instance, Object[] methodParameters)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.Execute(Object instance, Object[] arguments)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.<>c__DisplayClass5.<ExecuteAsync>b__4()
+   在 System.Threading.Tasks.TaskHelpers.RunSynchronously[TResult](Func`1 func, CancellationToken cancellationToken)
+ClientConnectionId:bc8db9d1-2f24-4741-b51a-5737dff2508c
+2013-09-13 18:50:45,074 [16128] DEBUG Servicemms_send - 编辑记录
+2013-09-13 18:50:45,075 [16128] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 18:50:45,075 [16128] DEBUG Mms - update mms_send set [Purpose] = '0045111131212322222', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 18:50:45' where  BillNo =  '201307110001'
+2013-09-13 20:26:03,318 [14004] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 20:26:03,533 [14004] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 20:26:03,540 [14004] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 20:26:04,204 [14004] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-13 20:26:04,805 [10748] DEBUG Servicemms_send - 编辑记录
+2013-09-13 20:26:04,849 [10748] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307110001'and RowId =  '1'
+2013-09-13 20:26:04,979 [10748] DEBUG Mms - update mms_sendDetail set [MaterialCode] = '1', [Unit] = '2', [UnitPrice] = '3', [Num] = '422', [RemainNum] = '5', [Money] = '6', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-13 20:26:04' where  BillNo =  '201307110001'and RowId =  '1'
+2013-09-13 21:44:38,393 [1128] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 21:44:38,442 [1128] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230011'
+2013-09-13 21:44:38,506 [1128] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 21:44:38,520 [1128] DEBUG Servicemms_send - 获取字段
+2013-09-13 21:44:38,521 [1128] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 21:44:38,523 [1128] DEBUG Servicemms_send - 获取字段
+2013-09-13 21:44:38,523 [1128] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307230011' order by BillNo desc
+2013-09-13 21:44:38,525 [1128] DEBUG Servicemms_send - 获取字段
+2013-09-13 21:44:38,525 [1128] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307230011' order by BillNo
+2013-09-13 21:44:38,526 [1128] DEBUG Servicemms_send - 获取字段
+2013-09-13 21:44:38,526 [1128] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 21:44:38,546 [1128] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 21:44:38,547 [1128] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307230011'
+2013-09-13 21:44:38,573 [1128] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 21:44:38,574 [1128] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307230011'
+2013-09-13 21:44:38,583 [1128] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 21:44:38,583 [1128] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230011'
+2013-09-13 21:44:39,962 [9824] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 21:44:39,962 [9824] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 21:44:39,963 [9824] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 21:44:39,963 [9824] DEBUG Servicemms_send - 获取字段
+2013-09-13 21:44:39,963 [9824] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 21:44:39,963 [9824] DEBUG Servicemms_send - 获取字段
+2013-09-13 21:44:39,963 [9824] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307110001' order by BillNo desc
+2013-09-13 21:44:39,964 [9824] DEBUG Servicemms_send - 获取字段
+2013-09-13 21:44:39,964 [9824] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307110001' order by BillNo
+2013-09-13 21:44:39,965 [9824] DEBUG Servicemms_send - 获取字段
+2013-09-13 21:44:39,965 [9824] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 21:44:39,966 [9824] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 21:44:39,966 [9824] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307110001'
+2013-09-13 21:44:39,966 [9824] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 21:44:39,966 [9824] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307110001'
+2013-09-13 21:44:39,967 [9824] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 21:44:39,967 [9824] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-13 21:44:41,163 [13840] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 21:44:41,163 [13840] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230011'
+2013-09-13 21:44:41,163 [13840] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 21:44:41,163 [13840] DEBUG Servicemms_send - 获取字段
+2013-09-13 21:44:41,163 [13840] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 21:44:41,164 [13840] DEBUG Servicemms_send - 获取字段
+2013-09-13 21:44:41,164 [13840] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307230011' order by BillNo desc
+2013-09-13 21:44:41,164 [13840] DEBUG Servicemms_send - 获取字段
+2013-09-13 21:44:41,164 [13840] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307230011' order by BillNo
+2013-09-13 21:44:41,164 [13840] DEBUG Servicemms_send - 获取字段
+2013-09-13 21:44:41,164 [13840] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 21:44:41,164 [13840] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 21:44:41,164 [13840] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307230011'
+2013-09-13 21:44:41,165 [13840] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 21:44:41,165 [13840] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307230011'
+2013-09-13 21:44:41,165 [13840] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 21:44:41,165 [13840] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230011'
+2013-09-13 23:42:27,869 [1128] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-09-13 23:42:28,667 [8920] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/send/edit')
+2013-09-13 23:42:28,672 [15780] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/send/edit')
+2013-09-13 23:42:28,698 [15780] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 23:42:28,699 [8920] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 23:42:28,702 [15780] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230011'
+2013-09-13 23:42:28,707 [8920] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230011'
+2013-09-13 23:42:28,792 [15780] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 23:42:28,792 [8920] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 23:42:28,792 [15780] DEBUG Servicemms_send - 获取字段
+2013-09-13 23:42:28,792 [8920] DEBUG Servicemms_send - 获取字段
+2013-09-13 23:42:28,792 [15780] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 23:42:28,792 [8920] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 23:42:28,793 [8920] DEBUG Servicemms_send - 获取字段
+2013-09-13 23:42:28,794 [8920] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307230011' order by BillNo desc
+2013-09-13 23:42:28,794 [15780] DEBUG Servicemms_send - 获取字段
+2013-09-13 23:42:28,794 [15780] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307230011' order by BillNo desc
+2013-09-13 23:42:28,795 [8920] DEBUG Servicemms_send - 获取字段
+2013-09-13 23:42:28,795 [8920] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307230011' order by BillNo
+2013-09-13 23:42:28,796 [15780] DEBUG Servicemms_send - 获取字段
+2013-09-13 23:42:28,796 [15780] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307230011' order by BillNo
+2013-09-13 23:42:28,797 [8920] DEBUG Servicemms_send - 获取字段
+2013-09-13 23:42:28,797 [8920] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 23:42:28,797 [15780] DEBUG Servicemms_send - 获取字段
+2013-09-13 23:42:28,797 [15780] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 23:42:28,798 [8920] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 23:42:28,798 [15780] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 23:42:28,798 [8920] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307230011'
+2013-09-13 23:42:28,799 [15780] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307230011'
+2013-09-13 23:42:29,307 [8920] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 23:42:29,307 [15780] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 23:42:29,307 [8920] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307230011'
+2013-09-13 23:42:29,307 [15780] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307230011'
+2013-09-13 23:42:29,425 [15780] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 23:42:29,425 [8920] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 23:42:29,425 [15780] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230011'
+2013-09-13 23:42:29,425 [8920] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230011'
+2013-09-13 23:42:29,427 [15780] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 23:42:29,427 [15780] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230011'
+2013-09-13 23:42:29,427 [8920] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 23:42:29,427 [8920] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230011'
+2013-09-13 23:42:29,427 [15780] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 23:42:29,428 [15780] DEBUG Servicemms_send - 获取字段
+2013-09-13 23:42:29,428 [15780] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 23:42:29,428 [8920] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-13 23:42:29,428 [8920] DEBUG Servicemms_send - 获取字段
+2013-09-13 23:42:29,428 [15780] DEBUG Servicemms_send - 获取字段
+2013-09-13 23:42:29,428 [8920] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-13 23:42:29,428 [15780] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307230011' order by BillNo desc
+2013-09-13 23:42:29,428 [8920] DEBUG Servicemms_send - 获取字段
+2013-09-13 23:42:29,429 [8920] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307230011' order by BillNo desc
+2013-09-13 23:42:29,429 [15780] DEBUG Servicemms_send - 获取字段
+2013-09-13 23:42:29,429 [15780] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307230011' order by BillNo
+2013-09-13 23:42:29,429 [8920] DEBUG Servicemms_send - 获取字段
+2013-09-13 23:42:29,429 [8920] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307230011' order by BillNo
+2013-09-13 23:42:29,429 [15780] DEBUG Servicemms_send - 获取字段
+2013-09-13 23:42:29,429 [15780] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 23:42:29,430 [8920] DEBUG Servicemms_send - 获取字段
+2013-09-13 23:42:29,430 [8920] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-13 23:42:29,430 [15780] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 23:42:29,430 [8920] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-13 23:42:29,430 [15780] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307230011'
+2013-09-13 23:42:29,430 [8920] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307230011'
+2013-09-13 23:42:29,431 [15780] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 23:42:29,431 [8920] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-13 23:42:29,431 [15780] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307230011'
+2013-09-13 23:42:29,431 [8920] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307230011'
+2013-09-13 23:42:29,431 [15780] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 23:42:29,431 [8920] DEBUG Servicemms_send - 获取实体对象
+2013-09-13 23:42:29,431 [15780] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230011'
+2013-09-13 23:42:29,432 [8920] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230011'

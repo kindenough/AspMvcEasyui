@@ -1,0 +1,134 @@
+using System;
+using System.Data;
+using System.Collections;
+using System.Drawing;
+using Gios.Pdf;
+
+namespace Pdf_Example2
+{
+	class Class1
+	{
+		[STAThread]
+		static void Main(string[] args)
+		{
+
+			// Starting instantiate the document.
+			// Remember to set the Docuement Format. In this case, we specify width and height.
+			PdfDocument myPdfDocument=new PdfDocument(PdfDocumentFormat.InCentimeters(29.7,21));
+			
+			// Now we create a Table of 300 lines, 4 columns and 4 points of Padding.
+			PdfTable myPdfTable=myPdfDocument.NewTable(new Font("Verdana",8),1000,4,3);
+
+			// Importing datas from the datatables... (also column names for the headers!)
+			myPdfTable.ImportDataTable(Table);
+
+			// Now we set our Graphic Design: Colors and Borders...
+			myPdfTable.HeadersRow.SetColors(Color.White,Color.Navy);
+			myPdfTable.SetColors(Color.Black,Color.White,Color.Gainsboro);
+			myPdfTable.SetBorders(Color.Black,1,BorderType.CompleteGrid);
+
+			// With just one method we can set the proportional width of the columns.
+			// It's a "percentage like" assignment, but the sum can be different from 100.
+			myPdfTable.SetColumnsWidth(new int[]{5,25,14,20});
+
+			// Sets the format for correct date-time representation
+			myPdfTable.Columns[2].SetContentFormat("{0:dd/MM}");
+
+			// You can also set colors for a range of cells, in this case, a row:
+			myPdfTable.Rows[9].SetColors(Color.Black,Color.LightGreen);
+					
+		
+			// Now we set some alignment... for the whole table and then, for a column.
+			myPdfTable.SetContentAlignment(ContentAlignment.TopCenter);
+			myPdfTable.Columns[1].SetContentAlignment(ContentAlignment.TopLeft);
+			
+			// This will load the image without placing into the document. The good thing
+			// is that the image will be written into the document just once even if we put it
+			// more times and in different sizes and places!
+			PdfImage LogoImage=myPdfDocument.NewImage(@"..\..\logo.jpg");
+
+			// Here we start the loop to generate the table...
+			while (!myPdfTable.AllTablePagesCreated)
+			{
+				// we create a new page to put the generation of the new TablePage:
+				PdfPage newPdfPage=myPdfDocument.NewPage();
+				
+				// now we start putting the logo into the right place with a high resoluton...
+				newPdfPage.Add(LogoImage,60,60,300);
+				
+				// then we create the first table of the Page adding it to the layout.
+				PdfTablePage newPdfTablePage1=
+					myPdfTable.CreateTablePage(new PdfArea(myPdfDocument, 50,140,200,420));
+				newPdfPage.Add(newPdfTablePage1);
+				
+				// now, if we don't have finished yet...
+				if (!myPdfTable.AllTablePagesCreated) 
+				{
+					// we create a second table for putting it into the page...
+					PdfTablePage newPdfTablePage2=
+						myPdfTable.CreateTablePage(new PdfArea(myPdfDocument,280,40,240,520));
+					newPdfPage.Add(newPdfTablePage2);
+				}
+
+				// and again...
+				if (!myPdfTable.AllTablePagesCreated) 
+				{
+					// we put the third table into the page.
+					PdfTablePage newPdfTablePage3=
+						myPdfTable.CreateTablePage(new PdfArea(myPdfDocument,550,40,240,520));
+					newPdfPage.Add(newPdfTablePage3);
+				}
+				// remember to save the page to the document!
+				newPdfPage.SaveToDocument();			
+			}
+			// and now we are ready to export the PDF!
+			myPdfDocument.SaveToFile("Example2.pdf");
+		}
+		#region 1000 Rows Datatable Generation
+		static System.Random r=new Random();
+		static string GetAName
+		{
+			get
+			{
+				ArrayList al=new ArrayList();
+				al.Add("John Doe");
+				al.Add("Perry White");
+				al.Add("Jackson");
+				al.Add("Henry James Junior Ford");
+				al.Add("Bill Norton");
+				al.Add("Michal Johnathan Stewart ");
+				al.Add("George Wilson");
+				al.Add("Steven Edwards");
+				return al[r.Next(0,al.Count)].ToString();
+			}
+		}
+		static DataTable Table
+		{
+			get
+			{
+				DataTable dt=new DataTable();
+				dt.Columns.Add("ID");
+				dt.Columns.Add("Name");
+				dt.Columns.Add("Date of Birth",typeof(DateTime));
+				dt.Columns.Add("Phone Number");
+				dt.Columns.Add("Mobile Phone");
+				dt.Columns.Add("Password");
+				
+				for (int x=0;x<=1000;x++)
+				{
+					DataRow dr=dt.NewRow();
+					dr["ID"]=x.ToString();
+					dr["Name"]=GetAName;
+					dr["Date of Birth"]=new DateTime(r.Next(1940,1984),r.Next(1,12),r.Next(1,28));
+					dr["Phone Number"]="555-"+r.Next(100000,999999).ToString();
+					dr["Mobile Phone"]="444-"+r.Next(100000,999999).ToString();
+					dr["Password"]=r.Next(10000000,99999999).ToString();
+					dt.Rows.Add(dr);
+				}
+
+				return dt;
+			}
+		}
+		#endregion
+	}
+}

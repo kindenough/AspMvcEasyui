@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<settings defaultOrderBy='MaterialCode'>
+  <module>Mms</module>
+  <select>C.*,A.RemainNum,'rentin' as SrcBillType,A.BillNo as SrcBillNo,A.RowId as SrcRowId</select>
+  <from>
+    mms_rentInDetail A
+    left join mms_rentIn B on B.BillNo =A.BillNo
+    left join mms_material C on C.MaterialCode = A.MaterialCode
+  </from>
+  <where defaultCp='equal' defaultIgnoreEmpty='true' >
+    <field name='B.ProjectCode'       cp='equal' IgnoreEmpty='false'></field>
+    <field name='C.MaterialType'      cp='startwith'  ></field>
+    <field name='A.MaterialCode'      cp='startwith'  ></field>
+    <field name='C.MaterialName'      cp='like'       ></field>
+    <field name='B.SupplierCode'      cp='equal' IgnoreEmpty='false'></field>
+  </where>
+</settings>

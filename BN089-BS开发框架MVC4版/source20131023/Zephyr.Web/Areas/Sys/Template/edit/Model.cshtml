@@ -1,0 +1,31 @@
+@using Zephyr.Core.Generator
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Zephyr.Core;
+
+namespace Zephyr.Models
+{
+    [Module("@Model.Database")]
+    public class @(Model.TableName)Service : ServiceBase<@Model.TableName>
+    {
+       
+    }
+
+    public class @Model.TableName : ModelBase
+    {
+@foreach(TableSchema item in Model.Columns)
+{
+    if (item.IsIdentity)
+    {
+        @:[Identity]
+    }
+
+    if (item.IsPrimaryKey)
+    {
+        @:[PrimaryKey]   
+    }
+        @:public @item.TypeName @item.ColumnName { get; set; }
+}
+    }
+}

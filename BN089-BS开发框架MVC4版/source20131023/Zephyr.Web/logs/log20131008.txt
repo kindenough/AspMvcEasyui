@@ -1,0 +1,369 @@
+2013-10-08 13:50:45,895 [6688] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-10-08 13:50:46,105 [6688] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-10-08 13:50:46,112 [6688] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-10-08 13:50:46,179 [6688] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-10-08 13:50:53,027 [7564] DEBUG Servicesys_user - 获取实体对象
+2013-10-08 13:50:53,046 [7564] DEBUG Sys - select sys_user.* from sys_user where  UserCode =  'lhs'and Password =  'lhs'and IsEnable =  'True'
+2013-10-08 13:50:54,025 [7564] DEBUG Sys - 
+update sys_user
+set LoginCount = isnull(LoginCount,0) + 1
+   ,LastLoginDate = getdate()
+where UserCode = 'lhs' 
+2013-10-08 13:50:54,103 [7564] DEBUG Sys - insert into sys_loginHistory([UserCode],[UserName],[HostName],[HostIP],[LoginCity],[LoginDate]) values('lhs','刘会胜','LHS-PC','ILData[0]/localhost','福建省厦门市','2013-10-08 13:50:54')
+2013-10-08 13:50:54,110 [7564] DEBUG Servicemms_project - 获取实体对象
+2013-10-08 13:50:54,111 [7564] DEBUG Mms - select mms_project.* from mms_project where  ProjectCode =  '201306030001'
+2013-10-08 13:50:54,368 [9744] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-10-08 13:50:57,344 [8780] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-10-08 13:50:59,371 [7564] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/receive/Index','/Mms/receive')
+2013-10-08 13:50:59,390 [7564] DEBUG Servicemms_warehouse - 获取动态列表
+2013-10-08 13:50:59,391 [7564] DEBUG Mms - select WarehouseCode as value,WarehouseName as text from mms_warehouse where  ProjectCode =  '201306030001'
+2013-10-08 13:50:59,453 [7564] DEBUG Servicesys_code - 获取动态列表
+2013-10-08 13:50:59,454 [7564] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'SupplyType'
+2013-10-08 13:51:03,694 [8372] DEBUG Servicemms_receive - 获取动态列表
+2013-10-08 13:51:03,694 [8372] DEBUG Mms - select top 20 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName as WarehouseName, E.MerchantsName AS SupplierName
+     from 
+        mms_receive A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants     E on E.MerchantsCode    = A.SupplierCode
+     where  A.ProjectCode =  '201306030001' order by A.BillNo
+2013-10-08 13:51:03,827 [8372] DEBUG Mms - select count(*) from ( select 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName as WarehouseName, E.MerchantsName AS SupplierName
+     from 
+        mms_receive A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants     E on E.MerchantsCode    = A.SupplierCode
+     where  A.ProjectCode =  '201306030001' ) tb_temp
+2013-10-08 13:51:04,625 [8596] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/receive/edit')
+2013-10-08 13:51:04,639 [8596] DEBUG Servicemms_receive - 获取实体对象
+2013-10-08 13:51:04,639 [8596] DEBUG Mms - select mms_receive.* from mms_receive where  BillNo =  '201307020002'
+2013-10-08 13:51:04,647 [8596] DEBUG Servicemms_receive - 获取上一条下一条数据
+2013-10-08 13:51:04,674 [8596] DEBUG Servicemms_receive - 获取字段
+2013-10-08 13:51:04,676 [8596] DEBUG Mms - select top 1 BillNo from mms_receive where  ProjectCode =  '201306030001' order by BillNo
+2013-10-08 13:51:04,680 [8596] DEBUG Servicemms_receive - 获取字段
+2013-10-08 13:51:04,681 [8596] DEBUG Mms - select top 1 BillNo from mms_receive where  BillNo < '201307020002'and ProjectCode =  '201306030001' order by BillNo desc
+2013-10-08 13:51:04,684 [8596] DEBUG Servicemms_receive - 获取字段
+2013-10-08 13:51:04,684 [8596] DEBUG Mms - select top 1 BillNo from mms_receive where  BillNo >  '201307020002'and ProjectCode =  '201306030001' order by BillNo
+2013-10-08 13:51:04,687 [8596] DEBUG Servicemms_receive - 获取字段
+2013-10-08 13:51:04,687 [8596] DEBUG Mms - select top 1 BillNo from mms_receive where  ProjectCode =  '201306030001' order by BillNo desc
+2013-10-08 13:51:05,365 [8596] DEBUG Servicesys_code - 获取动态列表
+2013-10-08 13:51:05,365 [8596] DEBUG Sys - select Text as value,Text as text from sys_code where  CodeType =  'MeasureUnit'
+2013-10-08 13:51:05,367 [8596] DEBUG Servicesys_code - 获取动态列表
+2013-10-08 13:51:05,367 [8596] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'SupplyType'
+2013-10-08 13:51:05,368 [8596] DEBUG Servicesys_code - 获取动态列表
+2013-10-08 13:51:05,368 [8596] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'PayType'
+2013-10-08 13:51:05,369 [8596] DEBUG Servicemms_warehouse - 获取动态列表
+2013-10-08 13:51:05,369 [8596] DEBUG Mms - select WarehouseCode as value,WarehouseName as text from mms_warehouse where  ProjectCode =  '201306030001'
+2013-10-08 13:51:05,371 [8596] DEBUG Servicesys_code - 获取字段
+2013-10-08 13:51:05,371 [8596] DEBUG Sys - select top 1 Code from sys_code where  CodeType =  'SupplyType'and IsEnable =  'True'and IsDefault =  'True'
+2013-10-08 13:51:05,373 [8596] DEBUG Servicesys_code - 获取字段
+2013-10-08 13:51:05,373 [8596] DEBUG Sys - select top 1 Code from sys_code where  CodeType =  'PayType'and IsEnable =  'True'and IsDefault =  'True'
+2013-10-08 13:51:06,378 [9360] DEBUG ServiceModelBase - 获取动态列表
+2013-10-08 13:51:06,379 [9360] DEBUG Mms - select 
+    MerchantsCode   as   value,MerchantsName   as   text
+   from 
+    mms_merchants A
+    left join mms_merchantsType B on B.MerchantsTypeCode = A.MerchantsTypeCode
+   where  MerchantsCode in ('CG00303') order by MerchantsCode
+2013-10-08 13:51:06,908 [8372] DEBUG Servicemms_receive - 获取动态列表
+2013-10-08 13:51:06,908 [8372] DEBUG Mms - select 
+        A.*, B.MaterialName,B.Model,B.Material
+     from 
+        mms_receiveDetail A
+        left join mms_material B on B.MaterialCode = A.MaterialCode
+     where  BillNo =  '201307020002' order by A.MaterialCode
+2013-10-08 13:51:09,084 [8372] DEBUG Servicemms_receive - 获取新主键
+2013-10-08 13:51:09,086 [8372] DEBUG Mms - select isnull(max(BillNo),0) from mms_receive
+2013-10-08 13:51:09,131 [9360] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/receive/edit')
+2013-10-08 13:51:09,134 [9360] DEBUG Servicemms_receive - 获取实体对象
+2013-10-08 13:51:09,134 [9360] DEBUG Mms - select mms_receive.* from mms_receive where  BillNo =  '201310080001'
+2013-10-08 13:51:09,135 [9360] DEBUG Servicemms_receive - 获取上一条下一条数据
+2013-10-08 13:51:09,135 [9360] DEBUG Servicemms_receive - 获取字段
+2013-10-08 13:51:09,135 [9360] DEBUG Mms - select top 1 BillNo from mms_receive where  ProjectCode =  '201306030001' order by BillNo
+2013-10-08 13:51:09,135 [9360] DEBUG Servicemms_receive - 获取字段
+2013-10-08 13:51:09,136 [9360] DEBUG Mms - select top 1 BillNo from mms_receive where  BillNo < '201310080001'and ProjectCode =  '201306030001' order by BillNo desc
+2013-10-08 13:51:09,138 [9360] DEBUG Servicemms_receive - 获取字段
+2013-10-08 13:51:09,138 [9360] DEBUG Mms - select top 1 BillNo from mms_receive where  BillNo >  '201310080001'and ProjectCode =  '201306030001' order by BillNo
+2013-10-08 13:51:09,140 [9360] DEBUG Servicemms_receive - 获取字段
+2013-10-08 13:51:09,140 [9360] DEBUG Mms - select top 1 BillNo from mms_receive where  ProjectCode =  '201306030001' order by BillNo desc
+2013-10-08 13:51:09,140 [9360] DEBUG Servicesys_code - 获取动态列表
+2013-10-08 13:51:09,141 [9360] DEBUG Sys - select Text as value,Text as text from sys_code where  CodeType =  'MeasureUnit'
+2013-10-08 13:51:09,142 [9360] DEBUG Servicesys_code - 获取动态列表
+2013-10-08 13:51:09,142 [9360] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'SupplyType'
+2013-10-08 13:51:09,143 [9360] DEBUG Servicesys_code - 获取动态列表
+2013-10-08 13:51:09,143 [9360] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'PayType'
+2013-10-08 13:51:09,143 [9360] DEBUG Servicemms_warehouse - 获取动态列表
+2013-10-08 13:51:09,144 [9360] DEBUG Mms - select WarehouseCode as value,WarehouseName as text from mms_warehouse where  ProjectCode =  '201306030001'
+2013-10-08 13:51:09,144 [9360] DEBUG Servicesys_code - 获取字段
+2013-10-08 13:51:09,144 [9360] DEBUG Sys - select top 1 Code from sys_code where  CodeType =  'SupplyType'and IsEnable =  'True'and IsDefault =  'True'
+2013-10-08 13:51:09,145 [9360] DEBUG Servicesys_code - 获取字段
+2013-10-08 13:51:09,145 [9360] DEBUG Sys - select top 1 Code from sys_code where  CodeType =  'PayType'and IsEnable =  'True'and IsDefault =  'True'
+2013-10-08 13:51:10,043 [8412] DEBUG Servicemms_receive - 获取动态列表
+2013-10-08 13:51:10,043 [8412] DEBUG Mms - select 
+        A.*, B.MaterialName,B.Model,B.Material
+     from 
+        mms_receiveDetail A
+        left join mms_material B on B.MaterialCode = A.MaterialCode
+     where  BillNo =  '201310080001' order by A.MaterialCode
+2013-10-08 15:38:34,422 [8496] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/receive/edit')
+2013-10-08 15:38:34,518 [8496] DEBUG Servicemms_receive - 获取实体对象
+2013-10-08 15:38:34,524 [8496] DEBUG Mms - select mms_receive.* from mms_receive where  BillNo =  '201307020016'
+2013-10-08 15:38:34,554 [8496] DEBUG Servicemms_receive - 获取上一条下一条数据
+2013-10-08 15:38:34,555 [8496] DEBUG Servicemms_receive - 获取字段
+2013-10-08 15:38:34,555 [8496] DEBUG Mms - select top 1 BillNo from mms_receive where  ProjectCode =  '201306030001' order by BillNo
+2013-10-08 15:38:34,557 [8496] DEBUG Servicemms_receive - 获取字段
+2013-10-08 15:38:34,557 [8496] DEBUG Mms - select top 1 BillNo from mms_receive where  BillNo < '201307020016'and ProjectCode =  '201306030001' order by BillNo desc
+2013-10-08 15:38:34,558 [8496] DEBUG Servicemms_receive - 获取字段
+2013-10-08 15:38:34,559 [8496] DEBUG Mms - select top 1 BillNo from mms_receive where  BillNo >  '201307020016'and ProjectCode =  '201306030001' order by BillNo
+2013-10-08 15:38:34,560 [8496] DEBUG Servicemms_receive - 获取字段
+2013-10-08 15:38:34,560 [8496] DEBUG Mms - select top 1 BillNo from mms_receive where  ProjectCode =  '201306030001' order by BillNo desc
+2013-10-08 15:38:34,562 [8496] DEBUG Servicesys_code - 获取动态列表
+2013-10-08 15:38:34,563 [8496] DEBUG Sys - select Text as value,Text as text from sys_code where  CodeType =  'MeasureUnit'
+2013-10-08 15:38:34,567 [8496] DEBUG Servicesys_code - 获取动态列表
+2013-10-08 15:38:34,567 [8496] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'SupplyType'
+2013-10-08 15:38:34,569 [8496] DEBUG Servicesys_code - 获取动态列表
+2013-10-08 15:38:34,569 [8496] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'PayType'
+2013-10-08 15:38:34,570 [8496] DEBUG Servicemms_warehouse - 获取动态列表
+2013-10-08 15:38:34,570 [8496] DEBUG Mms - select WarehouseCode as value,WarehouseName as text from mms_warehouse where  ProjectCode =  '201306030001'
+2013-10-08 15:38:34,604 [8496] DEBUG Servicesys_code - 获取字段
+2013-10-08 15:38:34,604 [8496] DEBUG Sys - select top 1 Code from sys_code where  CodeType =  'SupplyType'and IsEnable =  'True'and IsDefault =  'True'
+2013-10-08 15:38:34,606 [8496] DEBUG Servicesys_code - 获取字段
+2013-10-08 15:38:34,606 [8496] DEBUG Sys - select top 1 Code from sys_code where  CodeType =  'PayType'and IsEnable =  'True'and IsDefault =  'True'
+2013-10-08 15:38:35,452 [4340] DEBUG ServiceModelBase - 获取动态列表
+2013-10-08 15:38:35,452 [4340] DEBUG Mms - select 
+    MerchantsCode   as   value,MerchantsName   as   text
+   from 
+    mms_merchants A
+    left join mms_merchantsType B on B.MerchantsTypeCode = A.MerchantsTypeCode
+   where  MerchantsCode in ('CG00303') order by MerchantsCode
+2013-10-08 15:38:35,898 [8496] DEBUG Servicemms_receive - 获取动态列表
+2013-10-08 15:38:35,898 [8496] DEBUG Mms - select 
+        A.*, B.MaterialName,B.Model,B.Material
+     from 
+        mms_receiveDetail A
+        left join mms_material B on B.MaterialCode = A.MaterialCode
+     where  BillNo =  '201307020016' order by A.MaterialCode
+2013-10-08 15:39:32,108 [7516] DEBUG Servicemms_materialType - 获取动态列表
+2013-10-08 15:39:32,109 [7516] DEBUG Mms - select 
+        MaterialTypeName as text,MaterialType as id,ParentCode as pid
+     from 
+        mms_materialType
+     order by MaterialType
+2013-10-08 15:39:32,184 [9600] DEBUG Servicemms_material - 获取动态列表
+2013-10-08 15:39:32,185 [9600] DEBUG Mms - select top 10 A.* from 
+    mms_material A
+   order by A.MaterialCode
+2013-10-08 15:39:32,271 [9600] DEBUG Mms - select count(*) from ( select A.* from 
+    mms_material A
+   ) tb_temp
+2013-10-08 15:39:40,054 [7712] DEBUG ServiceModelBase - 获取动态列表
+2013-10-08 15:39:40,055 [7712] DEBUG Mms - select top 20 
+    MerchantsCode   as   value,MerchantsName   as   text
+   from 
+    mms_merchants A
+    left join mms_merchantsType B on B.MerchantsTypeCode = A.MerchantsTypeCode
+   where  B.MerchantsProperty in ('采购') order by MerchantsCode
+2013-10-08 15:39:40,061 [7712] DEBUG Mms - select count(*) from ( select 
+    MerchantsCode   as   value,MerchantsName   as   text
+   from 
+    mms_merchants A
+    left join mms_merchantsType B on B.MerchantsTypeCode = A.MerchantsTypeCode
+   where  B.MerchantsProperty in ('采购') ) tb_temp
+2013-10-08 15:42:33,356 [9600] DEBUG Servicemms_materialType - 获取动态列表
+2013-10-08 15:42:33,356 [9600] DEBUG Mms - select 
+        MaterialTypeName as text,MaterialType as id,ParentCode as pid
+     from 
+        mms_materialType
+     order by MaterialType
+2013-10-08 15:42:33,422 [7612] DEBUG Servicemms_material - 获取动态列表
+2013-10-08 15:42:33,422 [7612] DEBUG Mms - select top 10 A.* from 
+    mms_material A
+   order by A.MaterialCode
+2013-10-08 15:42:33,423 [7612] DEBUG Mms - select count(*) from ( select A.* from 
+    mms_material A
+   ) tb_temp
+2013-10-08 15:42:36,461 [7612] DEBUG Servicemms_receiveDetail - 获取新主键
+2013-10-08 15:42:36,462 [7612] DEBUG Mms - select isnull(max(RowId),0) from mms_receiveDetail  where 1 = 1  and  BillNo =  '201307020016'
+2013-10-08 15:43:36,288 [9336] DEBUG Servicemms_materialType - 获取动态列表
+2013-10-08 15:43:36,288 [9336] DEBUG Mms - select 
+        MaterialTypeName as text,MaterialType as id,ParentCode as pid
+     from 
+        mms_materialType
+     order by MaterialType
+2013-10-08 15:43:36,344 [6540] DEBUG Servicemms_material - 获取动态列表
+2013-10-08 15:43:36,344 [6540] DEBUG Mms - select top 10 A.* from 
+    mms_material A
+   order by A.MaterialCode
+2013-10-08 15:43:36,345 [6540] DEBUG Mms - select count(*) from ( select A.* from 
+    mms_material A
+   ) tb_temp
+2013-10-08 15:43:49,142 [9680] DEBUG Servicemms_receiveDetail - 获取新主键
+2013-10-08 15:43:49,143 [9680] DEBUG Mms - select isnull(max(RowId),0) from mms_receiveDetail  where 1 = 1  and  BillNo =  '201307020016'
+2013-10-08 15:50:24,959 [8708] DEBUG Servicesys_user - 获取实体对象
+2013-10-08 15:50:24,965 [8708] DEBUG Sys - select sys_user.* from sys_user where  UserCode =  'lhs'and Password =  'lhs'and IsEnable =  'True'
+2013-10-08 15:50:25,022 [8708] DEBUG Sys - 
+update sys_user
+set LoginCount = isnull(LoginCount,0) + 1
+   ,LastLoginDate = getdate()
+where UserCode = 'lhs' 
+2013-10-08 15:50:25,170 [8708] DEBUG Sys - insert into sys_loginHistory([UserCode],[UserName],[HostName],[HostIP],[LoginCity],[LoginDate]) values('lhs','刘会胜','LHS-PC','ILData[0]/localhost','福建省厦门市','2013-10-08 15:50:25')
+2013-10-08 15:50:25,405 [8708] DEBUG Servicemms_project - 获取实体对象
+2013-10-08 15:50:25,410 [8708] DEBUG Mms - select mms_project.* from mms_project where  ProjectCode =  '201306030001'
+2013-10-08 15:50:25,507 [6920] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-10-08 15:50:25,993 [10060] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-10-08 18:27:56,829 [9360] DEBUG Servicemms_receive - 获取实体对象
+2013-10-08 18:27:56,835 [9360] DEBUG Mms - select mms_receive.* from mms_receive where  BillNo =  '201307020022'
+2013-10-08 18:27:56,836 [9360] DEBUG Servicemms_receive - 获取上一条下一条数据
+2013-10-08 18:27:56,836 [9360] DEBUG Servicemms_receive - 获取字段
+2013-10-08 18:27:56,836 [9360] DEBUG Mms - select top 1 BillNo from mms_receive where  ProjectCode =  '201306030001' order by BillNo
+2013-10-08 18:27:56,836 [9360] DEBUG Servicemms_receive - 获取字段
+2013-10-08 18:27:56,837 [9360] DEBUG Mms - select top 1 BillNo from mms_receive where  BillNo < '201307020022'and ProjectCode =  '201306030001' order by BillNo desc
+2013-10-08 18:27:56,838 [9360] DEBUG Servicemms_receive - 获取字段
+2013-10-08 18:27:56,838 [9360] DEBUG Mms - select top 1 BillNo from mms_receive where  BillNo >  '201307020022'and ProjectCode =  '201306030001' order by BillNo
+2013-10-08 18:27:56,840 [9360] DEBUG Servicemms_receive - 获取字段
+2013-10-08 18:27:56,840 [9360] DEBUG Mms - select top 1 BillNo from mms_receive where  ProjectCode =  '201306030001' order by BillNo desc
+2013-10-08 18:27:56,928 [8692] DEBUG Servicemms_receive - 获取动态列表
+2013-10-08 18:27:56,928 [8692] DEBUG Mms - select 
+        A.*, B.MaterialName,B.Model,B.Material
+     from 
+        mms_receiveDetail A
+        left join mms_material B on B.MaterialCode = A.MaterialCode
+     where  BillNo =  '201307020022' order by A.CheckNum desc
+2013-10-08 18:27:57,044 [10016] DEBUG ServiceModelBase - 获取动态列表
+2013-10-08 18:27:57,044 [10016] DEBUG Mms - select 
+    MerchantsCode   as   value,MerchantsName   as   text
+   from 
+    mms_merchants A
+    left join mms_merchantsType B on B.MerchantsTypeCode = A.MerchantsTypeCode
+   where  MerchantsCode in ('CG00304') order by MerchantsCode
+2013-10-08 18:27:57,896 [8692] DEBUG Servicemms_receive - 获取实体对象
+2013-10-08 18:27:57,896 [8692] DEBUG Mms - select mms_receive.* from mms_receive where  BillNo =  '201307020024'
+2013-10-08 18:27:57,897 [8692] DEBUG Servicemms_receive - 获取上一条下一条数据
+2013-10-08 18:27:57,897 [8692] DEBUG Servicemms_receive - 获取字段
+2013-10-08 18:27:57,898 [8692] DEBUG Mms - select top 1 BillNo from mms_receive where  ProjectCode =  '201306030001' order by BillNo
+2013-10-08 18:27:57,898 [8692] DEBUG Servicemms_receive - 获取字段
+2013-10-08 18:27:57,898 [8692] DEBUG Mms - select top 1 BillNo from mms_receive where  BillNo < '201307020024'and ProjectCode =  '201306030001' order by BillNo desc
+2013-10-08 18:27:57,900 [8692] DEBUG Servicemms_receive - 获取字段
+2013-10-08 18:27:57,900 [8692] DEBUG Mms - select top 1 BillNo from mms_receive where  BillNo >  '201307020024'and ProjectCode =  '201306030001' order by BillNo
+2013-10-08 18:27:57,902 [8692] DEBUG Servicemms_receive - 获取字段
+2013-10-08 18:27:57,902 [8692] DEBUG Mms - select top 1 BillNo from mms_receive where  ProjectCode =  '201306030001' order by BillNo desc
+2013-10-08 18:27:57,995 [6052] DEBUG Servicemms_receive - 获取动态列表
+2013-10-08 18:27:57,995 [6052] DEBUG Mms - select 
+        A.*, B.MaterialName,B.Model,B.Material
+     from 
+        mms_receiveDetail A
+        left join mms_material B on B.MaterialCode = A.MaterialCode
+     where  BillNo =  '201307020024' order by A.CheckNum desc
+2013-10-08 18:27:58,018 [8692] DEBUG ServiceModelBase - 获取动态列表
+2013-10-08 18:27:58,018 [8692] DEBUG Mms - select 
+    MerchantsCode   as   value,MerchantsName   as   text
+   from 
+    mms_merchants A
+    left join mms_merchantsType B on B.MerchantsTypeCode = A.MerchantsTypeCode
+   where  MerchantsCode in ('CG00301') order by MerchantsCode
+2013-10-08 18:27:58,920 [9360] DEBUG Servicemms_receive - 获取实体对象
+2013-10-08 18:27:58,921 [9360] DEBUG Mms - select mms_receive.* from mms_receive where  BillNo =  '201307020022'
+2013-10-08 18:27:58,922 [9360] DEBUG Servicemms_receive - 获取上一条下一条数据
+2013-10-08 18:27:58,922 [9360] DEBUG Servicemms_receive - 获取字段
+2013-10-08 18:27:58,922 [9360] DEBUG Mms - select top 1 BillNo from mms_receive where  ProjectCode =  '201306030001' order by BillNo
+2013-10-08 18:27:58,922 [9360] DEBUG Servicemms_receive - 获取字段
+2013-10-08 18:27:58,922 [9360] DEBUG Mms - select top 1 BillNo from mms_receive where  BillNo < '201307020022'and ProjectCode =  '201306030001' order by BillNo desc
+2013-10-08 18:27:58,923 [9360] DEBUG Servicemms_receive - 获取字段
+2013-10-08 18:27:58,923 [9360] DEBUG Mms - select top 1 BillNo from mms_receive where  BillNo >  '201307020022'and ProjectCode =  '201306030001' order by BillNo
+2013-10-08 18:27:58,923 [9360] DEBUG Servicemms_receive - 获取字段
+2013-10-08 18:27:58,924 [9360] DEBUG Mms - select top 1 BillNo from mms_receive where  ProjectCode =  '201306030001' order by BillNo desc
+2013-10-08 18:27:58,980 [724] DEBUG Servicemms_receive - 获取动态列表
+2013-10-08 18:27:58,980 [724] DEBUG Mms - select 
+        A.*, B.MaterialName,B.Model,B.Material
+     from 
+        mms_receiveDetail A
+        left join mms_material B on B.MaterialCode = A.MaterialCode
+     where  BillNo =  '201307020022' order by A.CheckNum desc
+2013-10-08 18:27:59,021 [7060] DEBUG ServiceModelBase - 获取动态列表
+2013-10-08 18:27:59,021 [7060] DEBUG Mms - select 
+    MerchantsCode   as   value,MerchantsName   as   text
+   from 
+    mms_merchants A
+    left join mms_merchantsType B on B.MerchantsTypeCode = A.MerchantsTypeCode
+   where  MerchantsCode in ('CG00304') order by MerchantsCode
+2013-10-08 18:28:00,232 [7060] DEBUG Servicemms_receive - 获取实体对象
+2013-10-08 18:28:00,233 [7060] DEBUG Mms - select mms_receive.* from mms_receive where  BillNo =  '201307020024'
+2013-10-08 18:28:00,234 [7060] DEBUG Servicemms_receive - 获取上一条下一条数据
+2013-10-08 18:28:00,234 [7060] DEBUG Servicemms_receive - 获取字段
+2013-10-08 18:28:00,234 [7060] DEBUG Mms - select top 1 BillNo from mms_receive where  ProjectCode =  '201306030001' order by BillNo
+2013-10-08 18:28:00,235 [7060] DEBUG Servicemms_receive - 获取字段
+2013-10-08 18:28:00,235 [7060] DEBUG Mms - select top 1 BillNo from mms_receive where  BillNo < '201307020024'and ProjectCode =  '201306030001' order by BillNo desc
+2013-10-08 18:28:00,235 [7060] DEBUG Servicemms_receive - 获取字段
+2013-10-08 18:28:00,235 [7060] DEBUG Mms - select top 1 BillNo from mms_receive where  BillNo >  '201307020024'and ProjectCode =  '201306030001' order by BillNo
+2013-10-08 18:28:00,235 [7060] DEBUG Servicemms_receive - 获取字段
+2013-10-08 18:28:00,236 [7060] DEBUG Mms - select top 1 BillNo from mms_receive where  ProjectCode =  '201306030001' order by BillNo desc
+2013-10-08 18:28:00,283 [988] DEBUG Servicemms_receive - 获取动态列表
+2013-10-08 18:28:00,284 [988] DEBUG Mms - select 
+        A.*, B.MaterialName,B.Model,B.Material
+     from 
+        mms_receiveDetail A
+        left join mms_material B on B.MaterialCode = A.MaterialCode
+     where  BillNo =  '201307020024' order by A.CheckNum desc
+2013-10-08 18:28:00,328 [9360] DEBUG ServiceModelBase - 获取动态列表
+2013-10-08 18:28:00,328 [9360] DEBUG Mms - select 
+    MerchantsCode   as   value,MerchantsName   as   text
+   from 
+    mms_merchants A
+    left join mms_merchantsType B on B.MerchantsTypeCode = A.MerchantsTypeCode
+   where  MerchantsCode in ('CG00301') order by MerchantsCode

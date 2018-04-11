@@ -1,0 +1,58 @@
+
+@{
+    ViewBag.Title = "LossReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+<script src="/Content/js/viewModel/com.viewModel.searchEdit.js"></script>
+<script type="text/javascript">
+    var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+    ko.bindingViewModel(new com.viewModel.searchEdit(data));
+</script>
+}
+<div class="z-toolbar">
+    <a href="#" plain="true" class="easyui-linkbutton"  icon="icon-arrow_refresh"   title="刷新" data-bind="click:refreshClick">刷新</a>
+    <a href="#" plain="true" class="easyui-linkbutton"  icon="icon-add"             title="新增" data-bind="click:addClick"    >新增</a>
+    <a href="#" plain="true" class="easyui-linkbutton"  icon="icon-edit"            title="编辑" data-bind="click:editClick"   >编辑</a>
+    <a href="#" plain="true" class="easyui-linkbutton"  icon="icon-cross"           title="删除" data-bind="click:deleteClick" >删除</a>
+    <a href="#" plain="true" class="easyui-linkbutton"  icon="icon-save"            title="保存" data-bind="click:saveClick"   >保存</a>
+    <a href="#" plain="true" class="easyui-splitbutton" data-options="menu:'#dropdown',iconCls:'icon-download'"                >导出</a>
+</div>
+
+<div id="dropdown" style="width:100px; display:none;">  
+    <div data-options="iconCls:'icon-ext-xls'"      suffix="xls"    data-bind="click:downloadClick">Excel2003   </div>  
+    <div data-options="iconCls:'icon-page_excel'"   suffix="xlsx"   data-bind="click:downloadClick">Excel2007   </div>  
+    <div data-options="iconCls:'icon-ext-doc'"      suffix="doc"    data-bind="click:downloadClick">Word2003    </div>  
+</div> 
+
+<div class="container_12" style="position:relative;">
+    <div class="grid_1 lbl">BillNo</div>
+    <div class="grid_2 val"><input type="text" data-bind="value:form.BillNo" class="z-txt " /></div>
+    <div class="grid_1 lbl">BillDate</div>
+    <div class="grid_2 val"><input type="text" data-bind="value:form.BillDate" class="z-txt " /></div>
+    <div class="grid_1 lbl">DoPerson</div>
+    <div class="grid_2 val"><input type="text" data-bind="value:form.DoPerson" class="z-txt " /></div>
+ 
+    <div class="clear"></div>
+
+    <div class="grid_1 lbl">&nbsp;</div>
+    <div class="grid_2 val">&nbsp;</div>
+    <div class="clear"></div>
+
+    <div class="prefix_9" style="position:absolute;top:5px;height:0;">  
+        <a id="a_search" href="#" class="buttonHuge button-blue" data-bind="click:searchClick" style="margin:0 15px;">查询</a> 
+        <a id="a_reset"  href="#" class="buttonHuge button-blue" data-bind="click:clearClick">清空</a>
+    </div>
+</div>
+
+<table data-bind="datagrid:grid" style="display:none">
+    <thead>  
+        <tr>  
+            <th field="BillNo"  sortable="true" align="left" width="80" editor="text" >BillNo</th>
+            <th field="BillDate"  sortable="true" align="left" width="80" editor="text" >BillDate</th>
+            <th field="DoPerson"  sortable="true" align="left" width="80" editor="text" >DoPerson</th>
+            <th field="ProjectCode"  sortable="true" align="left" width="80" editor="text" >ProjectCode</th>
+        </tr>                            
+    </thead>      
+</table> 

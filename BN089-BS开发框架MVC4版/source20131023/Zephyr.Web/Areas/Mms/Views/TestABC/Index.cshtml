@@ -1,0 +1,70 @@
+﻿@{
+    ViewBag.Title = "TestABC";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+<script src="~/Areas/Mms/ViewModels/mms.com.js"></script>
+<script src="~/Areas/Mms/ViewModels/mms.viewModel.searchEdit.js"></script>
+<script type="text/javascript">
+    using(['numberbox']);
+
+    var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+    ko.bindingViewModel(new mms.viewModel.searchEdit(data));
+</script>
+}
+<div class="z-toolbar">
+    <a href="#" plain="true" class="easyui-linkbutton"  icon="icon-arrow_refresh"   title="刷新" data-bind="click:refreshClick">刷新</a>
+    <a href="#" plain="true" class="easyui-linkbutton"  icon="icon-add"             title="新增" data-bind="click:addClick"    >新增</a>
+    <a href="#" plain="true" class="easyui-linkbutton"  icon="icon-edit"            title="编辑" data-bind="click:editClick"   >编辑</a>
+    <a href="#" plain="true" class="easyui-linkbutton"  icon="icon-cross"           title="删除" data-bind="click:deleteClick" >删除</a>
+    <a href="#" plain="true" class="easyui-linkbutton"  icon="icon-save"     title="保存" data-bind="click:saveClick"  >保存</a>
+    <a href="#" plain="true" class="easyui-splitbutton" data-options="menu:'#dropdown',iconCls:'icon-download'"                >导出</a>
+</div>
+
+<div id="dropdown" style="width:100px; display:none;">  
+    <div data-options="iconCls:'icon-ext-xls'"      suffix="xls"    data-bind="click:downloadClick">Excel2003   </div>  
+    <div data-options="iconCls:'icon-page_excel'"   suffix="xlsx"   data-bind="click:downloadClick">Excel2007   </div>  
+    <div data-options="iconCls:'icon-ext-doc'"      suffix="doc"    data-bind="click:downloadClick">Word2003    </div>  
+</div> 
+
+<div id="condition" class="container_12" style="position:relative;">
+    <div class="grid_1 lbl">计划年度</div>
+    <div class="grid_2 val"><input type="text" data-bind="value:form.Year" class="z-txt"/></div>
+    <div class="grid_1 lbl">供应商</div>
+    <div class="grid_2 val"><input type="text" data-bind="value:form.ProjectName" class="z-txt" /></div>
+    <div class="grid_1 lbl">申报单位</div>
+    <div class="grid_2 val"><input type="text" data-bind="value:form.DeclaringUnits" class="z-txt"/></div>
+   
+    <div class="clear"></div>
+       
+    <div class="grid_1 lbl">项目类型</div>
+    <div class="grid_2 val"><input type="text" data-bind="datasource:dataSource.TypeItems ,comboboxValue:form.ProjectType" class="z-txt easyui-combobox" data-options="showblank:true"/></div>
+    <div class="grid_1 lbl">开始日期</div>
+    <div class="grid_2 val"><input type="text" data-bind="dateboxValue:form.StartDate" class="easyui-datebox z-txt" /></div>
+    <div class="grid_1 lbl">结束日期</div>
+    <div class="grid_2 val"><input type="text" data-bind="dateboxValue:form.EndDate" class="easyui-datebox z-txt" /></div>
+
+    <div class="clear"></div>
+
+    <div class="prefix_9" style="position:absolute;top:5px;height:0;">  
+        <a id="a_search" href="#" class="buttonHuge button-blue" data-bind="click:searchClick" style="margin:0 15px;">查询</a> 
+        <a id="a_reset"  href="#" class="buttonHuge button-blue" data-bind="click:clearClick">清空</a>
+    </div>
+</div>
+
+<table id="gridlist" data-bind="datagrid:grid" style="display:none">
+    <thead>  
+        <tr>  
+            <th field="ID"   hidden="true"            sortable="true" align="left"    width="90"  editor="text"                            >编号   </th>  
+            <th field="Year"            sortable="true" align="left"    width="200" editor="text"                             >计划年度     </th> 
+            <th field="ProjectName"     sortable="true" align="center"  width="70"  editor="text"                              >项目名称   </th> 
+            <th field="DeclaringUnits"  sortable="true" align="left"    width="100" editor="text"                              >申报单位   </th> 
+            <th field="ProjectType"     sortable="true" align="left"    width="100" editor="{type:'combobox',options:{data:data.dataSource.TypeItems}}"                             >项目类型       </th> 
+            <th field="StartDate"       sortable="true" align="center"  width="80" editor="datebox"  formatter="com.formatDate"  >开始日期   </th>  
+            <th field="EndDate"         sortable="true" align="right"   width="70" editor="datebox"  formatter="com.formatDate" >结束日期       </th>  
+            <th field="TotalMoney"      sortable="true" align="left"    width="90" editor="{type: 'numberbox',options:{min: 0, precision: 2}}"  formatter="com.formatMoney" >共投资   </th>  
+            <th field="Remark"          sortable="true" align="left"    width="150" editor="text"                              >备注       </th>   
+        </tr>                            
+    </thead>      
+</table> 

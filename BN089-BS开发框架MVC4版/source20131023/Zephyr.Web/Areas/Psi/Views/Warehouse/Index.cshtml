@@ -1,0 +1,61 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+        <script src="~/Areas/Psi/ViewModels/com.viewModel.searchEdit.js"></script>
+        <script type="text/javascript">
+            var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+            ko.bindingViewModel(new com.viewModel.searchEdit(data));
+        </script>
+}
+        <div class="z-toolbar">
+            <a id="a_refresh" href="#" plain="true" class="easyui-linkbutton" icon="icon-arrow_refresh" title="刷新" data-bind="click:refreshClick">刷新</a>
+            <a id="a_add"    href="#" plain="true" class="easyui-linkbutton" icon="icon-add" title="新增" data-bind="click:addClick">新增</a>
+            <a id="a_edit"   href="#" plain="true" class="easyui-linkbutton" icon="icon-edit" data-bind="click:editClick" title="编辑">编辑</a>
+            <a id="a_del"    href="#" plain="true" class="easyui-linkbutton" icon="icon-cross" title="删除" data-bind="click:deleteClick">删除</a>
+            <a id="a_del"    href="#" plain="true" class="easyui-linkbutton" icon="icon-save" title="保存" data-bind="click:saveClick">保存</a>
+            @*<a id="a_audit"  href="#" plain="true" class="easyui-linkbutton" icon="icon-folder_key" data-bind="click:auditClick" title="审核">审核</a>*@
+            <a id="a_export" href="#" class="easyui-splitbutton" data-options="menu:'#dropdown',iconCls:'icon-download'">导出</a>
+        </div>
+
+        <div id="dropdown" style="width:100px; display:none;">  
+            <div data-options="iconCls:'icon-ext-xls'"      suffix="xls"    data-bind="click:downloadClick">Excel2003   </div>  
+            <div data-options="iconCls:'icon-page_excel'"   suffix="xlsx"   data-bind="click:downloadClick">Excel2007   </div>  
+            <div data-options="iconCls:'icon-ext-doc'"      suffix="doc"    data-bind="click:downloadClick">Word2003    </div>  
+        </div> 
+
+        <div id="condition" class="container_12" style="position:relative;">
+            <div class="grid_1 lbl">仓库编号</div>
+            <div class="grid_2 val"><input type="text" data-bind="value:form.Id" class="z-txt easyui-autocomplete" data-options="url:'/api/mms/send/getbillno'"/></div>
+            <div class="grid_1 lbl">仓库名称</div>
+            <div class="grid_2 val"><input type="text" data-bind="value:form.Name" class="z-txt easyui-autocomplete" data-options="url:'/api/mms/project/getprojectname'"/></div>
+            <div class="grid_1 lbl">仓管员</div>
+            <div class="grid_2 val"><input type="text" data-bind="value:form.ChargePerson" class="z-txt"/></div>
+
+            <div class="clear"></div>
+            <div class="grid_1 lbl">联系电话</div>
+            <div class="grid_2 val"><input type="text" data-bind="value:form.Tel" class="z-txt"/></div>
+           
+            <div class="clear"></div>
+
+            <div class="prefix_9" style="position:absolute;top:5px;height:0;">  
+                <a id="a_search" href="#" class="buttonHuge button-blue" style="margin:0 15px;" data-bind="click:searchClick">查询</a> 
+                <a id="a_reset" href="#" class="buttonHuge button-blue" data-bind="click:clearClick">清空</a>
+            </div>
+        </div>
+
+        <table id="gridlist" data-bind="datagrid:grid">
+             <thead>  
+                <tr>  
+                    <th field="Id"                  sortable="true" align="left"    width="70"  editor="text" >仓库编号   </th>  
+                    <th field="Name"                sortable="true" align="left"    width="150" editor="text" >仓库名称     </th> 
+                    <th field="ChargePerson"        sortable="true" align="left"    width="100"  editor="text" >仓管员   </th>  
+                    <th field="Tel"                 sortable="true" align="left"    width="100"  editor="text">联系电话   </th>  
+                    <th field="Addr"               sortable="true" align="left"     width="100"  editor="text" >地址   </th>  
+                    <th field="Remark"              sortable="true" align="left"    width="200" editor="text" >描述说明   </th>   
+                </tr>                            
+            </thead>      
+        </table> 
+ 

@@ -1,0 +1,125 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zephyr.Web", "Zephyr.Web\Zephyr.Web.csproj", "{9D4B42FF-009F-4B91-9540-2454447BB644}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Zephyr.Net", "Zephyr.Net", "{E029D327-F211-4C0B-B06C-35808A7E9829}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zephyr.Core", "Zephyr.Net\Zephyr.Core\Zephyr.Core.csproj", "{36C1BA99-16C8-4BD8-9FBA-59811CE7C1F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zephyr.Utils", "Zephyr.Net\Zephyr.Utils\Zephyr.Utils.csproj", "{B62970F8-65AA-46E0-9F11-F573C117248F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zephyr.Data", "Zephyr.Net\Zephyr.Data\Zephyr.Data.csproj", "{B5AE821B-7728-49B3-9119-3BBC4C8E58E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zephyr.Generator", "Zephyr.Net\Zephyr.Generator\Zephyr.Generator.csproj", "{1D0C0603-DE37-49CD-A94B-E1C57F003F06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zephyr.WorkFlow", "Zephyr.Net\Zephyr.WorkFlow\Zephyr.WorkFlow.csproj", "{BADDFB3F-A5B3-47B5-90D4-20D20353F67F}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 7
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://192.168.1.100:8080/tfs/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Zephyr.Net\\Zephyr.Core\\Zephyr.Core.csproj
+		SccProjectTopLevelParentUniqueName1 = Zephyr.Web.VS2012.sln
+		SccProjectName1 = Zephyr.Net/Zephyr.Core
+		SccLocalPath1 = Zephyr.Net\\Zephyr.Core
+		SccProjectUniqueName2 = Zephyr.Net\\Zephyr.Data\\Zephyr.Data.csproj
+		SccProjectTopLevelParentUniqueName2 = Zephyr.Web.VS2012.sln
+		SccProjectName2 = Zephyr.Net/Zephyr.Data
+		SccLocalPath2 = Zephyr.Net\\Zephyr.Data
+		SccProjectUniqueName3 = Zephyr.Net\\Zephyr.Generator\\Zephyr.Generator.csproj
+		SccProjectTopLevelParentUniqueName3 = Zephyr.Web.VS2012.sln
+		SccProjectName3 = Zephyr.Net/Zephyr.Generator
+		SccLocalPath3 = Zephyr.Net\\Zephyr.Generator
+		SccProjectUniqueName4 = Zephyr.Net\\Zephyr.Utils\\Zephyr.Utils.csproj
+		SccProjectTopLevelParentUniqueName4 = Zephyr.Web.VS2012.sln
+		SccProjectName4 = Zephyr.Net/Zephyr.Utils
+		SccLocalPath4 = Zephyr.Net\\Zephyr.Utils
+		SccProjectUniqueName5 = Zephyr.Net\\Zephyr.WorkFlow\\Zephyr.WorkFlow.csproj
+		SccProjectTopLevelParentUniqueName5 = Zephyr.Web.VS2012.sln
+		SccProjectName5 = Zephyr.Net/Zephyr.WorkFlow
+		SccLocalPath5 = Zephyr.Net\\Zephyr.WorkFlow
+		SccProjectUniqueName6 = Zephyr.Web\\Zephyr.Web.csproj
+		SccProjectName6 = Zephyr.Web
+		SccLocalPath6 = Zephyr.Web
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Test|Any CPU = Test|Any CPU
+		Test|x64 = Test|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9D4B42FF-009F-4B91-9540-2454447BB644}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D4B42FF-009F-4B91-9540-2454447BB644}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D4B42FF-009F-4B91-9540-2454447BB644}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9D4B42FF-009F-4B91-9540-2454447BB644}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D4B42FF-009F-4B91-9540-2454447BB644}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D4B42FF-009F-4B91-9540-2454447BB644}.Release|x64.ActiveCfg = Release|Any CPU
+		{9D4B42FF-009F-4B91-9540-2454447BB644}.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{9D4B42FF-009F-4B91-9540-2454447BB644}.Test|Any CPU.Build.0 = Release|Any CPU
+		{9D4B42FF-009F-4B91-9540-2454447BB644}.Test|x64.ActiveCfg = Release|Any CPU
+		{36C1BA99-16C8-4BD8-9FBA-59811CE7C1F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36C1BA99-16C8-4BD8-9FBA-59811CE7C1F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36C1BA99-16C8-4BD8-9FBA-59811CE7C1F2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{36C1BA99-16C8-4BD8-9FBA-59811CE7C1F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36C1BA99-16C8-4BD8-9FBA-59811CE7C1F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36C1BA99-16C8-4BD8-9FBA-59811CE7C1F2}.Release|x64.ActiveCfg = Release|Any CPU
+		{36C1BA99-16C8-4BD8-9FBA-59811CE7C1F2}.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{36C1BA99-16C8-4BD8-9FBA-59811CE7C1F2}.Test|Any CPU.Build.0 = Release|Any CPU
+		{36C1BA99-16C8-4BD8-9FBA-59811CE7C1F2}.Test|x64.ActiveCfg = Release|Any CPU
+		{B62970F8-65AA-46E0-9F11-F573C117248F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B62970F8-65AA-46E0-9F11-F573C117248F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B62970F8-65AA-46E0-9F11-F573C117248F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B62970F8-65AA-46E0-9F11-F573C117248F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B62970F8-65AA-46E0-9F11-F573C117248F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B62970F8-65AA-46E0-9F11-F573C117248F}.Release|x64.ActiveCfg = Release|Any CPU
+		{B62970F8-65AA-46E0-9F11-F573C117248F}.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{B62970F8-65AA-46E0-9F11-F573C117248F}.Test|Any CPU.Build.0 = Release|Any CPU
+		{B62970F8-65AA-46E0-9F11-F573C117248F}.Test|x64.ActiveCfg = Release|Any CPU
+		{B5AE821B-7728-49B3-9119-3BBC4C8E58E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5AE821B-7728-49B3-9119-3BBC4C8E58E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5AE821B-7728-49B3-9119-3BBC4C8E58E9}.Debug|x64.ActiveCfg = Debug|x64
+		{B5AE821B-7728-49B3-9119-3BBC4C8E58E9}.Debug|x64.Build.0 = Debug|x64
+		{B5AE821B-7728-49B3-9119-3BBC4C8E58E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5AE821B-7728-49B3-9119-3BBC4C8E58E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5AE821B-7728-49B3-9119-3BBC4C8E58E9}.Release|x64.ActiveCfg = Release|x64
+		{B5AE821B-7728-49B3-9119-3BBC4C8E58E9}.Release|x64.Build.0 = Release|x64
+		{B5AE821B-7728-49B3-9119-3BBC4C8E58E9}.Test|Any CPU.ActiveCfg = Test|Any CPU
+		{B5AE821B-7728-49B3-9119-3BBC4C8E58E9}.Test|Any CPU.Build.0 = Test|Any CPU
+		{B5AE821B-7728-49B3-9119-3BBC4C8E58E9}.Test|x64.ActiveCfg = Test|x64
+		{B5AE821B-7728-49B3-9119-3BBC4C8E58E9}.Test|x64.Build.0 = Test|x64
+		{1D0C0603-DE37-49CD-A94B-E1C57F003F06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D0C0603-DE37-49CD-A94B-E1C57F003F06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D0C0603-DE37-49CD-A94B-E1C57F003F06}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1D0C0603-DE37-49CD-A94B-E1C57F003F06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D0C0603-DE37-49CD-A94B-E1C57F003F06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D0C0603-DE37-49CD-A94B-E1C57F003F06}.Release|x64.ActiveCfg = Release|Any CPU
+		{1D0C0603-DE37-49CD-A94B-E1C57F003F06}.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{1D0C0603-DE37-49CD-A94B-E1C57F003F06}.Test|Any CPU.Build.0 = Release|Any CPU
+		{1D0C0603-DE37-49CD-A94B-E1C57F003F06}.Test|x64.ActiveCfg = Release|Any CPU
+		{BADDFB3F-A5B3-47B5-90D4-20D20353F67F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BADDFB3F-A5B3-47B5-90D4-20D20353F67F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BADDFB3F-A5B3-47B5-90D4-20D20353F67F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BADDFB3F-A5B3-47B5-90D4-20D20353F67F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BADDFB3F-A5B3-47B5-90D4-20D20353F67F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BADDFB3F-A5B3-47B5-90D4-20D20353F67F}.Release|x64.ActiveCfg = Release|Any CPU
+		{BADDFB3F-A5B3-47B5-90D4-20D20353F67F}.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{BADDFB3F-A5B3-47B5-90D4-20D20353F67F}.Test|Any CPU.Build.0 = Release|Any CPU
+		{BADDFB3F-A5B3-47B5-90D4-20D20353F67F}.Test|x64.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{36C1BA99-16C8-4BD8-9FBA-59811CE7C1F2} = {E029D327-F211-4C0B-B06C-35808A7E9829}
+		{B62970F8-65AA-46E0-9F11-F573C117248F} = {E029D327-F211-4C0B-B06C-35808A7E9829}
+		{B5AE821B-7728-49B3-9119-3BBC4C8E58E9} = {E029D327-F211-4C0B-B06C-35808A7E9829}
+		{1D0C0603-DE37-49CD-A94B-E1C57F003F06} = {E029D327-F211-4C0B-B06C-35808A7E9829}
+		{BADDFB3F-A5B3-47B5-90D4-20D20353F67F} = {E029D327-F211-4C0B-B06C-35808A7E9829}
+	EndGlobalSection
+EndGlobal

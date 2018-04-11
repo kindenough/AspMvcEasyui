@@ -1,0 +1,215 @@
+﻿@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+        <script src="~/Areas/Psi/ViewModels/com.psi.js"></script>
+        <script src="~/Areas/Psi/ViewModels/com.viewModel.edit.js"></script>
+        <script type="text/javascript">
+            var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+            var viewModel = function (data) {
+                com.viewModel.edit.apply(this, arguments);
+                var pick = $("#PickingBillNo");
+                this.grid.size = { w: 6, h: 149 };
+                this.grid.toolbar.push("-");
+                this.grid.toolbar.push(com.psi.selectGoodsButton(this, '/api/psi/goods'));
+
+                this.grid.toolbar = [];
+                this.grid.OnAfterCreateEditor = com.psi.bindCalcTotalMoney(this, "Num", "UnitPrice", "Money", "TotalMoney");
+
+                this.showPicking = function(){
+                    pick.lookup('hidePanel');
+                    com.dialog({
+                        title: "&nbsp;选择图标",
+                        iconCls: 'icon-node_tree',
+                        width: 700,
+                        height: 500,
+                        html: "#select-template",
+                        viewModel: function (w) {
+                            var that = this;
+                            this.form = {
+                                Id: ko.observable(),
+                                Name: ko.observable()
+                            };
+                            this.grid = {
+                                height: 345,
+                                width: 585,
+                                url: "/api/psi/goods",
+                                queryParams: ko.observable(),
+                                pagination: true,
+                                singleSelect: false,
+                                rownumbers: false
+                            };
+                            this.searchClick = function () {
+                                that.grid.queryParams(ko.toJS(that.form));
+                            };
+                            this.clearClick = function () {
+                                $.each(this.form, function () { this(''); });
+                                this.searchClick();
+                            };
+                            this.cancelClick = function () {
+                                w.dialog('close');
+                            };
+                            this.confirmClick = function () {
+ 
+                            };
+                        }
+                    });
+                }
+
+                //pick.lookup({customShowPanel: true, onShowPanel: this.showPicking});
+                //pick.lookup('textbox').unbind();
+            };
+            ko.bindingViewModel(new viewModel(data));
+        </script>
+}
+
+    <div class="z-toolbar">
+        <a id="a_save" href="#" plain="true" class="easyui-linkbutton" icon="icon-save" data-bind="click:saveClick" title="保存">保存</a>
+        <a id="a_undo" href="#" plain="true" class="easyui-linkbutton" icon="icon-undo" data-bind="click:rejectClick" title="撤消">撤消</a>
+        <a id="a_audit" href="#" plain="true" class="easyui-linkbutton" icon="icon-folder_key" data-bind="click:auditClick" title="审核">审核</a>
+        <a id="a_printer" href="#" plain="true" class="easyui-linkbutton" icon="icon-printer" title="打印" data-bind="click:printClick">打印</a>
+        <div class="datagrid-btn-separator"></div>
+        <a id="a_other" href="#" class="easyui-splitbutton" data-options="menu:'#divother',iconCls:'icon-application_go'" title="其他">其他</a>
+        <div class="datagrid-btn-separator"></div>
+        <a id="a_first" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_first" data-bind="click:firstClick,linkbuttonEnable:scrollKeys.firstEnable" title="第一条"></a> 
+        <a id="a_previous" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_previous" data-bind="click:previousClick,linkbuttonEnable:scrollKeys.previousEnable" title="上一条"></a> 
+        <a id="a_next" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_next" data-bind="click:nextClick,linkbuttonEnable:scrollKeys.nextEnable" title="下一条"></a> 
+        <a id="a_last" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_last" data-bind="click:lastClick,linkbuttonEnable:scrollKeys.lastEnable" title="最后一条"></a> 
+    </div>
+
+    <div id="divother" style="width:100px; display:none;">
+        <div id="a_add" data-options="iconCls:'icon-add'">新增</div>
+        <div id="a_del" data-options="iconCls:'icon-cross'">删除</div>
+        <div id="a_refresh" data-options="iconCls:'icon-arrow_refresh'">刷新</div>
+    </div>  
+
+    <div id="master" class="container_12" data-bind="inputwidth:0.9">
+        <div class="grid_1 lbl">退还单号</div>
+        <div class="grid_3 val"><input type="text" id="BillNo" name="BillNo"  data-bind="value:form.BillNo,readOnly:true" class="z-txt readonly"/></div>
+        <div class="grid_1 lbl">单据日期</div>
+        <div class="grid_3 val"><input type="text" id="BillDate" name="BillDate" data-bind="dateboxValue:form.BillDate" class="z-txt easyui-datebox" /></div>
+        <div class="grid_1 lbl">经办人</div>
+        <div class="grid_3 val "><input type="text" id="DoPerson" name="DoPerson" data-bind="value:form.DoPerson" class="z-txt easyui-validatebox" /></div>
+        
+        <div class="clear"></div>
+        
+        <div class="grid_1 lbl required">领货单号</div>
+        <div class="grid_3 val"><input type="text" id="PickingBillNo" data-bind="lookupValue:form.PickingBillNo" class="z-txt easyui-lookup" data-options="lookupType:'psi.pickingBill',grid:{
+            columns:[[  
+                {field:'value',title:'领料单号',width:100}, 
+                {field:'text',title:'领料单号',width:100}, 
+                {field:'CustomNo',title:'客户名称',width:100}, 
+                {field:'Contract',title:'服务合同',width:100}
+            ]]  
+            }" /></div>
+        <div class="grid_1 lbl required">客户</div>
+        <div class="grid_3 val"><input type="text" data-bind="value:form.CustomNo" required="true" class="z-txt"/></div>
+        <div class="grid_1 lbl required">服务合同 </div>
+        <div class="grid_3 val required"><input type="text" data-bind="value:form.Contract" class="z-txt"  /></div>
+        
+        <div class="clear"></div>
+
+        <div class="grid_1 lbl required">退还人 </div>
+        <div class="grid_3 val"><input type="text" data-bind="value:form.ReturnPerson" class="z-txt"  required="true" /></div>
+        <div class="grid_1 lbl required">退还日期 </div>
+        <div class="grid_3 val"><input type="text" data-bind="dateboxValue:form.ReturnDate" class="easyui-datebox z-txt"  required="true" /></div>
+        <div class="grid_1 lbl">金额</div>
+        <div class="grid_3 val"><input type="text" id="TotalMoney" name="TotalMoney" data-bind="numberboxValue:form.TotalMoney,readOnly:true" class="z-txt easyui-numberbox readonly" data-options="min: 0, precision: 2"/></div>
+        
+        <div class="clear"></div>
+
+        <div class="grid_1 lbl">备注</div>
+        <div class="grid_3 val"><input type="text" id="Remark" name="Remark" data-bind="value:form.Remark" class="z-txt" /></div>
+
+        <div class="clear"></div>
+    </div>
+ 
+    <div id="tt" class="easyui-tabs">  
+        <div title="货物明细">
+            <table data-bind="datagrid:grid">
+                <thead>
+                    <tr>
+                        <th field="BillNo" hidden="true"></th>  
+                        <th field="RowId"  hidden="true" ></th> 
+                        <th field="GoodNo"              sortable="true" align="left"    width="80" >货物编码   </th>  
+                        <th field="Name"                sortable="true" align="left"    width="150"  >货物名称     </th> 
+                        <th field="Catagory"            sortable="true" align="left"    width="100"   >类别   </th>  
+                        <th field="Brand"               sortable="true" align="left"    width="100"  >品牌   </th>  
+                        <th field="Model"               sortable="true" align="left"    width="100"   >型号规格   </th>  
+                        <th field="Unit"                sortable="true" align="left"    width="80"   >计量单位   </th> 
+                        <th field="Num"                 sortable="true" align="right"   width="70"  editor="{type: 'numberbox',options:{min: 0}}">接收数量       </th>  
+                        <th field="UnitPrice"           sortable="true" align="right"   width="70"  editor="{type: 'numberbox',options:{min: 0, precision: 2}}"  formatter="com.formatMoney"   >单价       </th>  
+                        <th field="Money"               sortable="true" align="right"   width="70"  editor="{type: 'numberbox',options:{min: 0, precision: 2}}" formatter="com.formatMoney"   >金额       </th>  
+                        <th field="Remark"              sortable="true" align="left"    width="200" editor="text">备注       </th>   
+                    </tr>
+                </thead>
+            </table>   
+        </div>
+        <div title="表单信息" class="hide" style="padding-top:2px;">
+            <div class="container_12" id="BillDetail" data-bind="inputwidth:0.9,autoheight:153"> 
+                <div class="clear"></div>
+                <div class="grid_1 lbl">审批状态</div>
+                <div class="grid_3 val"><input type="text" data-bind="value:form.AuditState,readOnly:true" class="z-txt readonly"/></div>
+                <div class="grid_1 lbl">审批意见</div>
+                <div class="grid_3 val"><input type="text" data-bind="value:form.AuditRemark,readOnly:true"  class="z-txt readonly"/></div>
+                <div class="grid_1 lbl">审批人 </div>
+                <div class="grid_3 val"><input type="text" data-bind="value:form.AuditPerson,readOnly:true" class="z-txt readonly"/></div>
+
+                <div class="clear"></div>
+                <div class="grid_1 lbl">审批日期</div>
+                <div class="grid_3 val"><input type="text" data-bind="dateboxValue:form.AuditDate,dateboxReadOnly:true"  class="z-txt easyui-datebox readonly"/></div>
+                <div class="grid_1 lbl">编制日期</div>
+                <div class="grid_3 val"><input type="text" data-bind="dateboxValue:form.CreateDate,dateboxReadOnly:true" class="z-txt easyui-datebox readonly" /></div>
+                <div class="grid_1 lbl">编制人</div>
+                <div class="grid_3 val "><input type="text" data-bind="value:form.CreatePerson,readOnly:true" class="z-txt readonly" /></div>
+                
+                <div class="clear"></div>
+                <div class="grid_1 lbl">修改日期</div>
+                <div class="grid_3 val"><input type="text" data-bind="dateboxValue:form.UpdateDate,dateboxReadOnly:true" class="z-txt easyui-datebox readonly" /></div>
+                <div class="grid_1 lbl">修改人</div>
+                <div class="grid_3 val "><input type="text" data-bind="value:form.UpdatePerson,readOnly:true" class="z-txt readonly" /></div>
+            </div>
+        </div> 
+    </div>  
+
+
+<script type="text/html" id="select-template">
+    <style type="text/css">
+    .z-toolbar{ border-width:0; margin:0;}
+    .lbl { text-align:right; line-height:25px;}
+    .datagrid-wrap{ border-width:0 !important;}
+    </style>
+
+    <div class="z-toolbar" style="border-bottom-width:1px;">
+        <div class="container_16">
+            <div class="grid_2 lbl" id="valueTitle">编码</div>
+            <div class="grid_4 val"><input type="text" data-bind="value:form.Id"  class="z-txt" style="width:100%"  /></div>
+            <div class="grid_2 lbl" id="textTitle">名称</div>
+            <div class="grid_4 val"><input type="text" data-bind="value:form.Name" class="z-txt" style="width:100%"/></div>
+            <div class="grid_4 val" style="margin-top:0px;">
+                <a id="btnSearch" href="#" plain="true" class="easyui-linkbutton" icon="icon-search" title="查询" data-bind="click:searchClick">查询</a>
+                <a id="btnClear" href="#" plain="true" class="easyui-linkbutton" icon="icon-clear" title="清空" data-bind="click:clearClick">清空</a>
+            </div>
+        </div>
+    </div>
+
+    <table id="list" data-bind="datagrid:grid">
+        <thead>  
+        <tr>  
+            <th field="ck" checkbox="true"></th>
+            <th field="Id"                  sortable="true" align="left"    width="70"  editor="text" >货物编号   </th>  
+            <th field="Name"                sortable="true" align="left"    width="150" editor="text" >货物名称     </th> 
+            <th field="Catagory"            sortable="true" align="left"    width="100"  editor="text" >类别   </th>  
+            <th field="Brand"               sortable="true" align="left"    width="100"  editor="text">品牌   </th>  
+            <th field="Model"               sortable="true" align="left"    width="100"  editor="text" >型号规格   </th>  
+        </tr>                            
+        </thead>      
+    </table> 
+                 
+    <div class="z-toolbar" style="text-align: center;padding:4px 0;border-top-width:1px; ">
+        <button id="btnConfirm" class="sexybutton" data-bind="click:confirmClick"><span><span><span class="ok">确定</span></span></span></button> &nbsp; 
+    <button id="btnCancel" class="sexybutton"  data-bind="click:cancelClick"><span><span><span class="cancel">取消</span></span></span></button>
+</div>
+</script>

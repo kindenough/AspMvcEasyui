@@ -1,0 +1,81 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+        <script src="~/Areas/Mms/ViewModels/mms.com.js"></script>
+        <script src="~/Areas/Mms/ViewModels/mms.viewModel.search.js"></script>
+        <script type="text/javascript">
+            var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+            var viewModel = function(){ 
+                var self = this;
+                mms.viewModel.search.apply(this,arguments);
+                com.formaterPriceKind = utils.fnValueToText(data.dataSource.PriceKind);
+            }
+            ko.bindingViewModel(new viewModel(data));
+        </script>
+}
+        <div class="z-toolbar">
+            <a id="a_refresh" href="#" plain="true" class="easyui-linkbutton" icon="icon-arrow_refresh" title="刷新" data-bind="click:refreshClick">刷新</a>
+            <a id="a_add"    href="#" plain="true" class="easyui-linkbutton" icon="icon-add" title="新增" data-bind="click:addClick">新增</a>
+            <a id="a_edit"   href="#" plain="true" class="easyui-linkbutton" icon="icon-edit" data-bind="click:editClick" title="编辑">编辑</a>
+            <a id="a_del"    href="#" plain="true" class="easyui-linkbutton" icon="icon-cross" title="删除" data-bind="click:deleteClick">删除</a>
+            <a id="a_audit"  href="#" plain="true" class="easyui-linkbutton" icon="icon-user-accept" data-bind="click:auditClick" title="审核">审核</a>
+            <a id="a_export" href="#" class="easyui-splitbutton" data-options="menu:'#dropdown',iconCls:'icon-download'">导出</a>
+        </div>
+
+        <div id="dropdown" style="width:100px; display:none;">  
+            <div data-options="iconCls:'icon-ext-xls'"      suffix="xls"    data-bind="click:downloadClick">Excel2003   </div>  
+            <div data-options="iconCls:'icon-page_excel'"   suffix="xlsx"   data-bind="click:downloadClick">Excel2007   </div>  
+            <div data-options="iconCls:'icon-ext-doc'"      suffix="doc"    data-bind="click:downloadClick">Word2003    </div>  
+        </div> 
+
+        <div id="condition" class="container_12" style="position:relative;">
+            <div class="grid_1 lbl">调拨单号</div>
+            <div class="grid_2 val"><input type="text" data-bind="value:form.BillNo" class="z-txt easyui-autocomplete" data-options="url:'/api/mms/transfer/getbillno'"/></div>
+            <div class="grid_1 lbl">收料单位</div>
+            <div class="grid_2 val"><input type="text" data-bind="value:form.ReceiveUnitName" class="z-txt easyui-autocomplete" data-options="url:'/api/mms/merchant/getnames'"/></div>
+            @*<div class="grid_1 lbl">项目名称</div>
+            <div class="grid_2 val"><input type="text" data-bind="value:form.ProjectName" class="z-txt easyui-autocomplete" data-options="url:'/api/mms/project/getprojectname'"/></div>
+            *@<div class="grid_1 lbl">经办人</div>
+            <div class="grid_2 val"><input type="text" data-bind="value:form.DoPerson" class="z-txt easyui-autocomplete" data-options="url:'/api/mms/transfer/getdoperson'"/></div>
+      
+            <div class="clear"></div>
+       
+            <div class="grid_1 lbl">库房</div>
+            <div class="grid_2 val"><input type="text" data-bind="datasource:dataSource.warehouseItems ,comboboxValue:form.WarehouseCode" class="z-txt easyui-combobox" data-options="showblank:true"/></div>
+           @* <div class="grid_1 lbl">材料类别</div>
+            <div class="grid_2 val"><input type="text" data-bind="lookupValue:form.MaterialType" class="z-txt easyui-lookup" data-options="lookupType:'materialtype',parentField:'pid'"/></div>
+            *@
+            <div class="grid_1 lbl">计价方式</div>
+            <div class="grid_2 val"><input type="text" data-bind="comboboxValue:form.PriceKind,datasource:dataSource.PriceKind" class="easyui-combobox z-txt" data-options="showblank:true" /></div>
+            <div class="grid_1 lbl">调拨日期</div>
+            <div class="grid_2 val"><input type="text" data-bind="value:form.TransferDate" class="z-txt easyui-daterange"/></div>
+
+            <div class="clear"></div>
+
+            <div class="prefix_9" style="position:absolute;top:5px;height:0;">  
+                <a id="a_search" href="#" class="buttonHuge button-blue" style="margin:0 15px;" data-bind="click:searchClick">查询</a> 
+                <a id="a_reset" href="#" class="buttonHuge button-blue" data-bind="click:clearClick">清空</a>
+            </div>
+        </div>
+ 
+        <table id="gridlist" data-bind="datagrid:grid">
+             <thead>  
+                <tr>  
+                    <th field="BillNo"              sortable="true" align="left"    width="90"  >调拨单号   </th>  
+                    <th field="DoPerson"            sortable="true" align="left"    width="70"  >经办人     </th>  
+                    @*<th field="ProjectName"         sortable="true" align="left"    width="80"  >项目名称   </th>*@ 
+                    <th field="WarehouseName"           sortable="true" align="left"    width="100" >库房       </th>  
+                   @* <th field="MaterialTypeName"    sortable="true" align="left"    width="80" >材料类别   </th>  *@
+                    <th field="ReceiveUnitName"     sortable="true" align="left"    width="180"  >收料单位   </th>  
+                    <th field="BillDate"            sortable="true" align="center"  width="80"  formatter="com.formatDate"    >收料日期   </th>  
+                    <th field="PriceKind"           sortable="true" align="center"    width="80"  formatter="com.formaterPriceKind" >计价方式   </th>  
+                    <th field="TotalMoney"          sortable="true" align="right"   width="80"  formatter="com.formatMoney"   >金额       </th>  
+                     @*        <th field="PayKind"             sortable="true" align="left"    width="90"   >付款方式   </th>  *@
+                    <th field="Remark"              sortable="true" align="left"    width="150" >备注       </th>   
+                </tr>                            
+            </thead>      
+        </table> 
+ 

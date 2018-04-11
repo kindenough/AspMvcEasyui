@@ -1,0 +1,126 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+        <script src="~/Areas/Sys/ViewModels/Menu.js"></script>
+        <script type="text/javascript">
+            var formatsys_log = function (value) {
+                var html = '<a href="#" onclick=\'view("' + value + '")\'><span class="icon icon-search">&nbsp;</span>[查看]</a>';
+                html += '<a href="/sys/log/download/'+value+'" style="margin-left:10px"><span class="icon icon-download">&nbsp;</span>[下载]</a>';
+                return html;
+            };
+
+            var viewModel =function(){
+                var self = this;
+                this.form = {LogDate:ko.observable()};
+                this.login = {
+                    size: { w: 6, h: 123 },
+                    url: "/api/sys/log/getloginlog",
+                    queryParams: ko.observable(),
+                    pagination: true
+                };
+                this.operate = {
+                    size: { w: 6, h: 123 },
+                    url: "/api/sys/log/getoperatelog",
+                    queryParams: ko.observable(),
+                    pagination: true
+                };
+                this.system = {
+                    size: { w: 6, h: 123 },
+                    url: "/api/sys/log/getsystemlog",
+                    queryParams: ko.observable(),
+                    pagination: true
+                };
+
+                this.refreshClick = function () {
+                    window.location.reload();
+                };
+
+                this.searchClick = function () {
+                    this.login.queryParams(ko.toJS(this.form));
+                    this.operate.queryParams(ko.toJS(this.form));
+                    this.system.queryParams(ko.toJS(this.form));
+                };
+
+                this.clearClick = function () {
+                    this.form.LogDate("");
+                    this.searchClick();
+                }
+            };
+
+            var view = function (id) {
+                com.dialog({
+                    title: "查看日志",
+                    width: 700,
+                    height: 500,
+                    maximizable: true,
+                    html: '<iframe id="_view_sys_log_" scrolling="auto" frameborder="0"  style="width:100%;height:100%;"></iframe>',
+                    viewModel: function (w) {
+                        w.find("iframe").attr("src", "/sys/log/view/" + id);
+                    }
+                });
+            };
+
+            ko.bindingViewModel(new viewModel());
+        </script>
+}
+        <div class="z-toolbar">
+            <a id="a_refresh" href="#" plain="true" class="easyui-linkbutton" icon="icon-arrow_refresh" title="刷新" data-bind="click:refreshClick">刷新</a>
+        </div>
+
+        <div id="condition" class="container_12" style="position:relative;height:50px;">
+             <div class="clear" style="height:13px;"></div>
+
+            <div class="grid_1 lbl">日志日期</div>
+            <div class="grid_2 val"><input type="text" data-bind="value:form.LogDate" class="z-txt easyui-daterange"/></div>
+ 
+            <div class="prefix_9" style="position:absolute;top:5px;height:0;">  
+                <a id="a_search" href="#" class="buttonHuge button-blue" style="margin:0 15px;" data-bind="click:searchClick">查询</a> 
+                <a id="a_reset" href="#" class="buttonHuge button-blue" data-bind="click:clearClick">清空</a>
+            </div>
+        </div>
+        <div id="tt" class="easyui-tabs">  
+            <div title="登陆日志">
+                <table data-bind="datagrid:login">
+                    <thead>  
+                        <tr>    
+                            <th field="UserCode"    align="left"    width="70">登陆帐号   </th>  
+                            <th field="UserName"    align="left"    width="100">用户名称   </th>  
+                            <th field="HostIP"      align="left"    width="200" >登陆IP     </th> 
+                            <th field="HostName"    align="left"    width="100" >登陆机器名   </th>  
+                            <th field="LoginCity"   align="left"    width="150" >登陆位置   </th>  
+                            <th field="LoginDate"   align="center"  width="130" formatter="com.formatTime">登陆日期   </th>  
+                        </tr>                            
+                    </thead>      
+                </table>   
+            </div>
+
+            <div title="操作日志">
+                 <table data-bind="datagrid:operate">
+                    <thead>  
+                        <tr>    
+                            <th field="UserCode"    align="left"    width="70"  >操作帐号   </th>  
+                            <th field="UserName"    align="left"    width="100" >操作人   </th>  
+                            <th field="Position"    align="left"    width="150" >位置     </th> 
+                            <th field="Target"      align="left"    width="100" >对象   </th>  
+                            <th field="Type"        align="left"    width="100" >类型   </th>  
+                            <th field="Message"     align="left"    width="150" >数据   </th>  
+                            <th field="Date"        align="center"  width="120" formatter="com.formatTime">日期   </th>  
+                        </tr>                            
+                    </thead>      
+                </table>
+            </div>
+            <div title="系统日志" >
+                <table data-bind="datagrid:system">
+                    <thead>  
+                        <tr>    
+                            <th field="filename"    align="left"    width="150"  >日志文件   </th>  
+                            <th field="size"        align="left"    width="100" >文件大小   </th>  
+                            <th field="id"    align="center"    width="150" formatter="formatsys_log" >操作     </th> 
+                        </tr>                            
+                    </thead>      
+                </table>     
+            </div> 
+        </div> 

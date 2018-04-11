@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<settings lookupType="project" defaultOrderBy='MerchantsCode'>
+  <module>Mms</module>
+  <select>
+    MerchantsCode   as   value,MerchantsName   as   text
+  </select>
+  <from>
+    mms_merchants
+  </from>
+  <where defaultForAll='true' defaultCp='equal' defaultIgnoreEmpty='true' >
+    <field name='MerchantsCode'       cp='startwith'  ></field>
+    <field name='MerchantsName'       cp='like'       ></field>
+  </where>
+</settings>

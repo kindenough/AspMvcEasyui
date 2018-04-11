@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<settings defaultOrderBy='MaterialCode'>
+  <module>Mms</module>
+  <select>A.*,B.Num as BookNum,B.UnitPrice as BookUnitPrice,B.Num as ActualNum,B.UnitPrice as ActualUnitPrice,B.Num * B.UnitPrice as BookMoney</select>
+  <from>
+    mms_material A
+    inner join mms_warehouseStock B on B.MaterialCode = A.MaterialCode and B.Num >0
+    inner join mms_warehouse C on C.WarehouseCode = B.WarehouseCode
+  </from>
+  <where defaultForAll='true' defaultCp='equal' defaultIgnoreEmpty='true' >
+    <field name='A.MaterialType'      cp='startwith'  ></field>
+    <field name='A.MaterialCode'      cp='startwith'  ></field>
+    <field name='A.MaterialCode'      cp='equal' variable='MaterialCodeEqual'></field>
+    <field name='A.MaterialName'      cp='like'       ></field>
+    <field name='ProjectCode'         cp='equal'      ></field>
+    <field name='C.WarehouseCode'     cp='equal' ignoreEmpty='false'></field>
+  </where>
+</settings>

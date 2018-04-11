@@ -1,0 +1,206 @@
+﻿@{
+    var area = Model.Data["area"];
+    var condtions = Model.Data["conditions"];
+    var columns = Model.Data["columns"];
+    var controller = Model.Data["controller"];
+    var count1 = condtions.Count;
+    var count2 = columns.Count;
+    var PrimaryKey = Model.PrimaryKeys[0];
+    var tabs = Model.Data["tabs"];
+    var mainTable = Model.Data["table"];
+    var count3 = tabs[0].columns.Count;
+    
+    //取得明细grid的rowId字段
+    for (var i = 0; i < tabs.Count; i++)
+    {
+        if (tabs[i].type == "grid"){
+            tabs[i].rowId = tabs[i].relationship;
+            foreach(var item in tabs[i].primaryKeys)
+            {
+                if (item!=tabs[i].relationship){
+                    tabs[i].rowId = item;
+                    break; 
+                }
+            }
+        }
+    }
+}
+using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Net.Http;
+using System.Web.Http;
+using System.Web.Mvc;
+using Newtonsoft.Json.Linq;
+using Zephyr.Core;
+using Zephyr.Models;
+
+namespace Zephyr.Areas.@(area).Controllers
+{
+    public class @(controller)Controller : Controller
+    {
+        public ActionResult Edit(string id = "")
+        {
+
+            var model = new
+            {
+                urls = new {
+                    getdata = "/api/@(area)/@controller/GetPageData/",        //获取主表数据及数据滚动数据api
+                    edit = "/api/@(area)/@controller/edit/",                      //数据保存api
+                    audit = "/api/@(area)/@controller/audit/",                    //审核api
+                    newkey = "/api/@(area)/@controller/GetNewRowId/"            //获取新的明细数据的主键(日语叫采番)
+                },
+                resx = new {
+                    rejected = "已撤消修改！",
+                    editSuccess = "保存成功！",
+                    auditPassed ="单据已通过审核！",
+                    auditReject = "单据已取消审核！"
+                },
+                dataSource = new{
+                    pageData=new @(controller)ApiController().GetPageData(id)
+                    //payKinds = codeService.GetValueTextListByType("PayType")
+                },
+                form = new{
+                    defaults = new @(mainTable)().Extend(new {  @for (var i = 0; i < count1; i++){<text>@(condtions[i].field) = ""</text>if (i < count1 - 1) {@(",")}}}),
+                    primaryKeys = new string[]{"@PrimaryKey"}
+                },
+                tabs = new object[]{
+                    @for (var i = 0; i < tabs.Count; i++)
+                    {
+                        string typename = tabs[i].type.ToString();
+                    @:new{
+                    @:  type = "@tabs[i].type",
+                        switch(typename)
+                        {
+                            case "grid":
+                    @:  rowId = "@tabs[i].rowId",
+                    @:  relationId = "@tabs[i].relationship",
+                    @:  postFields = new string[] { @for (var j = 0; j < tabs[i].columns.Count; j++){<text>"@(tabs[i].columns[j].field)"</text>if (j < tabs[i].columns.Count - 1){@(",")} }},
+                                break;
+                            case "form":
+                    @:  primaryKeys = new string[]{"@tabs[i].relationship"},
+                                break;
+                            default:
+                                break;
+                        }
+                    @:  defaults = new {@for (var j = 0; j < tabs[i].columns.Count; j++){<text>@(tabs[i].columns[j].field) = ""</text>if (j < tabs[i].columns.Count - 1){@(",")}}}
+                        
+                    @:}@if (i < tabs.Count - 1) {@(",")}    
+                    }
+                }
+            };
+            return View(model);
+        }
+    }
+
+    public class @(controller)ApiController : ApiController
+    {
+        public dynamic GetPageData(string id)
+        {
+            var masterService = new @(mainTable)Service();
+            var pQuery = ParamQuery.Instance().AndWhere("@PrimaryKey", id);
+
+             var result = new {
+                //主表数据
+                form = masterService.GetModel(pQuery),
+                scrollKeys = masterService.ScrollKeys("@PrimaryKey", id),
+
+                //明细数据
+                @for (var i = 0; i < tabs.Count; i++)
+                {
+                    if (tabs[i].type.ToString()=="grid")
+                    {
+                @:tab@(i) = new @(tabs[i].subtable)Service().GetDynamicList(@Raw(PrimaryKey==tabs[i].relationship.ToString()?"pQuery":"ParamQuery.Instance().AndWhere(\"" + tabs[i].relationship +"\", id)"))@if (i < tabs.Count - 1) {@(",")}
+                    }
+                    else if (tabs[i].type.ToString()=="form")
+                    {
+                @:tab@(i) = new @(tabs[i].subtable)Service().GetModel(@Raw(PrimaryKey==tabs[i].relationship.ToString()?"pQuery":"ParamQuery.Instance().AndWhere(\"" + tabs[i].relationship +"\", id)"))@if (i < tabs.Count - 1) {@(",")}      
+                    }
+                }
+            };
+            return result;
+        }
+
+        [System.Web.Http.HttpPost]
+        public void Audit(string id, JObject data)
+        {
+            var pUpdate = ParamUpdate.Instance()
+                .Update("@mainTable")
+                .Column("ApproveState", data["status"])
+                .Column("ApproveRemark", data["comment"])
+                .Column("ApprovePerson", FormsAuth.GetUserData().UserName)
+                .Column("ApproveDate", DateTime.Now)
+                .AndWhere("@PrimaryKey", id);
+
+            var service = new @(mainTable)Service();
+            var rowsAffected = service.Update(pUpdate);
+            MmsHelper.ThrowHttpExceptionWhen(rowsAffected < 0, "单据审核失败[BillNo={0}]，请重试或联系管理员！", id);
+        }
+  
+        //todo 改成支持多个Tab
+        // 地址：GET api/mms/@(controller)/getnewrowid 预取得新的明细表的行号
+        public string GetNewRowId(string type,string key,int qty=1)
+        {
+            switch (type)
+            {
+@for (var i = 0; i < tabs.Count; i++)
+{
+if(tabs[i].type == "grid")
+{
+                @:case "grid@(i)":
+                @:    var service@(i) = new @(tabs[i].subtable)Service();
+                @:    return service@(i).GetNewKey("@tabs[i].rowId", "maxplus", qty, ParamQuery.Instance().AndWhere("@(tabs[i].relationship)", key, Cp.Equal));
+}
+}
+                default:
+                    return "";
+            }
+        }
+  
+        // 地址：POST api/mms/send 功能：保存收料单数据
+        [System.Web.Http.HttpPost]
+        public void Edit(dynamic data)
+        {
+            var formWrapper = RequestWrapper.Instance().LoadSettingXmlString(@@"
+<settings>
+    <table>
+        @mainTable
+    </table>
+    <where>
+        <field name='@PrimaryKey' cp='equal'></field>
+    </where>
+</settings>");
+
+            var tabsWrapper = new List<RequestWrapper>();
+            @for (var i = 0; i < tabs.Count; i++)
+            {
+                if(tabs[i].type.ToString() == "grid")
+                {
+@:            tabsWrapper.Add(RequestWrapper.Instance().LoadSettingXmlString(@@"
+@:<settings>
+@:    <table>@tabs[i].subtable</table>
+@:    <where>
+    foreach(var item in tabs[i].primaryKeys)
+    {
+@:        <field name='@item' cp='equal'></field>      
+    }
+@:    </where>
+@:</settings>"));
+                }
+                else if(tabs[i].type.ToString() == "form")
+                {
+@:            tabsWrapper.Add(RequestWrapper.Instance().LoadSettingXmlString(@@"
+@:<settings>
+@:    <table>@tabs[i].subtable</table>
+@:    <where>
+@:        <field name='@tabs[i].relationship' cp='equal'></field>
+@:    </where>
+@:</settings>"));
+                }
+            }
+             
+            var service = new @(mainTable)Service();
+            var result = service.EditPage(data, formWrapper, tabsWrapper);
+        }
+    }
+}

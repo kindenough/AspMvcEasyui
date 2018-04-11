@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <appSettings>
+    
+  </appSettings>
+
+  <connectionStrings>
+    <add name="WorkFlow"  providerName="SqlServer" connectionString="server=.\SQL2005;uid=sa;pwd=123456;database=Zephyr.WorkFlow" />
+  </connectionStrings>
+  
+  <workflow>
+    <Main>
+      <form name="form1" path="../html/form1.html"></form>
+      <form name="form2" path="../html/form2.html"></form>
+    </Main>
+
+  </workflow>
+</configuration>
+
+
+

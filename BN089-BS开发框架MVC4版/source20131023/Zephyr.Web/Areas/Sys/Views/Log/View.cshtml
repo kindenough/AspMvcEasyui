@@ -1,0 +1,6 @@
+﻿@{
+    ViewBag.Title = "查看日志";
+}
+<div style="margin:5px 0;font-size:12px;white-space:nowrap;">
+@Html.Raw(ViewBag.log.Replace("\r\n","</br>"));
+</div>

@@ -1,0 +1,419 @@
+2013-08-24 17:07:56,552 [8216] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-24 17:07:56,851 [8216] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-24 17:07:56,858 [8216] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-24 17:07:56,947 [8216] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-24 17:08:08,700 [7272] DEBUG Servicesys_user - 获取实体对象
+2013-08-24 17:08:08,718 [7272] DEBUG Sys - select sys_user.* from sys_user where  UserCode =  'lhs'and Password =  'lhs'and IsEnable =  'True'
+2013-08-24 17:08:08,950 [7272] DEBUG Sys - 
+update sys_user
+set LoginCount = isnull(LoginCount,0) + 1
+   ,LastLoginDate = getdate()
+where UserCode = 'lhs' 
+2013-08-24 17:08:09,088 [7272] DEBUG Sys - insert into sys_loginHistory([UserCode],[UserName],[HostName],[HostIP],[LoginCity],[LoginDate]) values('lhs','刘会胜','LHS-PC','ILData[0]/localhost','福建省厦门市','2013-08-24 17:08:09')
+2013-08-24 17:08:09,160 [7272] DEBUG Servicemms_project - 获取实体对象
+2013-08-24 17:08:09,160 [7272] DEBUG Mms - select mms_project.* from mms_project where  ProjectCode =  '201306030001'
+2013-08-24 17:08:09,419 [6176] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-08-24 17:08:13,988 [1848] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-08-24 17:08:21,182 [3620] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/receive/Index','/Mms/receive')
+2013-08-24 17:08:21,203 [3620] DEBUG Servicemms_warehouse - 获取动态列表
+2013-08-24 17:08:21,205 [3620] DEBUG Mms - select WarehouseCode as value,WarehouseName as text from mms_warehouse where  ProjectCode =  '201306030001'
+2013-08-24 17:08:21,241 [3620] DEBUG Servicesys_code - 获取动态列表
+2013-08-24 17:08:21,242 [3620] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'SupplyType'
+2013-08-24 17:08:24,347 [9156] DEBUG Servicemms_receive - 获取动态列表
+2013-08-24 17:08:24,347 [9156] DEBUG Mms - select top 20 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName as WarehouseName, E.MerchantsName AS SupplierName
+     from 
+        mms_receive A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants     E on E.MerchantsCode    = A.SupplierCode
+     where  A.ProjectCode =  '201306030001' order by A.BillNo
+2013-08-24 17:08:24,526 [9156] DEBUG Mms - select count(*) from ( select 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName as WarehouseName, E.MerchantsName AS SupplierName
+     from 
+        mms_receive A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants     E on E.MerchantsCode    = A.SupplierCode
+     where  A.ProjectCode =  '201306030001' ) tb_temp
+2013-08-24 17:08:37,989 [1848] DEBUG Servicemms_receive - 获取动态列表
+2013-08-24 17:08:37,990 [1848] DEBUG Mms - select 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName as WarehouseName, E.MerchantsName AS SupplierName
+     from 
+        mms_receive A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants     E on E.MerchantsCode    = A.SupplierCode
+     where  A.ProjectCode =  '201306030001' order by A.BillNo
+2013-08-24 17:09:24,413 [7272] DEBUG Servicemms_send - 获取动态列表
+2013-08-24 17:09:24,414 [7272] DEBUG Mms - select top 20 
+        *
+     from 
+        test_user
+     order by UserCode
+2013-08-24 17:09:24,524 [7272] DEBUG Mms - select count(*) from ( select 
+        *
+     from 
+        test_user
+     ) tb_temp
+2013-08-24 17:09:29,183 [9156] DEBUG Servicemms_send - 获取动态列表
+2013-08-24 17:09:29,184 [9156] DEBUG Mms - with PagedPersons as
+								(
+									select top 100 percent 
+        *
+    , row_number() over (order by UserCode) as FLUENTDATA_ROWNUMBER
+									 from 
+        test_user
+    
+								)
+								select *
+								from PagedPersons
+								where fluentdata_RowNumber between 21 and 40
+2013-08-24 17:09:29,264 [9156] DEBUG Mms - select count(*) from ( select 
+        *
+     from 
+        test_user
+     ) tb_temp
+2013-08-24 17:09:37,279 [7740] DEBUG Servicemms_send - 获取动态列表
+2013-08-24 17:09:37,279 [7740] DEBUG Mms - select 
+        *
+     from 
+        test_user
+     order by UserCode
+2013-08-24 17:10:38,634 [6176] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-08-24 17:10:52,996 [7740] DEBUG Servicemms_send - 获取动态列表
+2013-08-24 17:10:52,996 [7740] DEBUG Mms - with PagedPersons as
+								(
+									select top 100 percent 
+        *
+    , row_number() over (order by UserCode) as FLUENTDATA_ROWNUMBER
+									 from 
+        test_user
+    
+								)
+								select *
+								from PagedPersons
+								where fluentdata_RowNumber between 41 and 60
+2013-08-24 17:10:53,000 [7740] DEBUG Mms - select count(*) from ( select 
+        *
+     from 
+        test_user
+     ) tb_temp
+2013-08-24 21:19:33,365 [9656] DEBUG Servicemms_send - 获取动态列表
+2013-08-24 21:19:33,371 [9656] DEBUG Mms - with PagedPersons as
+								(
+									select top 100 percent 
+        *
+    , row_number() over (order by UserCode) as FLUENTDATA_ROWNUMBER
+									 from 
+        test_user
+    
+								)
+								select *
+								from PagedPersons
+								where fluentdata_RowNumber between 61 and 80
+2013-08-24 21:19:33,377 [9656] DEBUG Mms - select count(*) from ( select 
+        *
+     from 
+        test_user
+     ) tb_temp
+2013-08-24 21:30:27,840 [9656] DEBUG Servicemms_send - 获取动态列表
+2013-08-24 21:30:27,846 [9656] DEBUG Mms - with PagedPersons as
+								(
+									select top 100 percent 
+        *
+    , row_number() over (order by UserCode) as FLUENTDATA_ROWNUMBER
+									 from 
+        test_user
+    
+								)
+								select *
+								from PagedPersons
+								where fluentdata_RowNumber between 81 and 100
+2013-08-24 21:30:27,850 [9656] DEBUG Mms - select count(*) from ( select 
+        *
+     from 
+        test_user
+     ) tb_temp
+2013-08-24 21:30:52,876 [10780] DEBUG Servicemms_send - 获取动态列表
+2013-08-24 21:30:52,876 [10780] DEBUG Mms - with PagedPersons as
+								(
+									select top 100 percent 
+        *
+    , row_number() over (order by UserCode) as FLUENTDATA_ROWNUMBER
+									 from 
+        test_user
+    
+								)
+								select *
+								from PagedPersons
+								where fluentdata_RowNumber between 101 and 120
+2013-08-24 21:30:52,880 [10780] DEBUG Mms - select count(*) from ( select 
+        *
+     from 
+        test_user
+     ) tb_temp
+2013-08-24 21:32:16,075 [3108] DEBUG Servicemms_send - 获取动态列表
+2013-08-24 21:32:16,075 [3108] DEBUG Mms - select 
+        *
+     from 
+        test_user
+     order by UserCode
+2013-08-24 21:32:40,263 [10780] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Sys/menu/Index','/Sys/menu')
+2013-08-24 21:32:41,744 [10964] DEBUG Servicesys_menu - 获取动态列表
+2013-08-24 21:32:41,745 [10964] DEBUG Sys - select A.*,B.MenuName as ParentName from sys_menu A left join sys_menu B on B.MenuCode = A.ParentCode order by A.MenuSeq,A.MenuCode
+2013-08-24 21:32:46,622 [9932] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Sys/organize/Index','/Sys/organize')
+2013-08-24 21:32:46,634 [9932] DEBUG Servicesys_organize - 获取实体列表
+2013-08-24 21:32:46,640 [9932] DEBUG Sys - select sys_organize.* from sys_organize
+2013-08-24 21:32:56,356 [10468] DEBUG Sys - 
+select distinct A.RoleCode,A.RoleName
+,(case when B.RoleCode is null then 'false' else 'true' end) as Checked
+from sys_role A
+left join sys_organizeRoleMap B on B.RoleCode = A.RoleCode and B.OrganizeCode = '04100101'
+2013-08-24 21:33:00,356 [11180] DEBUG Sys - select sys_organize.* from sys_organize where  ParentCode =  '04100101'
+2013-08-24 21:33:00,363 [11180] DEBUG Sys - delete from sys_organize where  OrganizeCode =  '04100101'
+2013-08-24 21:33:08,305 [11180] ERROR /api/sys/organize/04100101 - System.Exception: 数据已经被引用，更新失败，请先删除引用数据并重试！
+   在 Zephyr.Core.Db.<Context>b__2(ErrorEventArgs e) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Core\Db.cs:行号 98
+   在 Zephyr.Data.ExecuteQueryHandler.HandleQueryException(Exception exception) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\Handlers\ExecuteQueryHandler.cs:行号 105
+   在 Zephyr.Data.ExecuteQueryHandler.ExecuteQuery(Boolean useReader, Action action) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\Handlers\ExecuteQueryHandler.cs:行号 28
+   在 Zephyr.Data.DbCommand.Execute() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\PartialClasses\Execute.cs:行号 9
+   在 Zephyr.Data.BaseDeleteBuilder.Execute() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Builders\Delete\BaseDeleteBuilder.cs:行号 18
+   在 Zephyr.Models.sys_organizeService.RecursionDelete(String id) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Sys\Models\sys_organize.cs:行号 19
+   在 Zephyr.Areas.Sys.Controllers.OrganizeApiController.Delete(String id) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Sys\Controllers\OrganizeController.cs:行号 58
+   在 lambda_method(Closure , Object , Object[] )
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.<>c__DisplayClass13.<GetExecutor>b__c(Object instance, Object[] methodParameters)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.Execute(Object instance, Object[] arguments)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.<>c__DisplayClass5.<ExecuteAsync>b__4()
+   在 System.Threading.Tasks.TaskHelpers.RunSynchronously[TResult](Func`1 func, CancellationToken cancellationToken)
+2013-08-24 21:33:21,035 [11228] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Sys/role/Index','/Sys/role')
+2013-08-24 21:33:21,044 [11228] DEBUG Servicesys_user - 获取动态列表
+2013-08-24 21:33:21,045 [11228] DEBUG Sys - select UserCode,UserName from sys_user
+2013-08-24 21:33:21,046 [11228] DEBUG Servicesys_organize - 获取动态列表
+2013-08-24 21:33:21,046 [11228] DEBUG Sys - select OrganizeCode,OrganizeName from sys_organize
+2013-08-24 21:33:22,446 [10888] DEBUG Servicesys_role - 获取实体列表
+2013-08-24 21:33:22,447 [10888] DEBUG Sys - select sys_role.* from sys_role order by RoleSeq
+2013-08-24 21:33:26,052 [11228] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Sys/user/Index','/Sys/user')
+2013-08-24 21:33:27,394 [11180] DEBUG Servicesys_organize - 获取实体列表
+2013-08-24 21:33:27,395 [11180] DEBUG Sys - select sys_organize.* from sys_organize
+2013-08-24 21:33:27,452 [10888] DEBUG Servicesys_user - 获取实体列表
+2013-08-24 21:33:27,452 [10888] DEBUG Sys - select top 20 sys_user.* from sys_user order by UserSeq
+2013-08-24 21:33:27,490 [10888] DEBUG Sys - select count(*) from ( select sys_user.* from sys_user ) tb_temp
+2013-08-24 21:33:29,686 [10780] DEBUG Servicesys_user - 获取实体列表
+2013-08-24 21:33:29,687 [10780] DEBUG Sys - select top 20 sys_user.* from sys_user where  UserCode in (select UserCode from sys_userOrganizeMap where OrganizeCode in (select ID from [dbo].[GetChild]('sys_organize','040504010101'))) order by UserSeq
+2013-08-24 21:33:34,243 [10780] DEBUG Sys - select count(*) from ( select sys_user.* from sys_user where  UserCode in (select UserCode from sys_userOrganizeMap where OrganizeCode in (select ID from [dbo].[GetChild]('sys_organize','040504010101'))) ) tb_temp
+2013-08-24 21:33:37,580 [10888] DEBUG Sys - 
+select distinct A.OrganizeCode,A.OrganizeName,A.ParentCode
+,(case when B.UserCode is null then 'false' else 'true' end) as Checked
+from sys_organize A
+left join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode and B.UserCode = 'fupeng22'
+2013-08-24 21:33:44,154 [10888] DEBUG Servicesys_user - 设置用户机构
+2013-08-24 21:33:44,177 [10888] DEBUG Sys - delete from sys_userOrganizeMap where [UserCode] = 'fupeng22'
+2013-08-24 21:33:44,180 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','04')
+2013-08-24 21:33:44,183 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','0401')
+2013-08-24 21:33:44,185 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','0405')
+2013-08-24 21:33:44,186 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040501')
+2013-08-24 21:33:44,188 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040502')
+2013-08-24 21:33:44,189 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040503')
+2013-08-24 21:33:44,189 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040504')
+2013-08-24 21:33:44,190 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','0402')
+2013-08-24 21:33:44,190 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040201')
+2013-08-24 21:33:44,191 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040202')
+2013-08-24 21:33:44,191 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','0403')
+2013-08-24 21:33:44,192 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','0404')
+2013-08-24 21:33:44,192 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','0406')
+2013-08-24 21:33:44,193 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040601')
+2013-08-24 21:33:44,193 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','04060101')
+2013-08-24 21:33:44,196 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040602')
+2013-08-24 21:33:44,197 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040603')
+2013-08-24 21:33:44,197 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040604')
+2013-08-24 21:33:44,198 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040605')
+2013-08-24 21:33:44,198 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','0407')
+2013-08-24 21:33:44,199 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040701')
+2013-08-24 21:33:44,199 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','0408')
+2013-08-24 21:33:44,200 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040801')
+2013-08-24 21:33:44,200 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040802')
+2013-08-24 21:33:44,201 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040803')
+2013-08-24 21:33:44,201 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040804')
+2013-08-24 21:33:44,202 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040805')
+2013-08-24 21:33:44,202 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','0409')
+2013-08-24 21:33:44,203 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040901')
+2013-08-24 21:33:44,203 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040902')
+2013-08-24 21:33:44,204 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040903')
+2013-08-24 21:33:44,205 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','0410')
+2013-08-24 21:33:44,205 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','041001')
+2013-08-24 21:33:44,206 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','04100101')
+2013-08-24 21:33:47,398 [11104] DEBUG Sys - 
+select distinct A.OrganizeCode,A.OrganizeName,A.ParentCode
+,(case when B.UserCode is null then 'false' else 'true' end) as Checked
+from sys_organize A
+left join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode and B.UserCode = 'fupeng22'
+2013-08-24 21:33:52,167 [10888] DEBUG Servicesys_user - 设置用户机构
+2013-08-24 21:33:52,168 [10888] DEBUG Sys - delete from sys_userOrganizeMap where [UserCode] = 'fupeng22'
+2013-08-24 21:33:52,168 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','04')
+2013-08-24 21:33:52,169 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','0401')
+2013-08-24 21:33:52,169 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','0405')
+2013-08-24 21:33:52,170 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040501')
+2013-08-24 21:33:52,170 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040502')
+2013-08-24 21:33:52,171 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040503')
+2013-08-24 21:33:52,171 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040504')
+2013-08-24 21:33:52,172 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','0402')
+2013-08-24 21:33:52,172 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040201')
+2013-08-24 21:33:52,173 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040202')
+2013-08-24 21:33:52,173 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','0403')
+2013-08-24 21:33:52,173 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','0404')
+2013-08-24 21:33:52,174 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','0406')
+2013-08-24 21:33:52,174 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040601')
+2013-08-24 21:33:52,175 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','04060101')
+2013-08-24 21:33:52,175 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040602')
+2013-08-24 21:33:52,176 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040603')
+2013-08-24 21:33:52,176 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040604')
+2013-08-24 21:33:52,176 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040605')
+2013-08-24 21:33:52,177 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','0407')
+2013-08-24 21:33:52,177 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040701')
+2013-08-24 21:33:52,178 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','0408')
+2013-08-24 21:33:52,178 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040801')
+2013-08-24 21:33:52,178 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040802')
+2013-08-24 21:33:52,179 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040803')
+2013-08-24 21:33:52,179 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040804')
+2013-08-24 21:33:52,180 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040805')
+2013-08-24 21:33:52,180 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','0409')
+2013-08-24 21:33:52,180 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040901')
+2013-08-24 21:33:52,181 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040902')
+2013-08-24 21:33:52,181 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','040903')
+2013-08-24 21:33:52,182 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','0410')
+2013-08-24 21:33:52,182 [10888] DEBUG Sys - insert into sys_userOrganizeMap([UserCode],[OrganizeCode]) values('fupeng22','041001')
+2013-08-24 21:33:56,560 [10468] DEBUG Servicesys_user - 获取实体列表
+2013-08-24 21:33:56,560 [10468] DEBUG Sys - select top 20 sys_user.* from sys_user where  UserCode in (select UserCode from sys_userOrganizeMap where OrganizeCode in (select ID from [dbo].[GetChild]('sys_organize','04100101'))) order by UserSeq
+2013-08-24 21:33:56,591 [10468] DEBUG Sys - select count(*) from ( select sys_user.* from sys_user where  UserCode in (select UserCode from sys_userOrganizeMap where OrganizeCode in (select ID from [dbo].[GetChild]('sys_organize','04100101'))) ) tb_temp
+2013-08-24 21:33:59,666 [10888] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Sys/organize/Index','/Sys/organize')
+2013-08-24 21:33:59,669 [10888] DEBUG Servicesys_organize - 获取实体列表
+2013-08-24 21:33:59,669 [10888] DEBUG Sys - select sys_organize.* from sys_organize
+2013-08-24 21:34:04,360 [11228] DEBUG Sys - select sys_organize.* from sys_organize where  ParentCode =  '040504010101'
+2013-08-24 21:34:04,361 [11228] DEBUG Sys - delete from sys_organize where  OrganizeCode =  '040504010101'
+2013-08-24 21:34:04,384 [11228] DEBUG Servicesys_organize - 获取实体列表
+2013-08-24 21:34:04,384 [11228] DEBUG Sys - select sys_organize.* from sys_organize
+2013-08-24 21:34:08,313 [10468] DEBUG Sys - select sys_organize.* from sys_organize where  ParentCode =  '0405040101'
+2013-08-24 21:34:08,314 [10468] DEBUG Sys - delete from sys_organize where  OrganizeCode =  '0405040101'
+2013-08-24 21:34:10,573 [10468] ERROR /api/sys/organize/0405040101 - System.Exception: 数据已经被引用，更新失败，请先删除引用数据并重试！
+   在 Zephyr.Core.Db.<Context>b__2(ErrorEventArgs e) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Core\Db.cs:行号 98
+   在 Zephyr.Data.ExecuteQueryHandler.HandleQueryException(Exception exception) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\Handlers\ExecuteQueryHandler.cs:行号 105
+   在 Zephyr.Data.ExecuteQueryHandler.ExecuteQuery(Boolean useReader, Action action) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\Handlers\ExecuteQueryHandler.cs:行号 28
+   在 Zephyr.Data.DbCommand.Execute() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Command\PartialClasses\Execute.cs:行号 9
+   在 Zephyr.Data.BaseDeleteBuilder.Execute() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Data\Builders\Delete\BaseDeleteBuilder.cs:行号 18
+   在 Zephyr.Models.sys_organizeService.RecursionDelete(String id) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Sys\Models\sys_organize.cs:行号 19
+   在 Zephyr.Areas.Sys.Controllers.OrganizeApiController.Delete(String id) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Sys\Controllers\OrganizeController.cs:行号 58
+   在 lambda_method(Closure , Object , Object[] )
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.<>c__DisplayClass13.<GetExecutor>b__c(Object instance, Object[] methodParameters)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.Execute(Object instance, Object[] arguments)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.<>c__DisplayClass5.<ExecuteAsync>b__4()
+   在 System.Threading.Tasks.TaskHelpers.RunSynchronously[TResult](Func`1 func, CancellationToken cancellationToken)
+2013-08-24 21:34:15,326 [11180] DEBUG Sys - select sys_organize.* from sys_organize where  ParentCode =  '04100101'
+2013-08-24 21:34:15,327 [11180] DEBUG Sys - delete from sys_organize where  OrganizeCode =  '04100101'
+2013-08-24 21:34:15,328 [11180] DEBUG Servicesys_organize - 获取实体列表
+2013-08-24 21:34:15,328 [11180] DEBUG Sys - select sys_organize.* from sys_organize
+2013-08-24 21:34:19,157 [11228] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Sys/role/Index','/Sys/role')
+2013-08-24 21:34:19,159 [11228] DEBUG Servicesys_user - 获取动态列表
+2013-08-24 21:34:19,159 [11228] DEBUG Sys - select UserCode,UserName from sys_user
+2013-08-24 21:34:19,160 [11228] DEBUG Servicesys_organize - 获取动态列表
+2013-08-24 21:34:19,160 [11228] DEBUG Sys - select OrganizeCode,OrganizeName from sys_organize
+2013-08-24 21:34:19,752 [10320] DEBUG Servicesys_role - 获取实体列表
+2013-08-24 21:34:19,753 [10320] DEBUG Sys - select sys_role.* from sys_role order by RoleSeq
+2013-08-24 21:34:21,323 [10320] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Sys/user/Index','/Sys/user')
+2013-08-24 21:34:22,114 [11228] DEBUG Servicesys_organize - 获取实体列表
+2013-08-24 21:34:22,114 [11228] DEBUG Sys - select sys_organize.* from sys_organize
+2013-08-24 21:34:22,165 [11180] DEBUG Servicesys_user - 获取实体列表
+2013-08-24 21:34:22,166 [11180] DEBUG Sys - select top 20 sys_user.* from sys_user order by UserSeq
+2013-08-24 21:34:22,168 [11180] DEBUG Sys - select count(*) from ( select sys_user.* from sys_user ) tb_temp
+2013-08-24 21:34:23,945 [11228] DEBUG Servicesys_user - 获取实体列表
+2013-08-24 21:34:23,945 [11228] DEBUG Sys - select top 20 sys_user.* from sys_user where  UserCode in (select UserCode from sys_userOrganizeMap where OrganizeCode in (select ID from [dbo].[GetChild]('sys_organize','0405040101'))) order by UserSeq
+2013-08-24 21:34:23,984 [11228] DEBUG Sys - select count(*) from ( select sys_user.* from sys_user where  UserCode in (select UserCode from sys_userOrganizeMap where OrganizeCode in (select ID from [dbo].[GetChild]('sys_organize','0405040101'))) ) tb_temp
+2013-08-24 21:34:27,581 [11228] DEBUG Servicesys_user - 获取实体列表
+2013-08-24 21:34:27,581 [11228] DEBUG Sys - select top 20 sys_user.* from sys_user where  UserCode in (select UserCode from sys_userOrganizeMap where OrganizeCode in (select ID from [dbo].[GetChild]('sys_organize','04050401'))) order by UserSeq
+2013-08-24 21:34:27,620 [11228] DEBUG Sys - select count(*) from ( select sys_user.* from sys_user where  UserCode in (select UserCode from sys_userOrganizeMap where OrganizeCode in (select ID from [dbo].[GetChild]('sys_organize','04050401'))) ) tb_temp
+2013-08-24 21:34:33,209 [11228] DEBUG Sys - 
+select distinct A.RoleCode,A.RoleName
+,(case when B.RoleCode is null then 'false' else 'true' end) as Checked
+from sys_role A
+left join sys_organizeRoleMap B on B.RoleCode = A.RoleCode and B.OrganizeCode = '0405040101'
+2013-08-24 21:34:36,213 [11180] DEBUG Servicesys_organize - 设置机构角色
+2013-08-24 21:34:36,214 [11180] DEBUG Sys - delete from sys_organizeRoleMap where [OrganizeCode] = '0405040101'
+2013-08-24 21:34:38,349 [10320] DEBUG Sys - 
+select distinct A.RoleCode,A.RoleName
+,(case when B.RoleCode is null then 'false' else 'true' end) as Checked
+from sys_role A
+left join sys_organizeRoleMap B on B.RoleCode = A.RoleCode and B.OrganizeCode = '04050401'
+2013-08-24 21:34:41,856 [11228] DEBUG Servicesys_organize - 设置机构角色
+2013-08-24 21:34:41,857 [11228] DEBUG Sys - delete from sys_organizeRoleMap where [OrganizeCode] = '04050401'
+2013-08-24 21:34:45,665 [3108] DEBUG Sys - select sys_organize.* from sys_organize where  ParentCode =  '0405040101'
+2013-08-24 21:34:45,665 [3108] DEBUG Sys - delete from sys_organize where  OrganizeCode =  '0405040101'
+2013-08-24 21:34:45,676 [3108] DEBUG Servicesys_organize - 获取实体列表
+2013-08-24 21:34:45,676 [3108] DEBUG Sys - select sys_organize.* from sys_organize
+2013-08-24 21:34:49,276 [11180] DEBUG Sys - select sys_organize.* from sys_organize where  ParentCode =  '04050401'
+2013-08-24 21:34:49,277 [11180] DEBUG Sys - delete from sys_organize where  OrganizeCode =  '04050401'
+2013-08-24 21:34:49,279 [11180] DEBUG Servicesys_organize - 获取实体列表
+2013-08-24 21:34:49,279 [11180] DEBUG Sys - select sys_organize.* from sys_organize

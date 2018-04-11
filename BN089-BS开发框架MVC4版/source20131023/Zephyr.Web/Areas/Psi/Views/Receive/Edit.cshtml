@@ -1,0 +1,122 @@
+﻿@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+        <script src="~/Areas/Psi/ViewModels/com.psi.js"></script>
+        <script src="~/Areas/Psi/ViewModels/com.viewModel.edit.js"></script>
+        <script type="text/javascript">
+            var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+            var viewModel = function (data) {
+                com.viewModel.edit.apply(this, arguments);
+                this.grid.size = { w: 6, h: 149 };
+                this.grid.toolbar.push("-");
+                this.grid.toolbar.push(com.psi.selectGoodsButton(this, '/api/psi/goods'));
+                this.grid.OnAfterCreateEditor = com.psi.bindCalcTotalMoney(this, "Num", "UnitPrice", "Money", "TotalMoney");
+            };
+            ko.bindingViewModel(new viewModel(data));
+        </script>
+}
+
+    <div class="z-toolbar">
+        <a id="a_save" href="#" plain="true" class="easyui-linkbutton" icon="icon-save" data-bind="click:saveClick" title="保存">保存</a>
+        <a id="a_undo" href="#" plain="true" class="easyui-linkbutton" icon="icon-undo" data-bind="click:rejectClick" title="撤消">撤消</a>
+        <a id="a_audit" href="#" plain="true" class="easyui-linkbutton" icon="icon-folder_key" data-bind="click:auditClick" title="审核">审核</a>
+        <a id="a_printer" href="#" plain="true" class="easyui-linkbutton" icon="icon-printer" title="打印" data-bind="click:printClick">打印</a>
+        <div class="datagrid-btn-separator"></div>
+        <a id="a_other" href="#" class="easyui-splitbutton" data-options="menu:'#divother',iconCls:'icon-application_go'" title="其他">其他</a>
+        <div class="datagrid-btn-separator"></div>
+        <a id="a_first" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_first" data-bind="click:firstClick,linkbuttonEnable:scrollKeys.firstEnable" title="第一条"></a> 
+        <a id="a_previous" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_previous" data-bind="click:previousClick,linkbuttonEnable:scrollKeys.previousEnable" title="上一条"></a> 
+        <a id="a_next" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_next" data-bind="click:nextClick,linkbuttonEnable:scrollKeys.nextEnable" title="下一条"></a> 
+        <a id="a_last" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_last" data-bind="click:lastClick,linkbuttonEnable:scrollKeys.lastEnable" title="最后一条"></a> 
+    </div>
+
+    <div id="divother" style="width:100px; display:none;">
+        <div id="a_add" data-options="iconCls:'icon-add'">新增</div>
+        <div id="a_del" data-options="iconCls:'icon-cross'">删除</div>
+        <div id="a_refresh" data-options="iconCls:'icon-arrow_refresh'">刷新</div>
+    </div>  
+
+    <div id="master" class="container_12" data-bind="inputwidth:0.9">
+        <div class="grid_1 lbl">收货单号</div>
+        <div class="grid_3 val"><input type="text" id="BillNo" name="BillNo"  data-bind="value:form.BillNo,readOnly:true" class="z-txt readonly"/></div>
+        <div class="grid_1 lbl">单据日期</div>
+        <div class="grid_3 val"><input type="text" id="BillDate" name="BillDate" data-bind="dateboxValue:form.BillDate" class="z-txt easyui-datebox" /></div>
+        <div class="grid_1 lbl">经办人</div>
+        <div class="grid_3 val "><input type="text" id="DoPerson" name="DoPerson" data-bind="value:form.DoPerson" class="z-txt easyui-validatebox" /></div>
+        
+        <div class="clear"></div>
+
+        <div class="grid_1 lbl required">供应商</div>
+        <div class="grid_3 val"><input type="text" data-bind="lookupValue:form.Supplier" required="true" class="z-txt easyui-lookup" data-options="lookupType:'merchants',multiple:false"/></div>
+        <div class="grid_1 lbl required">仓库</div>
+        <div class="grid_3 val"><input type="text" data-bind="comboboxValue:form.Warehouse,datasource:dataSource.warehouseItems" class="z-txt easyui-combobox" required="true" /></div>
+        <div class="grid_1 lbl required">收货日期 </div>
+        <div class="grid_3 val"><input type="text" id="ReceiveDate" name="ReceiveDate"  data-bind="dateboxValue:form.ReceiveDate" class="easyui-datebox z-txt"  required="true" /></div>
+        
+        <div class="clear"></div>
+
+        <div class="grid_1 lbl">合同名称 </div>
+        <div class="grid_3 val required"><input type="text" data-bind="value:form.Contract" class="z-txt"  /></div>
+        <div class="grid_1 lbl">原始票号</div>
+        <div class="grid_3 val"><input type="text" data-bind="value:form.TicketNo" class="z-txt" /></div>
+        <div class="grid_1 lbl">金额</div>
+        <div class="grid_3 val"><input type="text" id="TotalMoney" name="TotalMoney" data-bind="numberboxValue:form.TotalMoney,readOnly:true" class="z-txt easyui-numberbox readonly" data-options="min: 0, precision: 2"/></div>
+        
+        <div class="clear"></div>
+
+        <div class="grid_1 lbl">备注</div>
+        <div class="grid_3 val"><input type="text" id="Remark" name="Remark" data-bind="value:form.Remark" class="z-txt" /></div>
+
+        <div class="clear"></div>
+    </div>
+ 
+    <div id="tt" class="easyui-tabs">  
+        <div title="货物明细">
+            <table data-bind="datagrid:grid">
+                <thead>
+                    <tr>
+                        <th field="BillNo" hidden="true"></th>  
+                        <th field="RowId"  hidden="true" ></th> 
+                        <th field="GoodNo"              sortable="true" align="left"    width="80"  editor="text">货物编码   </th>  
+                        <th field="Name"                sortable="true" align="left"    width="150"  >货物名称     </th> 
+                        <th field="Catagory"            sortable="true" align="left"    width="100"   >类别   </th>  
+                        <th field="Brand"               sortable="true" align="left"    width="100"  >品牌   </th>  
+                        <th field="Model"               sortable="true" align="left"    width="100"   >型号规格   </th>  
+                        <th field="Unit"                sortable="true" align="left"    width="80"  editor="text" >计量单位   </th> 
+                        <th field="Num"                 sortable="true" align="right"   width="70"  editor="{type: 'numberbox',options:{min: 0}}">接收数量       </th>  
+                        <th field="UnitPrice"           sortable="true" align="right"   width="70"  editor="{type: 'numberbox',options:{min: 0, precision: 2}}"  formatter="com.formatMoney"   >单价       </th>  
+                        <th field="Money"               sortable="true" align="right"   width="70"  editor="{type: 'numberbox',options:{min: 0, precision: 2}}" formatter="com.formatMoney"   >金额       </th>  
+                        <th field="Remark"              sortable="true" align="left"    width="200" editor="text">备注       </th>   
+                    </tr>
+                </thead>
+            </table>   
+        </div>
+        <div title="表单信息" class="hide" style="padding-top:2px;">
+            <div class="container_12" id="BillDetail" data-bind="inputwidth:0.9,autoheight:153"> 
+                <div class="clear"></div>
+                <div class="grid_1 lbl">审批状态</div>
+                <div class="grid_3 val"><input type="text" data-bind="value:form.AuditState,readOnly:true" class="z-txt readonly"/></div>
+                <div class="grid_1 lbl">审批意见</div>
+                <div class="grid_3 val"><input type="text" data-bind="value:form.AuditRemark,readOnly:true"  class="z-txt readonly"/></div>
+                <div class="grid_1 lbl">审批人 </div>
+                <div class="grid_3 val"><input type="text" data-bind="value:form.AuditPerson,readOnly:true" class="z-txt readonly"/></div>
+
+                <div class="clear"></div>
+                <div class="grid_1 lbl">审批日期</div>
+                <div class="grid_3 val"><input type="text" data-bind="dateboxValue:form.AuditDate,dateboxReadOnly:true"  class="z-txt easyui-datebox readonly"/></div>
+                <div class="grid_1 lbl">编制日期</div>
+                <div class="grid_3 val"><input type="text" data-bind="dateboxValue:form.CreateDate,dateboxReadOnly:true" class="z-txt easyui-datebox readonly" /></div>
+                <div class="grid_1 lbl">编制人</div>
+                <div class="grid_3 val "><input type="text" data-bind="value:form.CreatePerson,readOnly:true" class="z-txt readonly" /></div>
+                
+                <div class="clear"></div>
+                <div class="grid_1 lbl">修改日期</div>
+                <div class="grid_3 val"><input type="text" data-bind="dateboxValue:form.UpdateDate,dateboxReadOnly:true" class="z-txt easyui-datebox readonly" /></div>
+                <div class="grid_1 lbl">修改人</div>
+                <div class="grid_3 val "><input type="text" data-bind="value:form.UpdatePerson,readOnly:true" class="z-txt readonly" /></div>
+            </div>
+        </div> 
+    </div>  

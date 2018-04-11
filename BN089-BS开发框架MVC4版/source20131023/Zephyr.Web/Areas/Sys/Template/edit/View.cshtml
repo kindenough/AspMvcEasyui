@@ -1,0 +1,150 @@
+﻿@{
+    var condtions = Model.Data["conditions"];
+    var columns = Model.Data["columns"];
+    var controller = Model.Data["controller"];
+    var tabs = Model.Data["tabs"];
+    var count = condtions.Count;
+    var gridHehgit = 71 + (count > 0 ? 2 : 0) + Math.Ceiling(count / 3.0) * 26;
+    var tabHeight = gridHehgit + 4;
+}
+@@{
+    ViewBag.Title = "@controller";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@@section scripts{
+<script src="~/Content/js/viewModel/com.viewModel.edit.js"></script>
+<script type="text/javascript">
+    var viewModel = function(data){ 
+        var self = this;
+        com.viewModel.edit.apply(self,arguments);
+        @for (var i = 0; i < tabs.Count; i++)
+        {
+            if (tabs[i].type.ToString() == "grid")
+            {
+        @:    this.grid@(i).size={w:8,h:@gridHehgit};
+            }
+        }
+    } 
+    var data = @@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+    ko.bindingViewModel(new viewModel(data));
+</script>
+}
+
+<div class="z-toolbar">
+    <a id="a_save" href="#" plain="true" class="easyui-linkbutton" icon="icon-save" data-bind="click:readonly()?null:saveClick,linkbuttonDisable:readonly" title="保存">保存</a>
+    <a id="a_undo" href="#" plain="true" class="easyui-linkbutton" icon="icon-undo" data-bind="click:readonly()?null:rejectClick,linkbuttonDisable:readonly" title="撤消">撤消</a>
+    <a id="a_audit" href="#" plain="true" class="easyui-linkbutton" icon="icon-user-accept" data-bind="click:auditClick,easyuiLinkbutton:approveButton" title="审核">审核</a>
+    <a id="a_printer" href="#" plain="true" class="easyui-linkbutton" icon="icon-printer" title="打印" data-bind="click:printClick">打印</a>
+    <div class="datagrid-btn-separator"></div>
+    <a id="a_other" href="#" class="easyui-splitbutton" data-options="menu:'#divother',iconCls:'icon-application_go'" title="其他">其他</a>
+    <div class="datagrid-btn-separator"></div>
+    <a id="a_first" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_first" data-bind="click:firstClick,linkbuttonEnable:pageData.scrollKeys.firstEnable" title="第一条"></a> 
+    <a id="a_previous" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_previous" data-bind="click:previousClick,linkbuttonEnable:pageData.scrollKeys.previousEnable" title="上一条"></a> 
+    <a id="a_next" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_next" data-bind="click:nextClick,linkbuttonEnable:pageData.scrollKeys.nextEnable" title="下一条"></a> 
+    <a id="a_last" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_last" data-bind="click:lastClick,linkbuttonEnable:pageData.scrollKeys.lastEnable" title="最后一条"></a> 
+</div>
+
+<div id="divother" style="width:100px; display:none;">
+    <div data-options="iconCls:'icon-add'">新增</div>
+    <div data-options="iconCls:'icon-cross'">删除</div>
+    <div data-options="iconCls:'icon-arrow_refresh'">刷新</div>
+</div>  
+
+<div id="master" class="container_12" data-bind="inputwidth:0.9">
+@for (var i = 0; i < condtions.Count; i++)
+{
+    if (i % 3 == 0 && i > 0)
+    {
+    @:
+    <div class="clear"></div>
+    @:
+    }
+
+    var item = condtions[i];
+    var textPlugin = new List<string>() { "text", "autocomplete", "daterange" };
+    var type = item.type.ToString();
+    var cls = type == "text" ? "" : ("easyui-" + type);
+    var val = textPlugin.Contains(type) ? "value" : (type + "Value");
+    //var required = item.required;
+    var disable = "";
+    var clsDisable = "";
+    if (item["readonly"].ToString() == "True")
+    {
+        disable = ",readOnly : true";
+        clsDisable = " readonly";
+    }
+    else
+    {
+        disable = textPlugin.Contains(type) ? ",readOnly:readonly" : ("," + type + "ReadOnly : readonly");
+    }
+    
+    <div class="grid_1 lbl">@item.title</div>
+    <div class="grid_3 val"><input type="text" data-bind="@val:pageData.form.@item.field @disable" class="z-txt @cls" @Raw(item.options.ToString() == "" ? "" : "data-options=\"" + item.options + clsDisable + "\"")/></div>
+}    
+
+    <div class="clear"></div>
+</div>
+
+<div id="tt" class="easyui-tabs">  
+    @for (var i = 0; i < tabs.Count; i++)
+    {
+        var tab = tabs[i];
+   
+        if (tab.type.ToString() == "grid")
+        {
+    <div title="@tab.title">
+        <table data-bind="datagrid:grid@(i)">
+            <thead>
+                <tr> 
+                    @foreach (var c in tab.columns)
+                    {
+                    var hasFmt = c.formatter.ToString() != "";
+                    var hasEdt = c.editor.ToString() != "";
+                    var hidden = c.Value<bool>("hidden");
+                    <th field="@c.field"@Raw("\t")@Raw(hidden ? "hidden=\"true\"" : "")@Raw("\t")sortable="@c.sortable.ToString().ToLower()"@Raw("\t")align="@c.align"@Raw("\t")width="@c.width" @Raw(hasEdt ? "editor=\"" + @c.editor + "\"" : "") @Raw(hasFmt ? "formatter=\"" + c.formatter + "\"" : "")>@c.title</th>
+                    }
+                </tr>
+            </thead>
+        </table>
+            
+        <div id="gridtb@(i)">
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" data-bind="click:readonly()?null:grid@(i).addRowClick,linkbuttonDisable:readonly">新增</a>
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" data-bind="click:readonly()?null:grid@(i).onClickRow,linkbuttonDisable:readonly">编辑</a>
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" data-bind="click:readonly()?null:grid@(i).removeRowClick,linkbuttonDisable:readonly">删除</a>
+        </div>  
+    </div>
+        }
+        else if (tab.type.ToString() == "form")
+        {
+    <div title="@tab.title" style="padding-top:2px;">
+        <div class="container_12" data-bind="inputwidth:0.9,autoheight:@tabHeight" id = "form@(i)">
+            @for (var j = 0; j < tab.columns.Count; j++)
+            {
+                if (j % 3 == 0 && j > 0)
+                {
+                @:
+            <div class="clear"></div>
+                @:
+                }
+                var item = tab.columns[j];
+                var textPlugin = new List<string>() { "text", "autocomplete", "daterange"};
+                var type = item.type.ToString();
+                var cls = type == "text" ? "" : ("easyui-" + type);
+                var val = textPlugin.Contains(type) ? "value" : (type + "Value");
+                var readonlyValue = item["readonly"].ToString() == "True"?"true":"readonly";
+                var disable = textPlugin.Contains(type) ? ",readOnly:" + readonlyValue : ("," + type + "ReadOnly:" + readonlyValue);
+                var clsDisable = item["readonly"].ToString() == "True" ? "readonly" : "";
+  
+            <div class="grid_1 lbl">@item.title</div>
+            <div class="grid_3 val"><input type="text" data-bind="@val:pageData.tab@(i).@item.field @disable" class="z-txt @cls @clsDisable"/></div>
+            }   
+        </div>     
+    </div>
+        }
+        else
+        {
+    <div title="@tab.title"></div>
+        }
+    }
+</div>

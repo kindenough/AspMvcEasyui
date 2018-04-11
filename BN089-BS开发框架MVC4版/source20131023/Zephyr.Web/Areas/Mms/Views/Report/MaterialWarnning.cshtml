@@ -1,0 +1,120 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section head{
+    <style type="text/css">
+        .datagrid-wrap.panel-body{ border-width:0 !important;} 
+        .panel-body-noheader { border-width:1px 1px 0px 1px !important;} 
+    </style>
+    }
+
+@section scripts{
+    <script src="~/Areas/Mms/ViewModels/mms.com.js"></script>
+    <script src="~/Areas/Mms/ViewModels/mms.viewModel.search.js"></script>
+    <script type="text/javascript">
+        var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+        var viewModel = function(){ 
+            var self = this;
+            mms.viewModel.search.apply(this,arguments);
+            self.gridDetail = $.extend(true,{},self.grid,{
+                url: self.urls.queryDetail,
+                queryParams:ko.observable(),
+                pagination:false,
+                size:{w:0,h:0},
+                onLoadSuccess:function(){ 
+                    if (!self.handled)
+                    {
+                        self.handled=true;
+                        var cc = $("#cc");
+                        var panels = cc.data('layout').panels;
+                        panels.north.panel({
+                            onResize: function (w, h) {
+                                self.grid.datagrid('resize', { width: w-2, height: h-2});
+                            }
+                        });
+                        panels.center.panel({
+                            onResize: function (w, h) {
+                                self.gridDetail.datagrid('resize', { width: w-2, height: h-29 });
+                            }
+                        });
+
+                        var resize = function(){cc.layout('resize');};
+                        $(window).resize(resize);
+                        resize();
+                    }
+                }
+            });
+            self.grid.onClickRow = function(){
+                var row = self.grid.datagrid('getSelected');
+                self.gridDetail.queryParams({MaterialCode:row.MaterialCode});
+            };
+        };
+        ko.bindingViewModel(new viewModel(data));
+    </script>
+}
+    <div class="z-toolbar">
+        <a id="a_refresh" href="#" plain="true" class="easyui-linkbutton" icon="icon-arrow_refresh" title="刷新" data-bind="click:refreshClick">刷新</a>
+        <a id="a_export" href="#" class="easyui-splitbutton" data-options="menu:'#dropdown',iconCls:'icon-download'">导出</a>
+    </div>
+
+    <div id="dropdown" style="width:100px; display:none;">  
+        <div data-options="iconCls:'icon-ext-xls'"      suffix="xls"    data-bind="click:downloadClick">Excel2003   </div>  
+        <div data-options="iconCls:'icon-page_excel'"   suffix="xlsx"   data-bind="click:downloadClick">Excel2007   </div>  
+        <div data-options="iconCls:'icon-ext-doc'"      suffix="doc"    data-bind="click:downloadClick">Word2003    </div>  
+    </div> 
+
+    <div id="condition" class="container_12" style="position:relative;">
+        <div class="grid_1 lbl">材料名称</div>
+        <div class="grid_2 val"><input type="text" data-bind="value:form.MaterialName" class="z-txt"/></div>
+        <div class="grid_1 lbl" style="white-space:nowrap">显示警戒材料</div>
+        <div class="grid_2 val"><input type="checkbox" data-bind="checked:form.IsWarnning"/></div>
+
+        <div class="clear"></div>
+
+        <div class="grid_1 lbl">&nbsp;</div>
+        <div class="grid_2 val"></div>
+        <div class="grid_1 lbl"></div>
+        <div class="grid_2 val"></div>
+        <div class="grid_1 lbl"></div>
+        <div class="grid_2 val"></div>
+
+        <div class="clear"></div>
+
+        <div class="prefix_9" style="position:absolute;top:5px;height:0;">  
+            <a id="a_search" href="#" class="buttonHuge button-blue" style="margin:0 15px;" data-bind="click:searchClick">查询</a> 
+            <a id="a_reset" href="#" class="buttonHuge button-blue" data-bind="click:clearClick">清空</a>
+        </div>
+    </div>
+ 
+    <div id="cc" class="easyui-layout" style="height:500px;" data-bind="autoheight:92">  
+        <div data-options="region:'north',split:false" style="height:250px;overflow: hidden;">
+            <table id="gridlist" data-bind="datagrid:grid">
+                <thead>  
+                    <tr>  
+                        <th field="MaterialCode"    sortable="true" align="left"    width="100" >材料编码</th> 
+                        <th field="MaterialName"    sortable="true" align="left"    width="120"  >材料名称</th> 
+                        <th field="Model"           sortable="true" align="center"    width="70"  >规格型号</th> 
+                        <th field="Unit"            sortable="true" align="center"  width="50" >单位</th>  
+                        <th field="Num"             sortable="true" align="right"    width="60" formatter="com.formatMoney">剩余数量</th>
+                        <th field="LowerNum"        sortable="true" align="right"    width="60" formatter="com.formatMoney">下限数量</th>
+                        <th field="UpperNum"        sortable="true" align="right"    width="60" formatter="com.formatMoney">上限数量</th>  
+                        <th field="UnitPrice"       sortable="true" align="right"   width="60"  formatter="com.formatMoney">单价</th>  
+                        <th field="Money"           sortable="true" align="right"    width="60"  formatter="com.formatMoney">金额</th>
+                    </tr>                            
+                </thead>      
+            </table> 
+        </div>  
+        <div data-options="region:'center',title:'材料分布明细'">
+            <table id="gridlist1" data-bind="datagrid:gridDetail">
+                <thead>  
+                    <tr> 
+                        <th field="WarehouseName"   sortable="true" align="center"  width="120" >库房名称</th>  
+                        <th field="Num"             sortable="true" align="right"    width="60" formatter="com.formatMoney">数量</th>  
+                        <th field="UnitPrice"       sortable="true" align="right"   width="60"  formatter="com.formatMoney">单价</th>  
+                        <th field="Money"           sortable="true" align="right"    width="60"  formatter="com.formatMoney">金额</th>   
+                    </tr>                            
+                </thead>      
+            </table>
+        </div>  
+    </div> 

@@ -1,0 +1,55 @@
+﻿@{
+    ViewBag.EasyuiVersion = "1.3.2";
+    ViewBag.locale = "zh_CN";
+    ViewBag.theme = Zephyr.Utils.ZCookies.GetCookies("theme");
+}
+<!doctype html>
+<html lang="zh">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>@ViewBag.Title</title>
+        <link href="~/Images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+        <meta name="viewport" content="width=device-width" />
+
+        <!--加载共通CSS-->
+        <link href="~/Content/css/base.css" rel="stylesheet" type="text/css" />
+        <!--[if IE]><link href="~/Content/css/hack/ie.css" rel="stylesheet" type="text/css" /><![endif]-->
+
+        <!--加载960CSS框架-->
+        <link href="~/Content/css/960/fluid/reset.css" rel="stylesheet" type="text/css"  />
+        <link href="~/Content/css/960/fluid/text.css" rel="stylesheet" type="text/css" />
+        <link href="~/Content/css/960/fluid/grid.css" rel="stylesheet" type="text/css" />
+        <!--[if IE 6]><link href="~/Content/css/960/fluid/ie6.css" rel="stylesheet" type="text/css" /><![endif]-->
+        <!--[if IE 7]><link href="~/Content/css/960/fluid/ie.css"  rel="stylesheet" type="text/css" /><![endif]-->
+
+        <!--加载主题CSS-->
+        <link href="~/Content/themes/@ViewBag.theme/style.css" rel="stylesheet" type="text/css" />  
+
+        <!--加载按钮CSS-->
+        <link href="~/Content/css/btns/css3btn.css" rel="stylesheet" type="text/css" />
+        <link href="~/Content/css/btns/sexybuttons.css" rel="stylesheet" type="text/css" />
+    
+        <!--加载组件CSS-->
+        <link href="~/Content/js/jquery-plugin/showloading/showLoading.css" rel="stylesheet" type="text/css" />
+    
+        <!--加载样式修正CSS-->
+        <link href="~/Content/css/hack/fix.css" rel="stylesheet" type="text/css" />
+    
+        <!--加载jQuery-->
+        <script src="~/Content/js/jquery/jquery-1.8.1.min.js" type="text/javascript" ></script>
+        @RenderSection("head", required: false)
+    </head>
+    <body class="z-body">
+        @RenderBody()
+
+        <!--加载脚本库-->
+        @Scripts.Render("~/Content/js/library")
+        <!--加载easyui加载器-->
+        <script type="text/javascript" src="~/Content/js/jquery-easyui-@ViewBag.EasyuiVersion/easyloader.js?locale=@ViewBag.locale&theme=@ViewBag.theme"></script>
+        
+         @RenderSection("scripts", required: false)
+
+        <!--加载图标库CSS-->
+        <link href="~/Content/css/icon/icon.css" rel="stylesheet" type="text/css" />
+    </body>
+</html>

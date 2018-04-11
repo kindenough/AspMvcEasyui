@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+        <script src="~/Areas/Sys/ViewModels/Parameter.js"></script>
+        <script type="text/javascript">
+            using('validatebox');
+            ko.bindingViewModel(new viewModel());
+        </script>
+}
+        <div class="z-toolbar">
+            <a href="#" plain="true" class="easyui-linkbutton" icon="icon-arrow_refresh" title="刷新" data-bind="click:refreshClick">刷新</a>
+            <a href="#" plain="true" class="easyui-linkbutton" icon="icon-add" title="新增" data-bind="click:addClick">新增</a>
+            <a href="#" plain="true" class="easyui-linkbutton" icon="icon-edit" data-bind="click:editClick" title="编辑">编辑</a>
+            @*<a href="#" plain="true" class="easyui-linkbutton" icon="icon-cross" title="删除" data-bind="click:deleteClick">删除</a>*@
+            <a href="#" plain="true" class="easyui-linkbutton" icon="icon-save" title="保存" data-bind="click:saveClick">保存</a>
+        </div>
+ 
+        <table id="gridlist" data-bind="datagrid:grid">
+             <thead>  
+                <tr>  
+                    <th field="_id" hidden="true"></th>
+                    <th field="ParamCode"           sortable="true" align="left"    width="150"  editor="{type:'validatebox',options:{required: true }}" >参数编码   </th>  
+                    <th field="ParamValue"          sortable="true" align="left"    width="200"  editor="text" >参数值     </th> 
+                  
+                    <th field="Description"         sortable="true" align="left"    width="250"  editor="text" >描述说明   </th>  
+                      <th field="IsUserEditable"      sortable="true" align="center"    width="70"   formatter="com.formatCheckbox" >是否可编辑   </th>  
+                </tr>                            
+            </thead>      
+        </table> 
+ 

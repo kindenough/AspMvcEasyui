@@ -1,0 +1,34 @@
+﻿@{
+    ViewBag.Title = "授权代码";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+ 
+
+@section scripts{
+        <script src="~/Areas/Sys/ViewModels/Permission.js"></script>
+        <script type="text/javascript">
+            using("lookup", easyuifix.datagrid_editor_extend);
+            ko.bindingViewModel(new viewModel());
+            using(['validatebox','combotree','numberspinner'],easyuifix.datagrid_editor_extend);
+            var formatterParent = function (value, row) { return row.ParentName };
+        </script>
+}
+        <div class="z-toolbar">
+            <a id="a_refresh" href="#" plain="true" class="easyui-linkbutton" icon="icon-arrow_refresh" title="刷新" data-bind="click:refreshClick">刷新</a>
+            <a id="a_add"    href="#" plain="true" class="easyui-linkbutton" icon="icon-add" title="新增" data-bind="click:addClick">新增</a>
+            <a id="a_edit"   href="#" plain="true" class="easyui-linkbutton" icon="icon-edit" data-bind="click:editClick" title="编辑">编辑</a>
+            <a id="a_del"    href="#" plain="true" class="easyui-linkbutton" icon="icon-cross" title="删除" data-bind="click:deleteClick">删除</a>
+            <a id="a_save"  href="#" plain="true" class="easyui-linkbutton" icon="icon-save" data-bind="click:saveClick" title="保存">保存</a>
+        </div>
+        
+        <table data-bind="treegrid:grid">
+             <thead>  
+                <tr>  
+                    <th field="_id"  hidden="true"></th>  
+                    <th field="PermissionName"    align="left"        width="150" editor="{type:'validatebox',options:{required: true }}">授权名称   </th>  
+                    <th field="PermissionCode"    align="left"        width="80"  editor="{type:'validatebox',options:{required: true }}">授权代码   </th>  
+                    <th field="ParentCode"        align="left"              width="150"  editor="combotree" formatter="formatterParent">上级授权   </th>
+                </tr>                            
+            </thead>      
+        </table> 
+ 

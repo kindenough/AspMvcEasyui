@@ -1,0 +1,139 @@
+using System;
+using System.Data;
+using System.Collections;
+using System.Drawing;
+using Gios.Pdf;
+
+namespace Pdf_Example3
+{
+	class Class1
+	{
+		[STAThread]
+		static void Main(string[] args)
+		{
+		
+			// We use a template document format: the 8.5 x 11 letter but "as landascape"
+			PdfDocument myPdfDocument=new PdfDocument(PdfDocumentFormat.Letter_8_5x11_Horizontal);
+
+			// This time we crate some Font in order to call them easy way...
+			Font FontRegular=new Font("Times New Roman",9,FontStyle.Regular);
+			Font FontBold=new Font("Courier New",9,FontStyle.Bold);
+
+			// Now we create a Table of 200 lines, 6 columns and 8 points of Padding.
+			PdfTable myPdfTable=myPdfDocument.NewTable(FontRegular,200,6,4);
+			
+			// Importing datas from the datatables... (also column names for the headers!)
+			myPdfTable.ImportDataTable(Table);
+
+			// Sets the format for correct date-time representation
+			myPdfTable.Columns[2].SetContentFormat("{0:dd/MM/yyyy}");
+
+			// Now we set our Graphic Design: Colors and Borders...
+			myPdfTable.HeadersRow.SetColors(Color.White,Color.Navy);
+			myPdfTable.SetColors(Color.Black,Color.White,Color.Gainsboro);
+			myPdfTable.SetBorders(Color.Black,1,BorderType.CompleteGrid);
+			
+			// You can also set colors for a range of cells, in this case, a column:
+			myPdfTable.Columns[0].SetBackgroundColor(Color.LightCyan,Color.LightBlue);
+
+			//myPdfTable.Columns[2].SetContentFormat("{0:dd/MM/yyyy}");
+			
+			// With just one method we can set the proportional width of the columns.
+			// It's a "percentage like" assignment, but the sum can be different from 100.
+			myPdfTable.SetColumnsWidth(new int[]{5,25,8,20,20,20});
+			
+			// Sets a spanning of 3 columns to a range of cells.
+			foreach (PdfCell pc in myPdfTable.CellRange(3,3,8,3).Cells)
+				pc.ColSpan=3; 
+			
+			// Now we set some alignment... for the whole table, and then, for 
+			// certain columns.
+			myPdfTable.SetContentAlignment(ContentAlignment.MiddleCenter);
+			myPdfTable.Columns[0].SetContentAlignment(ContentAlignment.MiddleRight);
+			myPdfTable.Columns[1].SetContentAlignment(ContentAlignment.MiddleLeft);
+			
+			// This will load the image without placing into the document. The good thing
+			// is that the image will be written into the document just once even if we put it
+			// more times and in different sizes and places!
+			PdfImage LogoImage=myPdfDocument.NewImage(@"..\..\logo.jpg");
+
+			// Now the funny thing: Once we have a PdfArea, we can use it to do many many thigs...
+			PdfArea textArea=new PdfArea(myPdfDocument, 270,40,480,50);
+			
+			
+			// ...we can generate two recatangles... (or circle, or lines...)
+			PdfRectangle pr1=new PdfRectangle(myPdfDocument,textArea,Color.Gainsboro,1,Color.Gainsboro);
+			PdfRectangle pr2=new PdfRectangle(myPdfDocument,textArea.OuterArea(6),Color.Green,2);
+
+			// And again, we start the loop to generate the table...
+			while (!myPdfTable.AllTablePagesCreated)
+			{
+				PdfPage newPdfPage=myPdfDocument.NewPage();
+				PdfTablePage newPdfTablePage1=myPdfTable.CreateTablePage(new PdfArea(myPdfDocument,50,120,700,420));
+				
+				// nice thing: we can put all the objects in one sequence, so we can have a great control
+				// of the layout...
+				newPdfPage.Add(LogoImage,60,40,300);//
+				newPdfPage.Add(newPdfTablePage1);	//
+				newPdfPage.Add(pr1);				// this sequence will set document's layer order.
+				newPdfPage.Add(pr2);				//
+
+				// the page is complete, we can save it to the document and go on with
+				// the following page...
+				newPdfPage.SaveToDocument();			
+			}
+			
+			// and now we write to the output file! That's easy!
+			myPdfDocument.SaveToFile("Example3.pdf");
+			
+			//Remember you can also generate the PDF to a generic Base Stream
+		  //myPdfDocument.SaveToStream(Response.BaseStream);	
+		}
+		#region 2000 Rows Datatable Generation
+		static System.Random r=new Random();
+		static string GetAName
+		{
+			get
+			{
+				ArrayList al=new ArrayList();
+				al.Add("John Doe");
+				al.Add("Perry White");
+				al.Add("Jackson");
+				al.Add("Henry James Junior Ford");
+				al.Add("Bill Norton");
+				al.Add("Michal Johnathan Stewart ");
+				al.Add("George Wilson");
+				al.Add("Steven Edwards");
+				return al[r.Next(0,al.Count)].ToString();
+			}
+		}
+		static DataTable Table
+		{
+			get
+			{
+				DataTable dt=new DataTable();
+				dt.Columns.Add("ID");
+				dt.Columns.Add("Name");
+				dt.Columns.Add("Date of Birth",typeof(DateTime));
+				dt.Columns.Add("Phone Number");
+				dt.Columns.Add("Mobile Phone");
+				dt.Columns.Add("Password");
+				
+				for (int x=0;x<=2000;x++)
+				{
+					DataRow dr=dt.NewRow();
+					dr["ID"]=x.ToString();
+					dr["Name"]=GetAName;
+					dr["Date of Birth"]=new DateTime(r.Next(1940,1984),r.Next(1,12),r.Next(1,28));
+					dr["Phone Number"]="555-"+r.Next(100000,999999).ToString();
+					dr["Mobile Phone"]="444-"+r.Next(100000,999999).ToString();
+					dr["Password"]=r.Next(10000000,99999999).ToString();
+					dt.Rows.Add(dr);
+				}
+
+				return dt;
+			}
+		}
+		#endregion
+	}
+}

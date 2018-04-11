@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="主流程">
+  <start  name="员工填写请假单" g="160,44,84,51">
+    <transition name="" g="184,147;205,147:1,1" to="上级领导确认"/>
+  </start>
+  <task  name="上级领导确认" g="160,200,90,50">
+    <transition name="同意" g=":1,1" to="人力资源部确认"/>
+    <transition name="驳回" g="135,225;135,68:1,1" to="员工填写请假单"/>
+  </task>
+  <task  name="人力资源部确认" g="160,350,90,50">
+    <transition name="驳回" g="274,375;274,68:1,1" to="员工填写请假单"/>
+    <transition name="同意" g="205,442;135,442;135,508:1,1" to="请假单入库备案"/>
+  </task>
+  <end  name="请假单入库备案" g="160,484,84,51"></end>
+</process>

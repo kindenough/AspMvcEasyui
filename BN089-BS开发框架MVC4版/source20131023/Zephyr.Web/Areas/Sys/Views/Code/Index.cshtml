@@ -1,0 +1,90 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section head{
+        <style type="text/css">
+            div#navigation{background:white}
+            div#wrapper{float:right;width:100%;margin-left:-185px}
+            div#content{margin-left:185px}
+            div#navigation{float:left;width:180px}
+            .datagrid-cell a{color:black;}
+            .datagrid-cell a:hover{color:red;}
+        </style>
+}
+
+@section scripts{
+        <script src="~/Areas/Sys/ViewModels/Organize.js"></script>
+        <script src="~/Areas/Sys/ViewModels/Code.js"></script>
+        <script type="text/javascript">
+           using('validatebox');
+           var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+            ko.bindingViewModel(new viewModel());
+            var formatterButton = function (value, row) {
+                var dataStr = JSON.stringify({UserCode:row.UserCode,UserName:row.UserName,_isnew:row._isnew});
+                var html = '<a href="#" onclick=\'setOrganize(' + dataStr + ')\'><span class="icon icon-org">&nbsp;</span>[设置机构]</a>';
+                html += '<a href="#" onclick=\'setRole(' + dataStr + ')\' style="margin-left:10px"><span class="icon icon-group">&nbsp;</span>[设置角色]</a>';
+               return html;
+           };
+        </script>
+}
+
+<div id="container">
+    <div id="wrapper">
+        <div id="content">
+            <div class="z-toolbar">
+                <a id="a_refresh" href="#" plain="true" class="easyui-linkbutton" icon="icon-arrow_refresh" title="刷新" data-bind="click:refreshClick">刷新</a>
+                <a id="a_add"    href="#" plain="true" class="easyui-linkbutton" icon="icon-add" title="新增" data-bind="click:addClick">新增</a>
+                <a id="a_edit"   href="#" plain="true" class="easyui-linkbutton" icon="icon-edit" data-bind="click:editClick" title="编辑">编辑</a>
+                <a id="a_del"    href="#" plain="true" class="easyui-linkbutton" icon="icon-cross" title="删除" data-bind="click:deleteClick">删除</a>
+                <a id="a_save" href="#" plain="true" class="easyui-linkbutton" icon="icon-save" data-bind="click:saveClick" title="保存">保存</a>
+                <a id="a_save" href="#" plain="true" class="easyui-linkbutton" icon="icon-node_tree" data-bind="click:typeClick" title="管理类别">管理类别</a>
+            </div>
+
+            <table id="gridlist" data-bind="treegrid:grid">
+                 <thead>  
+                    <tr>  
+                        <th field="CodeType"            hidden="true"></th>
+                        <th field="Code"                sortable="true" align="left"    width="100"  editor="{type:'validatebox',options:{required:true}}"  >编号   </th> 
+                        <th field="Value"               sortable="true" align="left"    width="100"  editor="{type:'validatebox',options:{required:true}}"  >编码   </th>  
+                        <th field="Text"                sortable="true" align="left"    width="100"  editor="{type:'validatebox',options:{required:true}}"  >文本     </th>  
+                        <th field="ParentCode"          sortable="true" align="left"    width="70"  editor="text"  >上级编号   </th> 
+                        <th field="Description"         sortable="true" align="left"    width="180" editor="text"  >描述说明   </th>  
+                        <th field="IsEnable"            sortable="true" align="center"    width="70" formatter="com.formatCheckbox"  editor="{type:'checkbox',options:{on:true,off:false}}">是否启用   </th>  
+                        <th field="IsDefault"           sortable="true" align="center"    width="70" formatter="com.formatCheckbox"  editor="{type:'checkbox',options:{on:true,off:false}}">是否默认   </th> 
+                        <th field="Seq"                 sortable="true" align="right"    width="60"  editor="text">排序       </th>  
+                    </tr>                            
+                </thead>      
+            </table> 
+        </div>
+    </div>
+    <div id="navigation">
+        <div title="字典类别" style="width: 180px;" class="easyui-panel" data-options="title: '字典类别', iconCls: 'icon-node_tree', height: $(window).height() - 4 ">
+            <ul data-bind="easyuiTree:tree"></ul>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="type-template">
+    <style type="text/css">
+        .datagrid-wrap{border-width:0 0 1px 0;}
+        .datagrid-toolbar{background-color:#E0ECFF !important}
+    </style>
+
+    <table data-bind="datagrid:grid">
+        <thead>
+            <th field="CodeType"        sortable="true" align="left"    width="120" editor="{type:'validatebox',options:{required:true}}">类别编码</th>
+            <th field="CodeTypeName"    sortable="true" align="left"    width="150" editor="{type:'validatebox',options:{required:true}}">类别名称</th>
+            <th field="Description"     sortable="true" align="left"    width="200" editor="text"  >描述说明   </th>  
+            <th field="Seq"             sortable="true" align="right"   width="60"  editor="text">排序       </th>  
+        </thead>
+    </table>
+    
+    <div style="text-align:center;margin:5px;">
+        <a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" data-bind="click:confirmClick" href="javascript:void(0)"  >确定</a>  
+        <a class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" data-bind="click:cancelClick" href="javascript:void(0)">取消</a> 
+    </div>
+</script> 
+        
+ 

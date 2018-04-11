@@ -1,0 +1,102 @@
+﻿@{
+    var area = Model.Area;
+    var condtions = Model.Data["conditions"];
+    var columns = Model.Data["columns"];
+    var controller = Model.Data["controller"];
+    var count1 = condtions.Count;
+    var count2 = columns.Count;
+    var PrimaryKey = Model.PrimaryKeys[0];
+}
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Http;
+using System.Web.Mvc;
+using Zephyr.Core;
+using Zephyr.Models;
+
+namespace Zephyr.Areas.@(area).Controllers
+{
+    public class @(controller)Controller : Controller
+    {
+        public ActionResult Index()
+        {
+            var code = new sys_codeService();
+            var model = new
+            {
+                dataSource = new{
+                    dsPricing = code.GetValueTextListByType("Pricing")
+                },
+                urls = new{
+                    query = "/api/@area/@controller",
+                    newkey = "/api/@area/@controller/getnewkey",
+                    edit = "/api/@area/@controller/edit" 
+                },
+                resx = new{
+                    noneSelect = "请先选择一条数据！",
+                    editSuccess = "保存成功！",
+                    auditSuccess = "单据已审核！"
+                },
+                form = new{
+                @for (var i = 0; i < count1; i++)
+                {
+                @:    @condtions[i].field = "" @if (i < count1 - 1) {@(",")}
+                }
+                },
+                defaultRow = new {
+                   
+                },
+                setting = new{
+                    idField = "@PrimaryKey",
+                    postListFields = new string[] { @for (var i = 0; i < count2; i++){<text>"@columns[i].field"</text> if (i < count2 - 1){@(",")} }}
+                }
+            };
+
+            return View(model);
+        }
+    }
+
+    public class @(controller)ApiController : ApiController
+    {
+        public dynamic Get(RequestWrapper query)
+        {
+            query.LoadSettingXmlString(@@"
+<settings defaultOrderBy='@PrimaryKey'>
+    <select>*</select>
+    <from>@Model.TableName</from>
+    <where defaultForAll='true' defaultCp='equal' defaultIgnoreEmpty='true' >
+    @foreach(var item in condtions)
+    {
+        <field name='@item.field'@Raw("\t\t")cp='@item.cp'></field>   
+    }
+    </where>
+</settings>");
+            var service = new @(Model.TableName)Service();
+            var pQuery = query.ToParamQuery();
+            var result = service.GetDynamicListWithPaging(pQuery);
+            return result;
+        }
+
+        public string GetNewKey()
+        {
+            return new @(Model.TableName)Service().GetNewKey("@PrimaryKey", "maxplus").PadLeft(6, '0'); ;
+        }
+
+        [System.Web.Http.HttpPost]
+        public void Edit(dynamic data)
+        {
+            var listWrapper = RequestWrapper.Instance().LoadSettingXmlString(@@"
+<settings>
+    <table>
+        @Model.TableName
+    </table>
+    <where>
+        <field name='@PrimaryKey' cp='equal'></field>
+    </where>
+</settings>");
+            var service = new @(Model.TableName)Service();
+            var result = service.Edit(null, listWrapper, data);
+        }
+    }
+}

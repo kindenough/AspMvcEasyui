@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<settings defaultOrderBy='MaterialType'>
+  <module>Mms</module>
+  <select>MaterialTypeName as text,MaterialType as value,ParentCode as pid</select>
+  <from>  mms_materialType</from>
+  <where defaultForAll='true' defaultCp='equal' defaultIgnoreEmpty='true' >
+    <field name='text'       cp='like'  ></field>
+    <field name='value'      cp='startwith'       ></field>
+  </where>
+</settings>

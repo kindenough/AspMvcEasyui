@@ -1,0 +1,57 @@
+﻿@{
+    ViewBag.Title = "客商管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section head{
+        <style type="text/css">
+            div#navigation{background:white}
+            div#wrapper{float:right;width:100%;margin-left:-185px}
+            div#content{margin-left:185px}
+            div#navigation{float:left;width:180px}
+            .datagrid-cell a{color:black;}
+            .datagrid-cell a:hover{color:red;}
+        </style>
+}
+
+@section scripts{
+        <script src="~/Areas/Mms/ViewModels/mms.warehouse.js"></script>
+        <script type="text/javascript">
+           using('validatebox');
+           var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+            ko.bindingViewModel(new viewModel());
+        </script>
+}
+
+<div id="container">
+    <div id="wrapper">
+        <div id="content">
+            <div class="z-toolbar">
+                <a href="#" plain="true" class="easyui-linkbutton" icon="icon-arrow_refresh" title="刷新" data-bind="click:refreshClick">刷新</a>
+                <a href="#" plain="true" class="easyui-linkbutton" icon="icon-add" title="新增" data-bind="click:addClick">新增</a>
+                @*<a id="a_edit"   href="#" plain="true" class="easyui-linkbutton" icon="icon-edit" data-bind="click:editClick" title="编辑">编辑</a>*@
+                <a href="#" plain="true" class="easyui-linkbutton" icon="icon-cross" title="删除" data-bind="click:deleteClick">删除</a>
+                <a href="#" plain="true" class="easyui-linkbutton" icon="icon-save" data-bind="click:saveClick" title="保存">保存</a>
+                
+            </div>
+
+            <table id="gridlist" data-bind="datagrid:grid">
+                 <thead>  
+                    <tr>  
+                        <th field="ProjectCode"  hidden="true"     ></th>
+                        <th field="WarehouseCode"       sortable="true" align="left"    width="100"  editor="{type:'validatebox',options:{required:true}}"  >编码  </th> 
+                        <th field="WarehouseName"       sortable="true" align="left"    width="250"  editor="{type:'validatebox',options:{required:true}}"  >名称    </th> 
+                        <th field="Remark"              sortable="true" align="left"    width="250"  editor="text"  >备注说明    </th> 
+                    </tr>                            
+                </thead>      
+            </table> 
+        </div>
+    </div>
+    <div id="navigation">
+        <div title="项目" style="width: 180px;" class="easyui-panel" data-options="title: '客商类别', iconCls: 'icon-node_tree', height: $(window).height() - 4 ">
+            <ul data-bind="easyuiTree:tree"></ul>
+        </div>
+    </div>
+</div>
+ 
+ 

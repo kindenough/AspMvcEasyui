@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<settings lookupType="buildpart" defaultOrderBy='BuildPartCode'>
+  <module>Mms</module>
+  <select>
+    BuildPartCode as value,BuildPartName as text,ParentCode as pid
+  </select>
+  <from>
+    mms_buildPart
+  </from>
+  <where defaultForAll='true' defaultCp='equal' defaultIgnoreEmpty='true' >
+    <field name='BuildPartCode'         cp='startwith'  ></field>
+    <field name='BuildPartName'         cp='like'       ></field>
+    <field name='ProjectCode'           cp='equal' ignoreEmpty='false'></field>
+  </where>
+</settings>

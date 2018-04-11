@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<settings defaultOrderBy='B.SendDate desc,C.MaterialCode'>
+  <module>Mms</module>
+  <select>
+    'send' as SrcBillType,
+    A.BillNo as SrcBillNo,
+    A.RowId as SrcRowId,
+    A.Unit,
+    A.UnitPrice as SrcUnitPrice,
+    A.Num as SrcNum,
+    C.MaterialCode,
+    C.MaterialName,
+    C.MaterialType,
+    C.Model,
+    C.Material,
+    C.LimitLevel,
+    C.ManageLevel
+  </select>
+  <from>
+    mms_sendDetail A
+    left join mms_send B on B.BillNo = A.BillNo
+    left join mms_material C on C.MaterialCode = A.MaterialCode
+  </from>
+  <where defaultForAll='true' defaultCp='equal' defaultIgnoreEmpty='true' >
+    <field name='C.MaterialType'      cp='startwith'  ></field>
+    <field name='C.MaterialCode'      cp='startwith'  ></field>
+    <field name='C.MaterialName'      cp='like'       ></field>
+    <field name='B.WarehouseCode'     cp='equal' ignoreEmpty='false'></field>
+    <field name='B.PickUnit'          cp='equal' ignoreEmpty='false'></field>
+  </where>
+</settings>

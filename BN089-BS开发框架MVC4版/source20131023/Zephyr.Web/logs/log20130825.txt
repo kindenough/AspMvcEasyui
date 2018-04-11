@@ -1,0 +1,39 @@
+2013-08-25 22:32:08,297 [11184] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-25 22:32:08,329 [11184] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-25 22:32:08,335 [11184] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-25 22:32:08,336 [11184] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-25 22:32:23,158 [10760] DEBUG Servicesys_user - 获取实体对象
+2013-08-25 22:32:23,175 [10760] DEBUG Sys - select sys_user.* from sys_user where  UserCode =  'lhs'and Password =  'lhs'and IsEnable =  'True'
+2013-08-25 22:32:23,256 [10760] DEBUG Sys - 
+update sys_user
+set LoginCount = isnull(LoginCount,0) + 1
+   ,LastLoginDate = getdate()
+where UserCode = 'lhs' 
+2013-08-25 22:32:23,326 [10760] DEBUG Sys - insert into sys_loginHistory([UserCode],[UserName],[HostName],[HostIP],[LoginCity],[LoginDate]) values('lhs','','LHS-PC','ILData[0]/localhost','福建省厦门市','2013-08-25 22:32:23')
+2013-08-25 22:32:23,332 [10760] DEBUG Servicemms_project - 获取实体对象
+2013-08-25 22:32:23,332 [10760] DEBUG Mms - select mms_project.* from mms_project where  ProjectCode =  '201306030001'
+2013-08-25 22:32:23,543 [6324] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-08-25 22:32:26,877 [11772] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-08-25 22:32:32,450 [10724] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Sys/organize/Index','/Sys/organize')
+2013-08-25 22:32:32,460 [10724] DEBUG Servicesys_organize - 获取实体列表
+2013-08-25 22:32:32,465 [10724] DEBUG Sys - select sys_organize.* from sys_organize

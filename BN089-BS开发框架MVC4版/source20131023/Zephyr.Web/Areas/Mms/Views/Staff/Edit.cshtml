@@ -1,0 +1,143 @@
+﻿
+@{
+    ViewBag.Title = "Staff";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+<script src="/Content/js/viewModel/com.viewModel.edit.js"></script>
+<script type="text/javascript">
+    var viewModel = function(data){ 
+        var self = this;
+        com.viewModel.edit.apply(self,arguments);
+            this.grid0.size={w:8,h:177};
+    } 
+    var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+    ko.bindingViewModel(new viewModel(data));
+</script>
+}
+
+<div class="z-toolbar">
+    <a id="a_save" href="#" plain="true" class="easyui-linkbutton" icon="icon-save" data-bind="click:readonly()?null:saveClick,linkbuttonDisable:readonly" title="保存">保存</a>
+    <a id="a_undo" href="#" plain="true" class="easyui-linkbutton" icon="icon-undo" data-bind="click:readonly()?null:rejectClick,linkbuttonDisable:readonly" title="撤消">撤消</a>
+    <a id="a_audit" href="#" plain="true" class="easyui-linkbutton" icon="icon-user-accept" data-bind="click:auditClick,easyuiLinkbutton:approveButton" title="审核">审核</a>
+    <a id="a_printer" href="#" plain="true" class="easyui-linkbutton" icon="icon-printer" title="打印" data-bind="click:printClick">打印</a>
+    <div class="datagrid-btn-separator"></div>
+    <a id="a_other" href="#" class="easyui-splitbutton" data-options="menu:'#divother',iconCls:'icon-application_go'" title="其他">其他</a>
+    <div class="datagrid-btn-separator"></div>
+    <a id="a_first" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_first" data-bind="click:firstClick,linkbuttonEnable:pageData.scrollKeys.firstEnable" title="第一条"></a> 
+    <a id="a_previous" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_previous" data-bind="click:previousClick,linkbuttonEnable:pageData.scrollKeys.previousEnable" title="上一条"></a> 
+    <a id="a_next" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_next" data-bind="click:nextClick,linkbuttonEnable:pageData.scrollKeys.nextEnable" title="下一条"></a> 
+    <a id="a_last" href="#" plain="true" class="easyui-linkbutton" icon="icon-resultset_last" data-bind="click:lastClick,linkbuttonEnable:pageData.scrollKeys.lastEnable" title="最后一条"></a> 
+</div>
+
+<div id="divother" style="width:100px; display:none;">
+    <div data-options="iconCls:'icon-add'">新增</div>
+    <div data-options="iconCls:'icon-cross'">删除</div>
+    <div data-options="iconCls:'icon-arrow_refresh'">刷新</div>
+</div>  
+
+<div id="master" class="container_12" data-bind="inputwidth:0.9">
+    <div class="grid_1 lbl">EMPSID</div>
+    <div class="grid_3 val"><input type="text" data-bind="value:pageData.form.EMPSID ,readOnly : true" class="z-txt " /></div>
+    <div class="grid_1 lbl">DEPTID</div>
+    <div class="grid_3 val"><input type="text" data-bind="datasource:data.dataSource.dsDep, comboboxValue:pageData.form.DEPTID ,comboboxReadOnly : readonly" class="z-txt easyui-combobox" /></div>
+    <div class="grid_1 lbl">UserName</div>
+    <div class="grid_3 val"><input type="text" data-bind="value:pageData.form.UserName ,readOnly:readonly" class="z-txt " /></div>
+    
+    <div class="clear"></div>
+    
+    <div class="grid_1 lbl">EmployeeName</div>
+    <div class="grid_3 val"><input type="text" data-bind="value:pageData.form.EmployeeName ,readOnly:readonly" class="z-txt " /></div>
+    <div class="grid_1 lbl">DisplayName</div>
+    <div class="grid_3 val"><input type="text" data-bind="value:pageData.form.DisplayName ,readOnly:readonly" class="z-txt " /></div>
+    <div class="grid_1 lbl">RealNameSpell</div>
+    <div class="grid_3 val"><input type="text" data-bind="value:pageData.form.RealNameSpell ,readOnly:readonly" class="z-txt " /></div>
+    
+    <div class="clear"></div>
+    
+    <div class="grid_1 lbl">UserType</div>
+    <div class="grid_3 val"><input type="text" data-bind="datasource:data.dataSource.dsUserType,comboboxValue:pageData.form.UserType ,comboboxReadOnly : readonly" class="z-txt easyui-combobox" /></div>
+    <div class="grid_1 lbl">EmployeeCode</div>
+    <div class="grid_3 val"><input type="text" data-bind="value:pageData.form.EmployeeCode ,readOnly:readonly" class="z-txt " /></div>
+    <div class="grid_1 lbl">Gender</div>
+    <div class="grid_3 val"><input type="text" data-bind="value:pageData.form.Gender ,readOnly:readonly" class="z-txt " /></div>
+    
+    <div class="clear"></div>
+    
+    <div class="grid_1 lbl">Birthday</div>
+    <div class="grid_3 val"><input type="text" data-bind="dateboxValue:pageData.form.Birthday ,dateboxReadOnly : readonly" class="z-txt easyui-datebox" /></div>
+    <div class="grid_1 lbl">Nationality</div>
+    <div class="grid_3 val"><input type="text" data-bind="value:pageData.form.Nationality ,readOnly:readonly" class="z-txt " /></div>
+
+    <div class="clear"></div>
+</div>
+
+<div id="tt" class="easyui-tabs">  
+    <div title="tab1">
+        <table data-bind="datagrid:grid0">
+            <thead>
+                <tr> 
+                    <th field="CHANID"		sortable="true"	align="left"	width="80" editor="text" >CHANID</th>
+                    <th field="EMPSID"		sortable="true"	align="left"	width="80" editor="text" >EMPSID</th>
+                    <th field="changedate"		sortable="true"	align="left"	width="80" editor="datebox" formatter="com.formatDate">changedate</th>
+                    <th field="changetype"		sortable="true"	align="left"	width="80" editor="text" >changetype</th>
+                    <th field="createtime"		sortable="true"	align="left"	width="80" editor="text" >createtime</th>
+                </tr>
+            </thead>
+        </table>
+            
+        <div id="gridtb0">
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" data-bind="click:readonly()?null:grid0.addRowClick,linkbuttonDisable:readonly">新增</a>
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" data-bind="click:readonly()?null:grid0.onClickRow,linkbuttonDisable:readonly">编辑</a>
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" data-bind="click:readonly()?null:grid0.removeRowClick,linkbuttonDisable:readonly">删除</a>
+        </div>  
+    </div>
+    <div title="tab2" style="padding-top:2px;">
+        <div class="container_12" data-bind="inputwidth:0.9,autoheight:181" id = "form1">
+            <div class="grid_1 lbl">Folk</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab1.Folk ,readOnly:readonly" class="z-txt  readonly"/></div>
+            <div class="grid_1 lbl">Native</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab1.Native ,readOnly:readonly" class="z-txt  readonly"/></div>
+            <div class="grid_1 lbl">VoucherName</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab1.VoucherName ,readOnly:readonly" class="z-txt  readonly"/></div>
+                
+            <div class="clear"></div>
+                
+            <div class="grid_1 lbl">UserIndentity</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab1.UserIndentity ,readOnly:readonly" class="z-txt  readonly"/></div>
+            <div class="grid_1 lbl">Register</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab1.Register ,readOnly:readonly" class="z-txt  readonly"/></div>
+            <div class="grid_1 lbl">OfficeAddress</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab1.OfficeAddress ,readOnly:readonly" class="z-txt  readonly"/></div>
+        </div>     
+    </div>
+    <div title="tab3" style="padding-top:2px;">
+        <div class="container_12" data-bind="inputwidth:0.9,autoheight:181" id = "form2">
+            <div class="grid_1 lbl">HomeAddress</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab2.HomeAddress ,readOnly:readonly" class="z-txt  readonly"/></div>
+            <div class="grid_1 lbl">HomeZipCode</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab2.HomeZipCode ,readOnly:readonly" class="z-txt  readonly"/></div>
+            <div class="grid_1 lbl">OfficeFax</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab2.OfficeFax ,readOnly:readonly" class="z-txt  readonly"/></div>
+                
+            <div class="clear"></div>
+                
+            <div class="grid_1 lbl">IsStaff</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab2.IsStaff ,readOnly:readonly" class="z-txt  readonly"/></div>
+            <div class="grid_1 lbl">InDutyDate</div>
+            <div class="grid_3 val"><input type="text" data-bind="dateboxValue:pageData.tab2.InDutyDate ,dateboxReadOnly:readonly" class="z-txt easyui-datebox readonly"/></div>
+            <div class="grid_1 lbl">TryDutyEndDate</div>
+            <div class="grid_3 val"><input type="text" data-bind="dateboxValue:pageData.tab2.TryDutyEndDate ,dateboxReadOnly:readonly" class="z-txt easyui-datebox readonly"/></div>
+                
+            <div class="clear"></div>
+                
+            <div class="grid_1 lbl">Duty</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab2.Duty ,readOnly:readonly" class="z-txt  readonly"/></div>
+            <div class="grid_1 lbl">OutDuty</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab2.OutDuty ,readOnly:readonly" class="z-txt  readonly"/></div>
+            <div class="grid_1 lbl">DutyLevel</div>
+            <div class="grid_3 val"><input type="text" data-bind="value:pageData.tab2.DutyLevel ,readOnly:readonly" class="z-txt  readonly"/></div>
+        </div>     
+    </div>
+</div>

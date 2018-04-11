@@ -1,0 +1,149 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts{
+        <script src="~/Areas/Mms/ViewModels/mms.com.js"></script>
+        <script src="~/Areas/Mms/ViewModels/mms.viewModel.search.js"></script>
+        <script type="text/javascript">
+
+            function resizeColumn(value,row,index)
+            {
+                return "white-space:normal";
+            }
+           
+            var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+            var viewModel = function(){ 
+                var self = this;
+                this.form = ko.mapping.fromJS(data.form);
+                mms.viewModel.search.apply(this,arguments);
+                this.getSize = function(){
+                    var size = {w:4,h:94},ret = {};
+                    if (size && size.w) ret.width = $(window).width() - size.w;
+                    if (size && size.h) ret.height = $(window).height() - size.h;
+                    return ret;
+                },
+                this.grid = {
+                    width:self.getSize().width,
+                    height:self.getSize().height,
+                    idField:'MaterialCode',
+                    queryParams:{},
+                    onDblClickRow: $.noop,
+                    iconCls: 'icon icon-list',
+                    nowrap: true,           //折行
+                    rownumbers: true,       //行号
+                    striped: true,          //隔行变色
+                    singleSelect: true,     //单选
+                    remoteSort: true,       //后台排序
+                    pagination: true,      //翻页
+                    pageSize: com.getSetting("gridrows",20),
+                    onSortColumn : function (sort, order) { 
+                        self.grid.queryParams = $.extend(self.grid.queryParams,{sort: sort, order: order });
+                        com.ajax({
+                            type: 'get',
+                            url: '/api/mms/report/GetBalanceAccount/',
+                            data: ko.toJS(self.grid.queryParams),
+                            success: function (d) {
+                                $("#gridlist").datagrid('loadData', d.rows);
+                            }
+                        });
+                    },
+
+                    frozenColumns:[[
+                            {field:'MaterialName',title:'材料名称',width:80, rowspan:3,sortable:true},
+                            {field:'Model',title:'规格',width:40,align:'center',rowspan:3},
+                            {field:'Unit',title:'单位',width:40,rowspan:3}
+                    ]]
+                };
+
+                this.searchClick=function(){
+                    com.ajax({
+                        type: 'get',
+                        url: '/api/mms/report/GetBalanceAccount/',
+                        data: $.extend(self.grid.queryParams,{page:1,rows:self.grid.pageSize}, self.form),
+                        success: function (d) {
+                            self.grid.columns  = JSON.parse(d.Title);
+                            $("#gridlist").datagrid(self.grid).datagrid('loadData', d.rows);
+                            $("#gridlist").datagrid('resize',self.getSize());
+                            $("#gridlist").datagrid('getPager').pagination({ onSelectPage: function(pageindex, pagenumber){
+                                self.grid.queryParams = $.extend(self.grid.queryParams,{page:pageindex,rows:pagenumber});
+                                com.ajax({
+                                    type: 'get',
+                                    url: '/api/mms/report/GetBalanceAccount/',
+                                    data: self.grid.queryParams,
+                                    success: function (d) {
+                                        $("#gridlist").datagrid('loadData', d.rows);
+                                    }
+                                });
+                            } });
+                        }
+                    });
+                };
+              
+               
+                using('datagrid',function(){
+                    self.searchClick();
+                });
+
+                this.downloadClick = function (vm, event) {
+                    var titles = [[]],length = Math.max(self.grid.frozenColumns.length,self.grid.columns.length);
+                    for(var i=0;i<length;i++)
+                        titles[i] = (self.grid.frozenColumns[i]||[]).concat(self.grid.columns[i]||[])
+
+                    var opt = {
+                        dataGetter:"api",
+                        dataAction:"/api/mms/report/GetBalanceAccount/",
+                        titles: titles,
+                        dataParams: self.grid.queryParams
+                    };
+                    com.exporter(opt).download($(event.currentTarget).attr("suffix"));
+                };
+            };
+
+            ko.bindingViewModel(new viewModel(data));
+        </script>
+}
+        <div class="z-toolbar">
+            <a id="a_refresh" href="#" plain="true" class="easyui-linkbutton" icon="icon-arrow_refresh" title="刷新" data-bind="click:refreshClick">刷新</a>
+            @*<a id="a_add"    href="#" plain="true" class="easyui-linkbutton" icon="icon-add" title="新增" data-bind="click:addClick">新增</a>
+            <a id="a_edit"   href="#" plain="true" class="easyui-linkbutton" icon="icon-edit" data-bind="click:editClick" title="编辑">编辑</a>
+            <a id="a_del"    href="#" plain="true" class="easyui-linkbutton" icon="icon-cross" title="删除" data-bind="click:deleteClick">删除</a>
+            <a id="a_audit"  href="#" plain="true" class="easyui-linkbutton" icon="icon-folder_key" data-bind="click:auditClick" title="审核">审核</a>*@
+            <a id="a_export" href="#" class="easyui-splitbutton" data-options="menu:'#dropdown',iconCls:'icon-download'">导出</a>
+        </div>
+
+        <div id="dropdown" style="width:100px; display:none;">  
+            <div data-options="iconCls:'icon-ext-xls'"      suffix="xls"    data-bind="click:downloadClick">Excel2003   </div>  
+            <div data-options="iconCls:'icon-page_excel'"   suffix="xlsx"   data-bind="click:downloadClick">Excel2007   </div>  
+            <div data-options="iconCls:'icon-ext-doc'"      suffix="doc"    data-bind="click:downloadClick">Word2003    </div>  
+        </div> 
+
+        <div id="condition" class="container_12" style="position:relative;">
+            <div class="grid_1 lbl">库房名称</div>
+             <div class="grid_2 val"><input type="text" data-bind="comboboxValue:form.WarehouseCode,datasource:dataSource.warehouseItems" class="z-txt easyui-combobox" data-options="showblank:true"/></div>
+            <div class="grid_1 lbl">领料单位</div>
+            <div class="grid_2 val"><input type="text" data-bind="value:form.PickUnitName" class="z-txt easyui-autocomplete" data-options="url:'/api/mms/merchant/getnames'"/></div>
+            <div class="grid_1 lbl">施工部位</div>
+            <div class="grid_2 val"><input type="text" data-bind="comboboxValue:form.BuildPartCode,datasource:dataSource.buildPartItems" class="z-txt easyui-combobox" data-options="showblank:true"/></div>
+            
+            <div class="clear"></div>
+       
+           @* <div class="grid_1 lbl">材料类别</div>
+            <div class="grid_2 val"><input type="text" data-bind="lookupValue:form.MaterialType" class="z-txt easyui-lookup" data-options="lookupType:'materialtype',parentField:'pid'"/></div>
+           *@ <div class="grid_1 lbl">材料名称</div>
+            <div class="grid_2 val"><input type="text" data-bind="value:form.MaterialName" class="z-txt"/></div>
+            <div class="grid_1 lbl">查询区间</div>
+            <div class="grid_2 val"><input type="text" data-bind="value:form.QueryDate" class="z-txt easyui-daterange"/></div>
+
+            <div class="clear"></div>
+
+            <div class="prefix_9" style="position:absolute;top:5px;height:0;">  
+                <a id="a_search" href="#" class="buttonHuge button-blue" style="margin:0 15px;" data-bind="click:searchClick">查询</a> 
+                <a id="a_reset" href="#" class="buttonHuge button-blue" data-bind="click:clearClick">清空</a>
+            </div>
+        </div>
+
+        <table id="gridlist" data-bind1="datagrid:grid">
+             
+        </table> 

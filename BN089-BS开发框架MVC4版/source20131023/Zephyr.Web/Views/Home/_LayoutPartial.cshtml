@@ -1,0 +1,77 @@
+﻿@if (ViewBag.Settings["navigation"] == "menubutton")
+{
+<div region="north" class="head-north" split="true" border="false" style="height:66px;">
+            <span class="head head-right">
+                <a href="javascript:void(0)" class="easyui-linkbutton swich_project" plain="true" title="切换项目" data-options="iconCls:'icon-flag_france'"></a>
+                <a href="javascript:void(0)" class="easyui-menubutton" data-options="menu:'#mm_user',iconCls:'icon-user'">当前用户:@ViewBag.UserName</a>
+                <div id="mm_user" style="width:150px;">  
+                    <div data-options="iconCls:'icon-rainbow'" class="myconfig">个人设置</div>  
+                    <div data-options="iconCls:'icon-edit'" class="changepwd">修改密码</div>  
+                    <div class="menu-sep"></div>  
+                    <div data-options="iconCls:'icon-user_go'" class="loginOut">安全退出</div>  
+                </div> 
+            </span>
+
+            <span class="head-left" >
+                @ViewBag.Title
+            </span>
+            技术交流QQ群：328510073
+            <a href="http://www.zoewin.com/?page_id=338" target="_blank" style="color:white">点击联系我们</a>
+            
+            <div id="wnav"></div>
+        </div>
+}
+else
+{
+<div region="north" class="head-north" split="true" border="false"  >
+            <div class="head head-right" > 
+                <a href="javascript:void(0)" class="easyui-linkbutton swich_project" plain="true" title="切换项目" data-options="iconCls:'icon-flag_france'"></a>
+                <a href="javascript:void(0)" class="easyui-menubutton" data-options="menu:'#mm_user',iconCls:'icon-user'">当前用户:@ViewBag.UserName</a>
+                <div id="mm_user" style="width:150px;">  
+                    <div data-options="iconCls:'icon-rainbow'" class="myconfig">个人设置</div>  
+                    <div data-options="iconCls:'icon-edit'" class="changepwd">修改密码</div>  
+                    <div class="menu-sep"></div>  
+                    <div data-options="iconCls:'icon-user_go'" class="loginOut">安全退出</div>  
+                </div> 
+            </div>
+            <span class="head-left">
+                @ViewBag.Title
+            </span>
+            技术交流QQ群：328510073
+            <a href="http://www.zoewin.com/?page_id=338" target="_blank" style="color:white">点击联系我们</a>
+            
+        </div>
+	
+        <div region="west" split="true" title="导航菜单" style="width:180px;" id="west">
+            <div id="wnav"></div>
+        </div>
+}
+
+        <div region="south" split="true" class="head-south">
+		   <div class="footer">Copyright &copy; 2013 Zephyr, All Rights Reserved</div>
+	    </div>
+
+	    <div region="center" id="mainPanle" style="background: #eee; overflow-y:hidden">
+		    <div id="tabs" class="easyui-tabs"  fit="true" border="false" >
+			    <div title="我的桌面" style="overflow:hidden;" id="home"></div>
+		    </div>
+	    </div>
+ 
+        <script type="text/html" id="password-template">
+             <div class="container_12" style="width:90%;margin:5%;">
+                <div class="grid_3 lbl">登陆名：</div>
+                <div class="grid_9 val"><input type="text" class="z-txt readonly " name="UserCode" disabled="disabled"/></div>
+                <div class="grid_3 lbl">原密码：</div>
+                <div class="grid_9 val"><input type="password" class="z-txt" /></div>
+                <div class="grid_3 lbl">新密码：</div>
+                <div class="grid_9 val"><input type="password" class="z-txt" /></div>
+                <div class="grid_3 lbl">确　认：</div>
+                <div class="grid_9 val"><input type="password" class="z-txt"  /></div>
+                <div class="clear"></div>
+            </div>
+
+            <div style="text-align:center;" class="z-toolbar-dialog">
+                <a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)"  id="pwd_confirm" >确定</a>  
+                <a class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" id="pwd_close">取消</a> 
+            </div>
+        </script>

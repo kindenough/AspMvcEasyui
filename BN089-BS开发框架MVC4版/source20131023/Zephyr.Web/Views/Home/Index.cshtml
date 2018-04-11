@@ -1,0 +1,79 @@
+﻿@{
+    Layout = null;
+    ViewBag.EasyuiVersion = "1.3.2";
+    Zephyr.Utils.ZCookies.WriteCookies("theme", 0, Convert.ToString(ViewBag.Settings["theme"]));
+    ViewBag.Title = "建筑材料管理系统";
+}
+@*<!DOCTYPE html><html lang="zh"> 使用这个出现了滚动条*@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>@ViewBag.Title</title>
+        <link href="~/Images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+        <!--加载共通CSS-->
+        <link href="~/Content/css/base.css" rel="stylesheet" type="text/css" />
+
+        <!--加载960CSS框架-->
+        <link href="~/Content/css/960/fluid/reset.css" rel="stylesheet" type="text/css"  />
+        <link href="~/Content/css/960/fluid/text.css" rel="stylesheet" type="text/css" />
+        <link href="~/Content/css/960/fluid/grid.css" rel="stylesheet" type="text/css" />
+        <!--[if IE 6]><link href="~/Content/css/960/fluid/ie6.css" rel="stylesheet" type="text/css" /><![endif]-->
+        <!--[if IE 7]><link href="~/Content/css/960/fluid/ie.css"  rel="stylesheet" type="text/css" /><![endif]-->
+
+        <!--加载按钮CSS-->
+        <link href="~/Content/css/btns/css3btn.css" rel="stylesheet" type="text/css" />
+        <link href="~/Content/css/btns/sexybuttons.css" rel="stylesheet" type="text/css" />
+
+        <!--加载主题CSS-->
+        <link href="~/Content/themes/@ViewBag.Settings["theme"]/style.css" rel="stylesheet" type="text/css" />  
+        <link href="~/Content/js/jquery-easyui-@ViewBag.EasyuiVersion/themes/@ViewBag.Settings["theme"]/easyui.css" rel="stylesheet" type="text/css" />
+ 
+        <!--加载组件CSS-->  
+        <link href="~/Content/js/jquery-plugin/showloading/showLoading.css" rel="stylesheet" type="text/css" />
+        <link href="~/Content/js/jquery-plugin/ztree/css/zTreeStyle.css" rel="stylesheet" type="text/css"  />
+        <link href="~/Content/js/jquery-plugin/jnotify/jquery.jnotify.css" rel="stylesheet" type="text/css" />
+        <link href="~/Content/js/jquery-plugin/jqgrid/@ViewBag.Settings["theme"]/jquery-ui-1.8.4.custom.css" rel="stylesheet" type="text/css" /> <!--中有用到 如果引入jqgrid也有用到-->
+
+        <!--加载样式修正CSS-->
+        <link href="~/Content/css/hack/fix.css" rel="stylesheet" type="text/css" />
+
+        <!--本页面样式-->
+        <link href="~/Content/css/page/index.css" rel="stylesheet" type="text/css" />
+    </head>
+    <body class="easyui-layout" fit="true" scroll="no">
+        <noscript>
+            <div class="noscript">
+                <img src="~/Content/images/noscript.gif" alt="抱歉，请开启脚本支持！" />
+            </div>
+        </noscript>
+
+        @Html.Partial("_LayoutPartial")
+  
+        <div id="closeMenu" class="easyui-menu hide" style="width:150px;">
+		    <div id="refresh">刷新</div>
+		    <div class="menu-sep"></div>
+		    <div id="close">关闭</div>
+		    <div id="closeall">全部关闭</div>
+		    <div id="closeother">除此之外全部关闭</div>
+		    <div class="menu-sep"></div>
+		    <div id="closeright">关闭右侧标签</div>
+		    <div id="closeleft">关闭左侧标签</div>
+		    <div class="menu-sep"></div>
+		    <div id="exit">退出</div>
+	    </div>
+
+        <div id="w"></div>
+        <div id="notity"></div>
+
+        <!--加载页面脚本-->
+        @Scripts.Render("~/Content/js/index")
+        <script type="text/javascript">wrapper.initSettings(@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Settings)));</script>
+        <script type="text/javascript" src="~/Content/js/jquery-easyui-@ViewBag.EasyuiVersion/jquery.easyui.min.js"></script>
+        <script type="text/javascript" src="~/Content/js/jquery-easyui-@ViewBag.EasyuiVersion/locale/easyui-lang-zh_CN.js"></script>
+        <!--加载图标库CSS-->
+        <link href="~/Content/css/icon/icon.css" rel="stylesheet" type="text/css" />
+    </body>
+</html>

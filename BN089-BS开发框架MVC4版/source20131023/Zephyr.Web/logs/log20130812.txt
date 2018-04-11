@@ -1,0 +1,703 @@
+2013-08-12 10:35:19,503 [14664] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-12 10:35:19,536 [14664] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-12 10:35:19,543 [14664] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-12 10:35:19,544 [14664] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-12 10:35:37,707 [12068] DEBUG Servicesys_user - 获取实体对象
+2013-08-12 10:35:37,725 [12068] DEBUG Sys - select sys_user.* from sys_user where  UserCode =  'lhs'and Password =  'lhs'and IsEnable =  'True'
+2013-08-12 10:35:37,816 [12068] DEBUG Sys - 
+update sys_user
+set LoginCount = isnull(LoginCount,0) + 1
+   ,LastLoginDate = getdate()
+where UserCode = 'lhs' 
+2013-08-12 10:35:37,875 [12068] DEBUG Sys - insert into sys_loginHistory([UserCode],[UserName],[HostName],[HostIP],[LoginCity],[LoginDate]) values('lhs','刘会胜','LHS-PC','ILData[0]/localhost','福建省厦门市','2013-08-12 10:35:37')
+2013-08-12 10:35:37,878 [12068] DEBUG Servicemms_project - 获取实体对象
+2013-08-12 10:35:37,879 [12068] DEBUG Mms - select mms_project.* from mms_project where  ProjectCode =  '201306030001'
+2013-08-12 10:35:38,059 [7704] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-08-12 10:35:41,961 [18924] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-08-12 10:35:47,720 [12068] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Sys/code/Index','/Sys/code')
+2013-08-12 10:35:50,342 [12068] DEBUG Servicesys_codeType - 获取动态列表
+2013-08-12 10:35:50,344 [12068] DEBUG Sys - select sys_codeType.* from sys_codeType order by Seq,CodeType
+2013-08-12 10:35:50,684 [18924] DEBUG Servicesys_code - 获取实体列表
+2013-08-12 10:35:50,689 [18924] DEBUG Sys - select top 20 sys_code.* from sys_code order by Seq
+2013-08-12 10:35:50,745 [18924] DEBUG Sys - select count(*) from ( select sys_code.* from sys_code ) tb_temp
+2013-08-12 10:35:53,358 [7808] DEBUG Servicesys_codeType - 获取动态列表
+2013-08-12 10:35:53,358 [7808] DEBUG Sys - select top 10 sys_codeType.* from sys_codeType order by Seq,CodeType
+2013-08-12 10:35:53,360 [7808] DEBUG Sys - select count(*) from ( select sys_codeType.* from sys_codeType ) tb_temp
+2013-08-12 10:35:59,389 [12068] DEBUG Servicesys_codeType - 编辑记录
+2013-08-12 10:35:59,408 [12068] DEBUG Servicesys_codeType - 获取动态对象
+2013-08-12 10:35:59,413 [12068] DEBUG Sys - select sys_codeType.* from sys_codeType where  CodeType =  'aaa'
+2013-08-12 10:35:59,509 [12068] ERROR Servicesys_codeType - 编辑记录失败
+System.NullReferenceException: 未将对象引用设置到对象的实例。
+   在 Zephyr.Core.RequestWrapper.getVariableName(String field) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Request\RequestWrapperMethods.cs:行号 127
+   在 Zephyr.Models.sys_codeTypeService.OnBeforEditDetail(EditEventArgs arg) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Sys\Models\sys_codeType.cs:行号 13
+   在 Zephyr.Core.ServiceBase`1.<>c__DisplayClass40.<Edit>b__3d() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEdit.cs:行号 117
+   在 Zephyr.Core.LogHelper.Logger(ILog log, String function, ErrorHandle errorHandleType, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Logs\LogHelper.cs:行号 44
+2013-08-12 10:36:07,927 [12068] ERROR /api/sys/code/editcodetype/ - System.NullReferenceException: 未将对象引用设置到对象的实例。
+   在 Zephyr.Core.LogHelper.Logger(ILog log, String function, ErrorHandle errorHandleType, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Logs\LogHelper.cs:行号 54
+   在 Zephyr.Core.ServiceBase`1.Logger(String function, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseLog.cs:行号 23
+   在 Zephyr.Core.ServiceBase`1.Edit(RequestWrapper formWrapper, RequestWrapper listWrapper, JObject data) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEdit.cs:行号 68
+   在 CallSite.Target(Closure , CallSite , sys_codeTypeService , Object , RequestWrapper , Object )
+   在 System.Dynamic.UpdateDelegates.UpdateAndExecute4[T0,T1,T2,T3,TRet](CallSite site, T0 arg0, T1 arg1, T2 arg2, T3 arg3)
+   在 Zephyr.Areas.Sys.Controllers.CodeApiController.EditCodeType(Object data) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Sys\Controllers\CodeController.cs:行号 93
+   在 lambda_method(Closure , Object , Object[] )
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.<>c__DisplayClassf.<GetExecutor>b__9(Object instance, Object[] methodParameters)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.Execute(Object instance, Object[] arguments)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.<>c__DisplayClass5.<ExecuteAsync>b__4()
+   在 System.Threading.Tasks.TaskHelpers.RunSynchronously[TResult](Func`1 func, CancellationToken cancellationToken)
+2013-08-12 11:01:53,881 [13652] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Sys/log/Index','/Sys/log')
+2013-08-12 11:01:56,743 [13936] DEBUG Servicesys_loginHistory - 获取实体列表
+2013-08-12 11:01:56,744 [13936] DEBUG Sys - select top 20 
+        A.*
+     from 
+        sys_loginHistory A
+     order by A.ID desc
+2013-08-12 11:01:56,801 [6488] DEBUG Servicesys_log - 获取实体列表
+2013-08-12 11:01:56,802 [6488] DEBUG Sys - select top 20 
+        A.*
+     from 
+        sys_log A
+     order by A.ID desc
+2013-08-12 11:01:56,807 [13936] DEBUG Sys - select count(*) from ( select 
+        A.*
+     from 
+        sys_loginHistory A
+     ) tb_temp
+2013-08-12 11:01:56,898 [6488] DEBUG Sys - select count(*) from ( select 
+        A.*
+     from 
+        sys_log A
+     ) tb_temp
+2013-08-12 11:03:18,991 [11424] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Sys/code/Index','/Sys/code')
+2013-08-12 11:03:19,534 [6976] DEBUG Servicesys_codeType - 获取动态列表
+2013-08-12 11:03:19,534 [6976] DEBUG Sys - select sys_codeType.* from sys_codeType order by Seq,CodeType
+2013-08-12 11:03:19,903 [7288] DEBUG Servicesys_code - 获取实体列表
+2013-08-12 11:03:19,903 [7288] DEBUG Sys - select top 20 sys_code.* from sys_code order by Seq
+2013-08-12 11:03:19,906 [7288] DEBUG Sys - select count(*) from ( select sys_code.* from sys_code ) tb_temp
+2013-08-12 11:03:22,828 [6976] DEBUG Servicesys_codeType - 获取动态列表
+2013-08-12 11:03:22,828 [6976] DEBUG Sys - select top 10 sys_codeType.* from sys_codeType order by Seq,CodeType
+2013-08-12 11:03:22,829 [6976] DEBUG Sys - select count(*) from ( select sys_codeType.* from sys_codeType ) tb_temp
+2013-08-12 11:03:28,807 [11424] DEBUG Servicesys_codeType - 编辑记录
+2013-08-12 11:03:28,808 [11424] DEBUG Servicesys_codeType - 获取动态对象
+2013-08-12 11:03:28,809 [11424] DEBUG Sys - select sys_codeType.* from sys_codeType where  CodeType =  'aaaa'
+2013-08-12 11:06:45,953 [11424] ERROR Servicesys_codeType - 编辑记录失败
+System.NullReferenceException: 未将对象引用设置到对象的实例。
+   在 Zephyr.Core.RequestWrapper.getVariableName(String field) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Request\RequestWrapperMethods.cs:行号 127
+   在 Zephyr.Models.sys_codeTypeService.OnBeforEditDetail(EditEventArgs arg) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Sys\Models\sys_codeType.cs:行号 13
+   在 Zephyr.Core.ServiceBase`1.<>c__DisplayClass40.<Edit>b__3d() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEdit.cs:行号 117
+   在 Zephyr.Core.LogHelper.Logger(ILog log, String function, ErrorHandle errorHandleType, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Logs\LogHelper.cs:行号 44
+2013-08-12 11:06:46,006 [11424] ERROR /api/sys/code/editcodetype/ - System.NullReferenceException: 未将对象引用设置到对象的实例。
+   在 Zephyr.Core.LogHelper.Logger(ILog log, String function, ErrorHandle errorHandleType, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Logs\LogHelper.cs:行号 54
+   在 Zephyr.Core.ServiceBase`1.Logger(String function, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseLog.cs:行号 23
+   在 Zephyr.Core.ServiceBase`1.Edit(RequestWrapper formWrapper, RequestWrapper listWrapper, JObject data) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEdit.cs:行号 68
+   在 CallSite.Target(Closure , CallSite , sys_codeTypeService , Object , RequestWrapper , Object )
+   在 Zephyr.Areas.Sys.Controllers.CodeApiController.EditCodeType(Object data) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Sys\Controllers\CodeController.cs:行号 93
+   在 lambda_method(Closure , Object , Object[] )
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.<>c__DisplayClassf.<GetExecutor>b__9(Object instance, Object[] methodParameters)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.Execute(Object instance, Object[] arguments)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.<>c__DisplayClass5.<ExecuteAsync>b__4()
+   在 System.Threading.Tasks.TaskHelpers.RunSynchronously[TResult](Func`1 func, CancellationToken cancellationToken)
+2013-08-12 11:07:04,486 [13116] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-12 11:07:04,518 [13116] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-12 11:07:04,525 [13116] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-12 11:07:04,526 [13116] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-12 11:07:05,051 [18968] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-08-12 11:07:09,754 [14000] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-08-12 11:07:14,548 [14584] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Sys/code/Index','/Sys/code')
+2013-08-12 11:07:15,806 [13708] DEBUG Servicesys_codeType - 获取动态列表
+2013-08-12 11:07:15,820 [13708] DEBUG Sys - select sys_codeType.* from sys_codeType order by Seq,CodeType
+2013-08-12 11:07:16,157 [7288] DEBUG Servicesys_code - 获取实体列表
+2013-08-12 11:07:16,162 [7288] DEBUG Sys - select top 20 sys_code.* from sys_code order by Seq
+2013-08-12 11:07:16,209 [7288] DEBUG Sys - select count(*) from ( select sys_code.* from sys_code ) tb_temp
+2013-08-12 11:07:19,170 [13708] DEBUG Servicesys_codeType - 获取动态列表
+2013-08-12 11:07:19,170 [13708] DEBUG Sys - select top 10 sys_codeType.* from sys_codeType order by Seq,CodeType
+2013-08-12 11:07:19,171 [13708] DEBUG Sys - select count(*) from ( select sys_codeType.* from sys_codeType ) tb_temp
+2013-08-12 11:07:23,446 [14000] DEBUG Servicesys_codeType - 编辑记录
+2013-08-12 11:07:23,463 [14000] DEBUG Servicesys_codeType - 获取动态对象
+2013-08-12 11:07:23,469 [14000] DEBUG Sys - select sys_codeType.* from sys_codeType where  CodeType =  'aaa'
+2013-08-12 11:07:27,898 [14000] DEBUG Sys - insert into sys_codeType([CodeType],[CodeTypeName],[Description],[Seq],[UpdatePerson],[UpdateDate],[CreatePerson],[CreateDate]) values('aaa','bbb','','','刘会胜','2013-08-12 11:07:27','刘会胜','2013-08-12 11:07:27')
+2013-08-12 11:08:00,153 [13708] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Sys/code/Index','/Sys/code')
+2013-08-12 11:08:01,069 [16604] DEBUG Servicesys_code - 获取实体列表
+2013-08-12 11:08:01,069 [16604] DEBUG Sys - select top 20 sys_code.* from sys_code order by Seq
+2013-08-12 11:08:01,072 [8744] DEBUG Servicesys_codeType - 获取动态列表
+2013-08-12 11:08:01,072 [8744] DEBUG Sys - select sys_codeType.* from sys_codeType order by Seq,CodeType
+2013-08-12 11:08:01,072 [16604] DEBUG Sys - select count(*) from ( select sys_code.* from sys_code ) tb_temp
+2013-08-12 11:08:02,674 [8744] DEBUG Servicesys_codeType - 获取动态列表
+2013-08-12 11:08:02,675 [8744] DEBUG Sys - select top 10 sys_codeType.* from sys_codeType order by Seq,CodeType
+2013-08-12 11:08:02,676 [8744] DEBUG Sys - select count(*) from ( select sys_codeType.* from sys_codeType ) tb_temp
+2013-08-12 11:08:05,800 [5016] DEBUG Servicesys_codeType - 编辑记录
+2013-08-12 11:08:05,800 [5016] DEBUG Servicesys_codeType - 获取动态对象
+2013-08-12 11:08:05,801 [5016] DEBUG Sys - select sys_codeType.* from sys_codeType where  CodeType =  'aaa'
+2013-08-12 11:08:06,862 [5016] DEBUG Sys - update sys_code set CodeType='aaa' where CodeType='aaa'
+2013-08-12 11:08:06,881 [5016] DEBUG Sys - update sys_codeType set [CodeTypeName] = 'bbbaa', [Description] = '', [Seq] = '', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-08-12 11:08:06' where  CodeType =  'aaa'
+2013-08-12 11:08:06,962 [16604] DEBUG Servicesys_codeType - 获取动态列表
+2013-08-12 11:08:06,962 [16604] DEBUG Sys - select sys_codeType.* from sys_codeType order by Seq,CodeType
+2013-08-12 15:49:25,704 [15644] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-12 15:49:25,738 [15644] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-12 15:49:25,745 [15644] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-12 15:49:25,746 [15644] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-12 15:49:26,389 [12180] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-08-12 15:49:31,096 [13804] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-08-12 15:49:42,115 [6764] DEBUG Servicemms_send - 获取动态列表
+2013-08-12 15:49:42,132 [6764] DEBUG Mms - select top 20 
+        *
+     from 
+        test_user
+     order by UserCode
+2013-08-12 15:49:42,212 [6764] DEBUG Mms - select count(*) from ( select 
+        *
+     from 
+        test_user
+     ) tb_temp
+2013-08-12 15:49:46,871 [15892] DEBUG Servicemms_send - 获取动态列表
+2013-08-12 15:49:46,872 [15892] DEBUG Mms - with PagedPersons as
+								(
+									select top 100 percent 
+        *
+    , row_number() over (order by UserCode) as FLUENTDATA_ROWNUMBER
+									 from 
+        test_user
+    
+								)
+								select *
+								from PagedPersons
+								where fluentdata_RowNumber between 21 and 40
+2013-08-12 15:49:46,873 [15892] DEBUG Mms - select count(*) from ( select 
+        *
+     from 
+        test_user
+     ) tb_temp
+2013-08-12 15:49:53,564 [7192] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/send/Index','/Mms/send')
+2013-08-12 15:49:53,571 [7192] DEBUG Servicemms_warehouse - 获取动态列表
+2013-08-12 15:49:53,573 [7192] DEBUG Mms - select WarehouseCode as value,WarehouseName as text from mms_warehouse where  ProjectCode =  '201306030001'
+2013-08-12 15:49:53,574 [7192] DEBUG Servicesys_code - 获取动态列表
+2013-08-12 15:49:53,574 [7192] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'Pricing'
+2013-08-12 15:49:53,575 [7192] DEBUG Servicesys_code - 获取动态列表
+2013-08-12 15:49:53,575 [7192] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'MaterialUse'
+2013-08-12 15:49:56,409 [6432] DEBUG Servicemms_send - 获取动态列表
+2013-08-12 15:49:56,409 [6432] DEBUG Mms - select top 20 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName,E.MerchantsName as PickUnitName
+     from 
+        mms_send A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants E on E.MerchantsCode=A.PickUnit
+     where  A.ProjectCode =  '201306030001' order by A.BillNo
+2013-08-12 15:49:56,412 [6432] DEBUG Mms - select count(*) from ( select 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName,E.MerchantsName as PickUnitName
+     from 
+        mms_send A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants E on E.MerchantsCode=A.PickUnit
+     where  A.ProjectCode =  '201306030001' ) tb_temp
+2013-08-12 15:50:01,924 [6764] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/send/edit')
+2013-08-12 15:50:01,932 [6764] DEBUG Servicemms_send - 获取实体对象
+2013-08-12 15:50:01,935 [6764] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-08-12 15:50:01,942 [6764] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-08-12 15:50:01,969 [6764] DEBUG Servicemms_send - 获取字段
+2013-08-12 15:50:01,971 [6764] DEBUG Mms - select top 1 BillNo from mms_send where  ProjectCode =  '201306030001' order by BillNo
+2013-08-12 15:50:01,974 [6764] DEBUG Servicemms_send - 获取字段
+2013-08-12 15:50:01,974 [6764] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307110001'and ProjectCode =  '201306030001' order by BillNo desc
+2013-08-12 15:50:01,977 [6764] DEBUG Servicemms_send - 获取字段
+2013-08-12 15:50:01,978 [6764] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307110001'and ProjectCode =  '201306030001' order by BillNo
+2013-08-12 15:50:01,980 [6764] DEBUG Servicemms_send - 获取字段
+2013-08-12 15:50:01,981 [6764] DEBUG Mms - select top 1 BillNo from mms_send where  ProjectCode =  '201306030001' order by BillNo desc
+2013-08-12 15:50:02,663 [6764] DEBUG Servicesys_code - 获取动态列表
+2013-08-12 15:50:02,663 [6764] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'Pricing'
+2013-08-12 15:50:02,664 [6764] DEBUG Servicesys_code - 获取动态列表
+2013-08-12 15:50:02,664 [6764] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'MaterialUse'
+2013-08-12 15:50:02,665 [6764] DEBUG Servicesys_code - 获取动态列表
+2013-08-12 15:50:02,665 [6764] DEBUG Sys - select Text as value,Text as text from sys_code where  CodeType =  'MeasureUnit'
+2013-08-12 15:50:02,666 [6764] DEBUG Servicemms_warehouse - 获取动态列表
+2013-08-12 15:50:02,666 [6764] DEBUG Mms - select WarehouseCode as value,WarehouseName as text from mms_warehouse where  ProjectCode =  '201306030001'
+2013-08-12 15:50:02,668 [6764] DEBUG Servicesys_code - 获取字段
+2013-08-12 15:50:02,668 [6764] DEBUG Sys - select top 1 Code from sys_code where  CodeType =  'Pricing'and IsEnable =  'True'and IsDefault =  'True'
+2013-08-12 15:50:06,134 [7192] DEBUG ServiceModelBase - 获取动态列表
+2013-08-12 15:50:06,135 [7192] DEBUG Mms - select 
+    MerchantsCode   as   value,MerchantsName   as   text
+   from 
+    mms_merchants A
+    left join mms_merchantsType B on B.MerchantsTypeCode = A.MerchantsTypeCode
+   where  MerchantsCode in ('FB00505') order by MerchantsCode
+2013-08-12 15:50:06,458 [15892] DEBUG ServiceModelBase - 获取动态列表
+2013-08-12 15:50:06,459 [15892] DEBUG Mms - select 
+    BuildPartCode as value,BuildPartName as text,ParentCode as pid
+   from 
+    mms_buildPart
+   where  BuildPartCode in ('2') order by BuildPartCode
+2013-08-12 15:50:07,758 [15892] DEBUG Servicemms_send - 获取动态列表
+2013-08-12 15:50:07,759 [15892] DEBUG Mms - select 
+        A.*, B.MaterialName,B.Model,B.Material
+     from 
+        mms_sendDetail A
+        left join mms_material B on B.MaterialCode = A.MaterialCode
+     where  BillNo =  '201307110001' order by A.MaterialCode
+2013-08-12 15:50:10,105 [6764] DEBUG Servicemms_send - 获取实体对象
+2013-08-12 15:50:10,106 [6764] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-08-12 15:50:10,107 [6764] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-08-12 15:50:10,107 [6764] DEBUG Servicemms_send - 获取字段
+2013-08-12 15:50:10,107 [6764] DEBUG Mms - select top 1 BillNo from mms_send where  ProjectCode =  '201306030001' order by BillNo
+2013-08-12 15:50:10,108 [6764] DEBUG Servicemms_send - 获取字段
+2013-08-12 15:50:10,108 [6764] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307040001'and ProjectCode =  '201306030001' order by BillNo desc
+2013-08-12 15:50:10,110 [6764] DEBUG Servicemms_send - 获取字段
+2013-08-12 15:50:10,110 [6764] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307040001'and ProjectCode =  '201306030001' order by BillNo
+2013-08-12 15:50:10,111 [6764] DEBUG Servicemms_send - 获取字段
+2013-08-12 15:50:10,111 [6764] DEBUG Mms - select top 1 BillNo from mms_send where  ProjectCode =  '201306030001' order by BillNo desc
+2013-08-12 15:50:10,349 [7192] DEBUG Servicemms_send - 获取动态列表
+2013-08-12 15:50:10,350 [7192] DEBUG Mms - select 
+        A.*, B.MaterialName,B.Model,B.Material
+     from 
+        mms_sendDetail A
+        left join mms_material B on B.MaterialCode = A.MaterialCode
+     where  BillNo =  '201307040001' order by A.MaterialCode
+2013-08-12 15:50:10,543 [6764] DEBUG ServiceModelBase - 获取动态列表
+2013-08-12 15:50:10,543 [6764] DEBUG Mms - select 
+    MerchantsCode   as   value,MerchantsName   as   text
+   from 
+    mms_merchants A
+    left join mms_merchantsType B on B.MerchantsTypeCode = A.MerchantsTypeCode
+   where  MerchantsCode in ('FB00504') order by MerchantsCode
+2013-08-12 15:50:10,624 [7192] DEBUG ServiceModelBase - 获取动态列表
+2013-08-12 15:50:10,624 [7192] DEBUG Mms - select 
+    BuildPartCode as value,BuildPartName as text,ParentCode as pid
+   from 
+    mms_buildPart
+   where  BuildPartCode in ('3') order by BuildPartCode
+2013-08-12 15:50:10,895 [11040] DEBUG ServiceModelBase - 获取动态列表
+2013-08-12 15:50:10,895 [11040] DEBUG Mms - select 
+    MerchantsCode   as   value,MerchantsName   as   text
+   from 
+    mms_merchants A
+    left join mms_merchantsType B on B.MerchantsTypeCode = A.MerchantsTypeCode
+   where  MerchantsCode in ('FB00504') order by MerchantsCode
+2013-08-12 15:50:11,071 [6432] DEBUG ServiceModelBase - 获取动态列表
+2013-08-12 15:50:11,071 [6432] DEBUG Mms - select 
+    BuildPartCode as value,BuildPartName as text,ParentCode as pid
+   from 
+    mms_buildPart
+   where  BuildPartCode in ('3') order by BuildPartCode
+2013-08-12 15:50:16,512 [11684] DEBUG Servicemms_send - 编辑记录
+2013-08-12 15:50:16,528 [11684] DEBUG Servicemms_send - 获取动态对象
+2013-08-12 15:50:16,532 [11684] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-08-12 15:50:16,584 [11684] DEBUG Servicemms_send - 获取动态对象
+2013-08-12 15:50:16,584 [11684] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307040001'and RowId =  '1'
+2013-08-12 15:50:16,759 [11684] DEBUG Mms - update mms_sendDetail set [MaterialCode] = '0101010103', [Unit] = '吨', [UnitPrice] = '7', [Num] = '1', [Money] = '7', [Remark] = '123', [SrcBillType] = 'receive', [SrcBillNo] = '201306040002', [SrcRowId] = '2', [RemainNum] = '1.00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-08-12 15:50:16' where  BillNo =  '201307040001'and RowId =  '1'
+2013-08-12 15:50:16,801 [11684] DEBUG Mms - select * from mms_send where BillNo='201307040001'
+2013-08-12 15:50:16,883 [11684] DEBUG Mms - select * from mms_sendBatches where BillNo='201307040001'
+2013-08-12 15:50:16,905 [11684] DEBUG Mms - 
+update mms_receiveDetail 
+set RemainNum = isnull(RemainNum,0) + 1.00 ,
+UpdateDate = getdate(),
+UpdatePerson = '刘会胜'
+where BillNo='201306040002' 
+and RowId='2'
+2013-08-12 15:50:16,909 [11684] DEBUG Mms - 
+update mms_receiveDetail 
+set RemainNum = isnull(RemainNum,0) + 1.00 ,
+UpdateDate = getdate(),
+UpdatePerson = '刘会胜'
+where BillNo='201306030002' 
+and RowId='2'
+2013-08-12 15:50:16,916 [11684] DEBUG Mms - delete from mms_sendBatches where [BillNo] = '201307040001'
+2013-08-12 15:50:16,919 [11684] DEBUG Mms - select * from mms_sendDetail where BillNo='201307040001'
+2013-08-12 15:50:16,940 [11684] DEBUG Mms - insert into mms_sendBatches([BillNo],[RowId],[MaterialCode],[Num],[Money],[SrcBillType],[SrcBillNo],[SrcRowId],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate],[Remark]) values('201307040001','1','0101010103','1.00','7.00','receive','201306040002','2','访客','2013-07-04 23:18:14','刘会胜','2013-08-12 15:50:16','123')
+2013-08-12 15:50:17,063 [11684] DEBUG Mms - select * from 
+    (select 'receive' as SrcBillType
+    ,A.BillNo as SrcBillNo
+    ,A.RowId as SrcRowId
+    ,B.ReceiveDate as SrcDate
+    ,B.WarehouseCode
+    ,B.ProjectCode
+    ,A.RemainNum
+    ,A.UnitPrice as SrcUnitPrice
+    ,C.*
+    from mms_receiveDetail as A
+    left join mms_receive as B ON A.BillNo=B.BillNo
+    left join mms_material as C ON A.MaterialCode=C.MaterialCode
+    where A.RemainNum>0
+
+    union
+
+    select 'refund' as SrcBillType
+    ,A.BillNo as SrcBillNo
+    ,A.RowId as SrcRowId
+    ,B.RefundDate as SrcDate
+    ,B.WarehouseCode
+    ,B.ProjectCode
+    ,A.RemainNum
+    ,A.UnitPrice as SrcUnitPrice
+    ,C.*
+    from mms_refundDetail as A
+    left join mms_refund as B ON A.BillNo=B.BillNo
+    left join mms_material as C ON A.MaterialCode=C.MaterialCode
+    where A.RemainNum>0
+
+    union
+
+    select 'adjust' as SrcBillType
+    ,A.BillNo as SrcBillNo
+    ,A.RowId as SrcRowId
+    ,B.EffectDate as SrcDate
+    ,B.WarehouseCode
+    ,B.ProjectCode
+    ,A.RemainNum
+    ,A.UnitPrice as SrcUnitPrice
+    ,C.*
+    from mms_stockAdjustDetail as A
+    left join mms_stockAdjust as B ON A.BillNo=B.BillNo
+    left join mms_material as C ON A.MaterialCode=C.MaterialCode
+    where A.RemainNum>0) T
+  
+where WarehouseCode='201306030001'
+and MaterialCode='0101010103'
+and SrcBillType = 'receive'
+and SrcBillNo = '201306040002'
+and SrcRowId ='2' 
+order by SrcDate 
+2013-08-12 15:50:17,228 [11684] ERROR Servicemms_send - 编辑记录失败
+Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: 无法对 null 引用执行运行时绑定
+   在 CallSite.Target(Closure , CallSite , Object )
+   在 System.Dynamic.UpdateDelegates.UpdateAndExecute1[T0,TRet](CallSite site, T0 arg0)
+   在 Zephyr.Web.Areas.Mms.Common.MmsService.HandlerBillBatchesAfterEdit[TBill](EditEventArgs arg) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Mms\Common\MmsService.cs:行号 199
+   在 Zephyr.Models.mms_sendService.OnAfterEdit(EditEventArgs arg) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Mms\Models\mms_send.cs:行号 15
+   在 Zephyr.Core.ServiceBase`1.<>c__DisplayClass40.<Edit>b__3d() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEdit.cs:行号 130
+   在 Zephyr.Core.LogHelper.Logger(ILog log, String function, ErrorHandle errorHandleType, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Logs\LogHelper.cs:行号 44
+2013-08-12 15:50:24,859 [11684] ERROR /api/mms/send/edit/ - Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: 无法对 null 引用执行运行时绑定
+   在 Zephyr.Core.LogHelper.Logger(ILog log, String function, ErrorHandle errorHandleType, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Logs\LogHelper.cs:行号 54
+   在 Zephyr.Core.ServiceBase`1.Logger(String function, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseLog.cs:行号 23
+   在 Zephyr.Core.ServiceBase`1.Edit(RequestWrapper formWrapper, RequestWrapper listWrapper, JObject data) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEdit.cs:行号 68
+   在 CallSite.Target(Closure , CallSite , mms_sendService , RequestWrapper , RequestWrapper , Object )
+   在 System.Dynamic.UpdateDelegates.UpdateAndExecute4[T0,T1,T2,T3,TRet](CallSite site, T0 arg0, T1 arg1, T2 arg2, T3 arg3)
+   在 Zephyr.Areas.Mms.Controllers.MmsBaseApi`4.Edit(Object data) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Mms\Common\MmsBaseApi.cs:行号 160
+   在 lambda_method(Closure , Object , Object[] )
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.<>c__DisplayClassf.<GetExecutor>b__9(Object instance, Object[] methodParameters)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.Execute(Object instance, Object[] arguments)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.<>c__DisplayClass5.<ExecuteAsync>b__4()
+   在 System.Threading.Tasks.TaskHelpers.RunSynchronously[TResult](Func`1 func, CancellationToken cancellationToken)
+2013-08-12 15:50:29,396 [19308] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Sys/log/Index','/Sys/log')
+2013-08-12 15:50:32,117 [19308] DEBUG Servicesys_loginHistory - 获取实体列表
+2013-08-12 15:50:32,120 [19308] DEBUG Sys - select top 20 
+        A.*
+     from 
+        sys_loginHistory A
+     order by A.ID desc
+2013-08-12 15:50:32,184 [11040] DEBUG Servicesys_log - 获取实体列表
+2013-08-12 15:50:32,185 [11040] DEBUG Sys - select top 20 
+        A.*
+     from 
+        sys_log A
+     order by A.ID desc
+2013-08-12 15:50:32,190 [19308] DEBUG Sys - select count(*) from ( select 
+        A.*
+     from 
+        sys_loginHistory A
+     ) tb_temp
+2013-08-12 15:50:32,280 [11040] DEBUG Sys - select count(*) from ( select 
+        A.*
+     from 
+        sys_log A
+     ) tb_temp
+2013-08-12 15:51:52,703 [11304] DEBUG Servicemms_send - 编辑记录
+2013-08-12 15:51:52,703 [11304] DEBUG Servicemms_send - 获取动态对象
+2013-08-12 15:51:52,709 [11304] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-08-12 15:51:52,712 [11304] DEBUG Servicemms_send - 获取动态对象
+2013-08-12 15:51:52,712 [11304] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307040001'and RowId =  '1'
+2013-08-12 15:51:52,828 [11304] DEBUG Mms - update mms_sendDetail set [MaterialCode] = '0101010103', [Unit] = '吨', [UnitPrice] = '7', [Num] = '1', [Money] = '7', [Remark] = '123', [SrcBillType] = 'receive', [SrcBillNo] = '201306040002', [SrcRowId] = '2', [RemainNum] = '1.00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-08-12 15:51:52' where  BillNo =  '201307040001'and RowId =  '1'
+2013-08-12 15:51:57,756 [11304] DEBUG Mms - select * from mms_send where BillNo='201307040001'
+2013-08-12 15:51:59,217 [11304] DEBUG Mms - select * from mms_sendBatches where BillNo='201307040001'
+2013-08-12 15:52:01,773 [11304] DEBUG Mms - 
+update mms_receiveDetail 
+set RemainNum = isnull(RemainNum,0) + 1.00 ,
+UpdateDate = getdate(),
+UpdatePerson = '刘会胜'
+where BillNo='201306040002' 
+and RowId='2'
+2013-08-12 15:52:03,879 [11304] DEBUG Mms - 
+update mms_receiveDetail 
+set RemainNum = isnull(RemainNum,0) + 1.00 ,
+UpdateDate = getdate(),
+UpdatePerson = '刘会胜'
+where BillNo='201306030002' 
+and RowId='2'
+2013-08-12 15:52:04,787 [11304] DEBUG Mms - delete from mms_sendBatches where [BillNo] = '201307040001'
+2013-08-12 15:52:06,082 [11304] DEBUG Mms - select * from mms_sendDetail where BillNo='201307040001'
+2013-08-12 15:52:10,364 [11304] DEBUG Mms - insert into mms_sendBatches([BillNo],[RowId],[MaterialCode],[Num],[Money],[SrcBillType],[SrcBillNo],[SrcRowId],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate],[Remark]) values('201307040001','1','0101010103','1.00','7.00','receive','201306040002','2','访客','2013-07-04 23:18:14','刘会胜','2013-08-12 15:51:52','123')
+2013-08-12 15:52:12,339 [11304] DEBUG Mms - select * from 
+    (select 'receive' as SrcBillType
+    ,A.BillNo as SrcBillNo
+    ,A.RowId as SrcRowId
+    ,B.ReceiveDate as SrcDate
+    ,B.WarehouseCode
+    ,B.ProjectCode
+    ,A.RemainNum
+    ,A.UnitPrice as SrcUnitPrice
+    ,C.*
+    from mms_receiveDetail as A
+    left join mms_receive as B ON A.BillNo=B.BillNo
+    left join mms_material as C ON A.MaterialCode=C.MaterialCode
+    where A.RemainNum>0
+
+    union
+
+    select 'refund' as SrcBillType
+    ,A.BillNo as SrcBillNo
+    ,A.RowId as SrcRowId
+    ,B.RefundDate as SrcDate
+    ,B.WarehouseCode
+    ,B.ProjectCode
+    ,A.RemainNum
+    ,A.UnitPrice as SrcUnitPrice
+    ,C.*
+    from mms_refundDetail as A
+    left join mms_refund as B ON A.BillNo=B.BillNo
+    left join mms_material as C ON A.MaterialCode=C.MaterialCode
+    where A.RemainNum>0
+
+    union
+
+    select 'adjust' as SrcBillType
+    ,A.BillNo as SrcBillNo
+    ,A.RowId as SrcRowId
+    ,B.EffectDate as SrcDate
+    ,B.WarehouseCode
+    ,B.ProjectCode
+    ,A.RemainNum
+    ,A.UnitPrice as SrcUnitPrice
+    ,C.*
+    from mms_stockAdjustDetail as A
+    left join mms_stockAdjust as B ON A.BillNo=B.BillNo
+    left join mms_material as C ON A.MaterialCode=C.MaterialCode
+    where A.RemainNum>0) T
+  
+where WarehouseCode='201306030001'
+and MaterialCode='0101010103'
+and SrcBillType = 'receive'
+and SrcBillNo = '201306040002'
+and SrcRowId ='2' 
+order by SrcDate 
+2013-08-12 15:52:28,036 [11304] ERROR Servicemms_send - 编辑记录失败
+Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: 无法对 null 引用执行运行时绑定
+   在 CallSite.Target(Closure , CallSite , Object )
+   在 Zephyr.Web.Areas.Mms.Common.MmsService.HandlerBillBatchesAfterEdit[TBill](EditEventArgs arg) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Mms\Common\MmsService.cs:行号 199
+   在 Zephyr.Models.mms_sendService.OnAfterEdit(EditEventArgs arg) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Mms\Models\mms_send.cs:行号 15
+   在 Zephyr.Core.ServiceBase`1.<>c__DisplayClass40.<Edit>b__3d() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEdit.cs:行号 130
+   在 Zephyr.Core.LogHelper.Logger(ILog log, String function, ErrorHandle errorHandleType, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Logs\LogHelper.cs:行号 44
+2013-08-12 15:52:30,204 [11304] ERROR /api/mms/send/edit/ - Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: 无法对 null 引用执行运行时绑定
+   在 Zephyr.Core.LogHelper.Logger(ILog log, String function, ErrorHandle errorHandleType, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Logs\LogHelper.cs:行号 54
+   在 Zephyr.Core.ServiceBase`1.Logger(String function, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseLog.cs:行号 23
+   在 Zephyr.Core.ServiceBase`1.Edit(RequestWrapper formWrapper, RequestWrapper listWrapper, JObject data) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEdit.cs:行号 68
+   在 CallSite.Target(Closure , CallSite , mms_sendService , RequestWrapper , RequestWrapper , Object )
+   在 Zephyr.Areas.Mms.Controllers.MmsBaseApi`4.Edit(Object data) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Mms\Common\MmsBaseApi.cs:行号 160
+   在 lambda_method(Closure , Object , Object[] )
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.<>c__DisplayClassf.<GetExecutor>b__9(Object instance, Object[] methodParameters)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.Execute(Object instance, Object[] arguments)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.<>c__DisplayClass5.<ExecuteAsync>b__4()
+   在 System.Threading.Tasks.TaskHelpers.RunSynchronously[TResult](Func`1 func, CancellationToken cancellationToken)
+2013-08-12 15:52:32,780 [8188] DEBUG Servicemms_send - 编辑记录
+2013-08-12 15:52:32,781 [8188] DEBUG Servicemms_send - 获取动态对象
+2013-08-12 15:52:32,781 [8188] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-08-12 15:52:32,784 [8188] DEBUG Servicemms_send - 获取动态对象
+2013-08-12 15:52:32,784 [8188] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307040001'and RowId =  '1'
+2013-08-12 15:52:32,896 [8188] DEBUG Mms - update mms_sendDetail set [MaterialCode] = '0101010103', [Unit] = '吨', [UnitPrice] = '7', [Num] = '1', [Money] = '7', [Remark] = '123', [SrcBillType] = 'receive', [SrcBillNo] = '201306040002', [SrcRowId] = '2', [RemainNum] = '1.00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-08-12 15:52:32' where  BillNo =  '201307040001'and RowId =  '1'
+2013-08-12 15:52:34,154 [8188] DEBUG Mms - select * from mms_send where BillNo='201307040001'
+2013-08-12 15:52:34,219 [8188] DEBUG Mms - select * from mms_sendBatches where BillNo='201307040001'
+2013-08-12 15:52:34,220 [8188] DEBUG Mms - 
+update mms_receiveDetail 
+set RemainNum = isnull(RemainNum,0) + 1.00 ,
+UpdateDate = getdate(),
+UpdatePerson = '刘会胜'
+where BillNo='201306040002' 
+and RowId='2'
+2013-08-12 15:52:34,220 [8188] DEBUG Mms - 
+update mms_receiveDetail 
+set RemainNum = isnull(RemainNum,0) + 1.00 ,
+UpdateDate = getdate(),
+UpdatePerson = '刘会胜'
+where BillNo='201306030002' 
+and RowId='2'
+2013-08-12 15:52:34,220 [8188] DEBUG Mms - delete from mms_sendBatches where [BillNo] = '201307040001'
+2013-08-12 15:52:34,221 [8188] DEBUG Mms - select * from mms_sendDetail where BillNo='201307040001'
+2013-08-12 15:52:34,223 [8188] DEBUG Mms - insert into mms_sendBatches([BillNo],[RowId],[MaterialCode],[Num],[Money],[SrcBillType],[SrcBillNo],[SrcRowId],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate],[Remark]) values('201307040001','1','0101010103','1.00','7.00','receive','201306040002','2','访客','2013-07-04 23:18:14','刘会胜','2013-08-12 15:52:32','123')
+2013-08-12 15:52:34,284 [8188] DEBUG Mms - select * from 
+    (select 'receive' as SrcBillType
+    ,A.BillNo as SrcBillNo
+    ,A.RowId as SrcRowId
+    ,B.ReceiveDate as SrcDate
+    ,B.WarehouseCode
+    ,B.ProjectCode
+    ,A.RemainNum
+    ,A.UnitPrice as SrcUnitPrice
+    ,C.*
+    from mms_receiveDetail as A
+    left join mms_receive as B ON A.BillNo=B.BillNo
+    left join mms_material as C ON A.MaterialCode=C.MaterialCode
+    where A.RemainNum>0
+
+    union
+
+    select 'refund' as SrcBillType
+    ,A.BillNo as SrcBillNo
+    ,A.RowId as SrcRowId
+    ,B.RefundDate as SrcDate
+    ,B.WarehouseCode
+    ,B.ProjectCode
+    ,A.RemainNum
+    ,A.UnitPrice as SrcUnitPrice
+    ,C.*
+    from mms_refundDetail as A
+    left join mms_refund as B ON A.BillNo=B.BillNo
+    left join mms_material as C ON A.MaterialCode=C.MaterialCode
+    where A.RemainNum>0
+
+    union
+
+    select 'adjust' as SrcBillType
+    ,A.BillNo as SrcBillNo
+    ,A.RowId as SrcRowId
+    ,B.EffectDate as SrcDate
+    ,B.WarehouseCode
+    ,B.ProjectCode
+    ,A.RemainNum
+    ,A.UnitPrice as SrcUnitPrice
+    ,C.*
+    from mms_stockAdjustDetail as A
+    left join mms_stockAdjust as B ON A.BillNo=B.BillNo
+    left join mms_material as C ON A.MaterialCode=C.MaterialCode
+    where A.RemainNum>0) T
+  
+where WarehouseCode='201306030001'
+and MaterialCode='0101010103'
+and SrcBillType = 'receive'
+and SrcBillNo = '201306040002'
+and SrcRowId ='2' 
+order by SrcDate 
+2013-08-12 15:54:19,381 [8188] ERROR Servicemms_send - 编辑记录失败
+Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: 无法对 null 引用执行运行时绑定
+   在 CallSite.Target(Closure , CallSite , Object )
+   在 Zephyr.Web.Areas.Mms.Common.MmsService.HandlerBillBatchesAfterEdit[TBill](EditEventArgs arg) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Mms\Common\MmsService.cs:行号 199
+   在 Zephyr.Models.mms_sendService.OnAfterEdit(EditEventArgs arg) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Mms\Models\mms_send.cs:行号 15
+   在 Zephyr.Core.ServiceBase`1.<>c__DisplayClass40.<Edit>b__3d() 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEdit.cs:行号 130
+   在 Zephyr.Core.LogHelper.Logger(ILog log, String function, ErrorHandle errorHandleType, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Logs\LogHelper.cs:行号 44
+2013-08-12 15:54:19,394 [8188] ERROR /api/mms/send/edit/ - Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: 无法对 null 引用执行运行时绑定
+   在 Zephyr.Core.LogHelper.Logger(ILog log, String function, ErrorHandle errorHandleType, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Logs\LogHelper.cs:行号 54
+   在 Zephyr.Core.ServiceBase`1.Logger(String function, Action tryHandle, Action`1 catchHandle, Action finallyHandle) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseLog.cs:行号 23
+   在 Zephyr.Core.ServiceBase`1.Edit(RequestWrapper formWrapper, RequestWrapper listWrapper, JObject data) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Net\Zephyr.Core\Base\ServiceBaseEdit.cs:行号 68
+   在 CallSite.Target(Closure , CallSite , mms_sendService , RequestWrapper , RequestWrapper , Object )
+   在 Zephyr.Areas.Mms.Controllers.MmsBaseApi`4.Edit(Object data) 位置 g:\02.进行项目\纵云框架产品\Zephyr.Web-原始版\Zephyr.Web\Areas\Mms\Common\MmsBaseApi.cs:行号 160
+   在 lambda_method(Closure , Object , Object[] )
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.<>c__DisplayClassf.<GetExecutor>b__9(Object instance, Object[] methodParameters)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.Execute(Object instance, Object[] arguments)
+   在 System.Web.Http.Controllers.ReflectedHttpActionDescriptor.<>c__DisplayClass5.<ExecuteAsync>b__4()
+   在 System.Threading.Tasks.TaskHelpers.RunSynchronously[TResult](Func`1 func, CancellationToken cancellationToken)
+2013-08-12 15:58:12,939 [7964] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-12 15:58:12,971 [7964] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-12 15:58:12,978 [7964] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-12 15:58:12,978 [7964] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-08-12 15:58:13,493 [18952] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-08-12 15:58:18,157 [18952] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode

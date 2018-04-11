@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BADDFB3F-A5B3-47B5-90D4-20D20353F67F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Zephyr.WorkFlow</RootNamespace>
+    <AssemblyName>Zephyr.WorkFlow</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Zephyr.Bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Engine\BpmConfiguration.cs" />
+    <Compile Include="Engine\BpmContext.cs" />
+    <Compile Include="Engine\ProcessDefinition.cs" />
+    <Compile Include="Engine\ProcessDelegation.cs" />
+    <Compile Include="Excute\ProcessInstance.cs" />
+    <Compile Include="Engine\BpmContextData.cs" />
+    <Compile Include="Engine\BpmContextMembers.cs" />
+    <Compile Include="Enum\ActionType.cs" />
+    <Compile Include="Enum\AlertType.cs" />
+    <Compile Include="Enum\EunmConvert.cs" />
+    <Compile Include="Enum\EventType.cs" />
+    <Compile Include="Enum\FormType.cs" />
+    <Compile Include="Enum\InstanceType.cs" />
+    <Compile Include="Enum\LogicType.cs" />
+    <Compile Include="Enum\MsgState.cs" />
+    <Compile Include="Enum\NodeType.cs" />
+    <Compile Include="Enum\ProcessState.cs" />
+    <Compile Include="Enum\TaskState.cs" />
+    <Compile Include="Enum\TokenState.cs" />
+    <Compile Include="Excute\ActionInstance.cs" />
+    <Compile Include="Interface\IModel.cs" />
+    <Compile Include="Model\wf_processInstance.cs" />
+    <Compile Include="Model\wf_processDefinition.cs" />
+    <Compile Include="Model\wf_taskInstance.cs" />
+    <Compile Include="Model\wf_token.cs" />
+    <Compile Include="Model\wf_transitionInstance.cs" />
+    <Compile Include="Node\EventAction.cs" />
+    <Compile Include="Node\TaskEventArgs.cs" />
+    <Compile Include="Node\TransEventArgs.cs" />
+    <Compile Include="Interface\ITask.cs" />
+    <Compile Include="Interface\ITaskInstance.cs" />
+    <Compile Include="Interface\IToken.cs" />
+    <Compile Include="Node\Node.cs" />
+    <Compile Include="Node\Task.cs" />
+    <Compile Include="Excute\TaskInstance.cs" />
+    <Compile Include="Excute\Token.cs" />
+    <Compile Include="Node\Transition.cs" />
+    <Compile Include="Excute\TransitionInstance.cs" />
+    <Compile Include="Node\NodeReader.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Test\EngineTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Engine\BpmConfiguration.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Zephyr.Data\Zephyr.Data.csproj">
+      <Project>{b5ae821b-7728-49b3-9119-3bbc4c8e58e9}</Project>
+      <Name>Zephyr.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Test\TestFlow.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

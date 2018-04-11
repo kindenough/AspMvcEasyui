@@ -1,0 +1,142 @@
+2013-10-22 16:49:59,081 [10192] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-10-22 16:49:59,342 [10192] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-10-22 16:49:59,349 [10192] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-10-22 16:49:59,457 [10192] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-10-22 16:49:59,463 [10192] DEBUG Psi - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-10-22 16:49:59,516 [10192] DEBUG Psi - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-10-22 16:50:10,722 [10640] DEBUG Servicesys_user - 获取实体对象
+2013-10-22 16:50:10,744 [10640] DEBUG Sys - select sys_user.* from sys_user where  UserCode =  'lhs'and Password =  'lhs'and IsEnable =  'True'
+2013-10-22 16:50:10,990 [10640] DEBUG Sys - 
+update sys_user
+set LoginCount = isnull(LoginCount,0) + 1
+   ,LastLoginDate = getdate()
+where UserCode = 'lhs' 
+2013-10-22 16:50:11,093 [10640] DEBUG Sys - insert into sys_loginHistory([UserCode],[UserName],[HostName],[HostIP],[LoginCity],[LoginDate]) values('lhs','刘会胜','LHS-PC','localhost','福建省厦门市','2013-10-22 16:50:11')
+2013-10-22 16:50:11,149 [10640] DEBUG Servicemms_project - 获取实体对象
+2013-10-22 16:50:11,150 [10640] DEBUG Mms - select mms_project.* from mms_project where  ProjectCode =  '201306030001'
+2013-10-22 16:50:11,418 [10676] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-10-22 16:50:16,033 [10664] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-10-22 16:59:15,364 [10668] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/send/Index','/Mms/send')
+2013-10-22 16:59:15,386 [10668] DEBUG Servicemms_warehouse - 获取动态列表
+2013-10-22 16:59:15,393 [10668] DEBUG Mms - select WarehouseCode as value,WarehouseName as text from mms_warehouse where  ProjectCode =  '201306030001'
+2013-10-22 16:59:15,437 [10668] DEBUG Servicesys_code - 获取动态列表
+2013-10-22 16:59:15,437 [10668] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'Pricing'
+2013-10-22 16:59:15,441 [10668] DEBUG Servicesys_code - 获取动态列表
+2013-10-22 16:59:15,441 [10668] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'MaterialUse'
+2013-10-22 16:59:16,476 [10668] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/send'
+2013-10-22 16:59:16,480 [10668] DEBUG Sys - 
+select *
+from sys_roleMenuColumnMap 
+where MenuCode = '1001'
+and RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+2013-10-22 16:59:16,537 [10668] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/send'
+2013-10-22 16:59:16,538 [10668] DEBUG Sys - 
+select A.*
+from sys_button A
+inner join sys_roleMenuButtonMap B on B.MenuCode = '1001' and B.ButtonCode = A.ButtonCode
+where RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+order by ButtonSeq
+2013-10-22 16:59:18,939 [10652] DEBUG Servicemms_send - 获取动态列表
+2013-10-22 16:59:18,939 [10652] DEBUG Mms - select top 20 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName,E.MerchantsName as PickUnitName
+     from 
+        mms_send A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants E on E.MerchantsCode=A.PickUnit
+     where  A.ProjectCode =  '201306030001' order by A.BillNo
+2013-10-22 16:59:19,094 [10652] DEBUG Mms - select count(*) from ( select 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName,E.MerchantsName as PickUnitName
+     from 
+        mms_send A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants E on E.MerchantsCode=A.PickUnit
+     where  A.ProjectCode =  '201306030001' ) tb_temp
+2013-10-22 17:00:01,991 [1540] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Sys/generator/Index','/Sys/generator')
+2013-10-22 17:00:07,295 [10952] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Sys/menu/Index','/Sys/menu')
+2013-10-22 17:00:08,802 [3724] DEBUG Servicesys_menu - 获取动态列表
+2013-10-22 17:00:08,803 [3724] DEBUG Sys - select A.*,B.MenuName as ParentName from sys_menu A left join sys_menu B on B.MenuCode = A.ParentCode order by A.MenuSeq,A.MenuCode
+2013-10-22 17:00:46,729 [10668] DEBUG Servicesys_menu - 编辑记录
+2013-10-22 17:00:46,746 [10668] DEBUG Servicesys_menu - 获取动态对象
+2013-10-22 17:00:46,759 [10668] DEBUG Sys - select 
+        sys_menu
+    .* from 
+        sys_menu
+     where  MenuCode =  '9950'
+2013-10-22 17:00:46,780 [10668] DEBUG Sys - update 
+        sys_menu
+     set [MenuName] = '测试1', [MenuCode] = '9950', [ParentCode] = '98', [IconClass] = 'icon-application_cascade', [URL] = '/mms/liy', [IsVisible] = 'true', [IsEnable] = 'true', [MenuSeq] = '', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-10-22 17:00:46' where  MenuCode =  '9950'
+2013-10-22 17:00:46,847 [10668] DEBUG Servicesys_menu - 获取动态对象
+2013-10-22 17:00:46,848 [10668] DEBUG Sys - select 
+        sys_menu
+    .* from 
+        sys_menu
+     where  MenuCode =  '9960'
+2013-10-22 17:00:46,849 [10668] DEBUG Sys - update 
+        sys_menu
+     set [MenuName] = '员工测试2', [MenuCode] = '9960', [ParentCode] = '98', [IconClass] = 'icon-user_b', [URL] = '/mms/staff', [IsVisible] = 'true', [IsEnable] = 'true', [MenuSeq] = '', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-10-22 17:00:46' where  MenuCode =  '9960'
+2013-10-22 17:00:46,857 [10668] DEBUG Servicesys_menu - 获取动态对象
+2013-10-22 17:00:46,857 [10668] DEBUG Sys - select 
+        sys_menu
+    .* from 
+        sys_menu
+     where  MenuCode =  '9920'
+2013-10-22 17:00:46,858 [10668] DEBUG Sys - update 
+        sys_menu
+     set [MenuName] = '产品测试', [MenuCode] = '9920', [ParentCode] = '98', [IconClass] = 'icon-application_side_list', [URL] = '/mms/product', [IsVisible] = 'true', [IsEnable] = 'true', [MenuSeq] = '', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-10-22 17:00:46' where  MenuCode =  '9920'
+2013-10-22 17:00:46,888 [10668] DEBUG Sys - insert into sys_log([UserCode],[UserName],[Position],[Target],[Type],[Message],[Date]) values('lhs','刘会胜','api/mms/send','菜单数据','修改','{"list":{"deleted":[],"inserted":[],"updated":[{"_id":"9950","MenuName":"测试1","MenuCode":"9950","ParentCode":"98","IconClass":"icon-application_cascade","URL":"/mms/liy","IsVisible":"true","IsEnable":"true","MenuSeq":""},{"_id":"9960","MenuName":"员工测试2","MenuCode":"9960","ParentCode":"98","IconClass":"icon-user_b","URL":"/mms/staff","IsVisible":"true","IsEnable":"true","MenuSeq":""},{"_id":"9920","MenuName":"产品测试","MenuCode":"9920","ParentCode":"98","IconClass":"icon-application_side_list","URL":"/mms/product","IsVisible":"true","IsEnable":"true","MenuSeq":""}],"_changed":true}}','2013-10-22 17:00:46')
+2013-10-22 17:00:47,807 [3724] DEBUG Servicesys_menu - 获取动态列表
+2013-10-22 17:00:47,807 [3724] DEBUG Sys - select A.*,B.MenuName as ParentName from sys_menu A left join sys_menu B on B.MenuCode = A.ParentCode order by A.MenuSeq,A.MenuCode

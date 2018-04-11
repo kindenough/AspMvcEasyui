@@ -1,0 +1,540 @@
+2013-09-14 15:51:20,321 [7088] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-14 15:51:21,196 [7088] DEBUG Sys - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-14 15:51:21,203 [7088] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-14 15:51:21,262 [7088] DEBUG Mms - select name from dbo.sysobjects where id = object_id(N'[dbo].[fun_getPY]') and xtype in (N'FN', N'IF', N'TF')
+2013-09-14 15:51:30,257 [13768] DEBUG Servicesys_user - 获取实体对象
+2013-09-14 15:51:30,275 [13768] DEBUG Sys - select sys_user.* from sys_user where  UserCode =  'lhs'and Password =  'lhs'and IsEnable =  'True'
+2013-09-14 15:51:30,411 [13768] DEBUG Sys - 
+update sys_user
+set LoginCount = isnull(LoginCount,0) + 1
+   ,LastLoginDate = getdate()
+where UserCode = 'lhs' 
+2013-09-14 15:51:30,465 [13768] DEBUG Sys - insert into sys_loginHistory([UserCode],[UserName],[HostName],[HostIP],[LoginCity],[LoginDate]) values('lhs','刘会胜','LHS-PC','ILData[0]/localhost','福建省厦门市','2013-09-14 15:51:30')
+2013-09-14 15:51:30,471 [13768] DEBUG Servicemms_project - 获取实体对象
+2013-09-14 15:51:30,472 [13768] DEBUG Mms - select mms_project.* from mms_project where  ProjectCode =  '201306030001'
+2013-09-14 15:51:30,708 [15300] DEBUG Sys - select * from sys_userSetting where UserCode='lhs'
+2013-09-14 15:51:35,459 [9632] DEBUG Sys - 
+--角色的菜单
+select distinct B.*
+from sys_roleMenuMap A
+inner join sys_menu  B on B.MenuCode = A.MenuCode
+where B.IsEnable='1'
+  and RoleCode in (
+  select RoleCode from sys_userRoleMap where UserCode = 'lhs' --用户的角色
+union all
+  select RoleCode from sys_organizeRoleMap where OrganizeCode in  --机构的角色
+  (
+	select OrganizeCode from sys_userOrganizeMap where UserCode = 'lhs'
+  )  
+)
+order by B.MenuSeq,B.MenuCode
+2013-09-14 15:51:51,891 [9632] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/send/Index','/Mms/send')
+2013-09-14 15:51:51,916 [9632] DEBUG Servicemms_warehouse - 获取动态列表
+2013-09-14 15:51:51,919 [9632] DEBUG Mms - select WarehouseCode as value,WarehouseName as text from mms_warehouse where  ProjectCode =  '201306030001'
+2013-09-14 15:51:51,944 [9632] DEBUG Servicesys_code - 获取动态列表
+2013-09-14 15:51:51,945 [9632] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'Pricing'
+2013-09-14 15:51:51,957 [9632] DEBUG Servicesys_code - 获取动态列表
+2013-09-14 15:51:51,957 [9632] DEBUG Sys - select Code as value,Text as text from sys_code where  CodeType =  'MaterialUse'
+2013-09-14 15:51:52,996 [9632] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/send'
+2013-09-14 15:51:53,001 [9632] DEBUG Sys - 
+select *
+from sys_roleMenuColumnMap 
+where MenuCode = '1001'
+and RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+2013-09-14 15:51:53,037 [9632] DEBUG Sys - select MenuCode from sys_menu where URL = '/mms/send'
+2013-09-14 15:51:53,038 [9632] DEBUG Sys - 
+select A.*
+from sys_button A
+inner join sys_roleMenuButtonMap B on B.MenuCode = '1001' and B.ButtonCode = A.ButtonCode
+where RoleCode in (
+select RoleCode
+from sys_userRoleMap
+where userCode = 'lhs'
+union
+select A.RoleCode
+from sys_organizeRoleMap A
+inner join sys_userOrganizeMap B on B.OrganizeCode = A.OrganizeCode
+where B.UserCode = 'lhs'
+)
+order by ButtonSeq
+2013-09-14 15:51:55,234 [7508] DEBUG Servicemms_send - 获取动态列表
+2013-09-14 15:51:55,235 [7508] DEBUG Mms - select top 20 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName,E.MerchantsName as PickUnitName
+     from 
+        mms_send A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants E on E.MerchantsCode=A.PickUnit
+     where  A.ProjectCode =  '201306030001' order by A.BillNo
+2013-09-14 15:51:55,384 [7508] DEBUG Mms - select count(*) from ( select 
+        A.*, B.ProjectName, C.MaterialTypeName, D.WarehouseName,E.MerchantsName as PickUnitName
+     from 
+        mms_send A
+        left join mms_project       B on B.ProjectCode      = A.ProjectCode
+        left join mms_materialType  C on C.MaterialType = A.MaterialType
+        left join mms_warehouse         D on D.WarehouseCode       = A.WarehouseCode
+        left join mms_merchants E on E.MerchantsCode=A.PickUnit
+     where  A.ProjectCode =  '201306030001' ) tb_temp
+2013-09-14 15:51:59,838 [13768] DEBUG Sys - 
+select 1
+from sys_roleMenuMap A
+left join sys_userRoleMap B on B.RoleCode = A.RoleCode
+left join sys_menu C on C.MenuCode = A.MenuCode
+where B.UserCode = 'lhs'
+and C.URL in ('/Mms/send/edit')
+2013-09-14 15:51:59,849 [13768] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 15:51:59,850 [13768] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-14 15:51:59,856 [13768] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 15:51:59,886 [13768] DEBUG Servicemms_send - 获取字段
+2013-09-14 15:51:59,888 [13768] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 15:51:59,891 [13768] DEBUG Servicemms_send - 获取字段
+2013-09-14 15:51:59,891 [13768] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307040001' order by BillNo desc
+2013-09-14 15:51:59,894 [13768] DEBUG Servicemms_send - 获取字段
+2013-09-14 15:51:59,894 [13768] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307040001' order by BillNo
+2013-09-14 15:51:59,897 [13768] DEBUG Servicemms_send - 获取字段
+2013-09-14 15:51:59,897 [13768] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 15:52:00,598 [13768] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 15:52:00,599 [13768] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307040001'
+2013-09-14 15:52:00,693 [13768] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 15:52:00,693 [13768] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307040001'
+2013-09-14 15:52:00,696 [13768] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 15:52:00,696 [13768] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-14 15:52:00,698 [13768] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 15:52:00,698 [13768] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-14 15:52:00,698 [13768] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 15:52:00,699 [13768] DEBUG Servicemms_send - 获取字段
+2013-09-14 15:52:00,699 [13768] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 15:52:00,699 [13768] DEBUG Servicemms_send - 获取字段
+2013-09-14 15:52:00,699 [13768] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307040001' order by BillNo desc
+2013-09-14 15:52:00,700 [13768] DEBUG Servicemms_send - 获取字段
+2013-09-14 15:52:00,700 [13768] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307040001' order by BillNo
+2013-09-14 15:52:00,700 [13768] DEBUG Servicemms_send - 获取字段
+2013-09-14 15:52:00,700 [13768] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 15:52:00,701 [13768] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 15:52:00,701 [13768] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307040001'
+2013-09-14 15:52:00,702 [13768] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 15:52:00,702 [13768] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307040001'
+2013-09-14 15:52:00,702 [13768] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 15:52:00,703 [13768] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-14 15:52:51,717 [11172] DEBUG Servicemms_send - 编辑记录
+2013-09-14 15:52:51,736 [11172] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307040001'and RowId =  '2'
+2013-09-14 15:52:51,749 [11172] DEBUG Mms - update mms_sendDetail set [MaterialCode] = '0101010102', [Unit] = '吨', [UnitPrice] = '62', [Num] = '1', [RemainNum] = '1', [Money] = '6', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-14 15:52:51' where  BillNo =  '201307040001'and RowId =  '2'
+2013-09-14 17:43:46,391 [7256] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:43:46,393 [7256] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201306270002'
+2013-09-14 17:43:46,394 [7256] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 17:43:46,394 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:46,394 [7256] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 17:43:46,394 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:46,394 [7256] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201306270002' order by BillNo desc
+2013-09-14 17:43:46,395 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:46,395 [7256] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201306270002' order by BillNo
+2013-09-14 17:43:46,396 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:46,396 [7256] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 17:43:46,396 [7256] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 17:43:46,396 [7256] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201306270002'
+2013-09-14 17:43:46,396 [7256] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 17:43:46,396 [7256] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201306270002'
+2013-09-14 17:43:46,397 [7256] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:43:46,397 [7256] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201306270002'
+2013-09-14 17:43:47,751 [7256] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:43:47,751 [7256] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-14 17:43:47,751 [7256] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 17:43:47,751 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:47,751 [7256] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 17:43:47,752 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:47,752 [7256] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307040001' order by BillNo desc
+2013-09-14 17:43:47,752 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:47,752 [7256] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307040001' order by BillNo
+2013-09-14 17:43:47,752 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:47,752 [7256] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 17:43:47,752 [7256] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 17:43:47,752 [7256] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307040001'
+2013-09-14 17:43:47,752 [7256] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 17:43:47,752 [7256] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307040001'
+2013-09-14 17:43:47,753 [7256] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:43:47,753 [7256] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-14 17:43:48,597 [12864] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:43:48,597 [12864] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-14 17:43:48,598 [12864] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 17:43:48,598 [12864] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:48,598 [12864] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 17:43:48,598 [12864] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:48,598 [12864] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307110001' order by BillNo desc
+2013-09-14 17:43:48,599 [12864] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:48,599 [12864] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307110001' order by BillNo
+2013-09-14 17:43:48,599 [12864] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:48,599 [12864] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 17:43:48,600 [12864] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 17:43:48,600 [12864] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307110001'
+2013-09-14 17:43:48,600 [12864] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 17:43:48,600 [12864] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307110001'
+2013-09-14 17:43:48,601 [12864] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:43:48,601 [12864] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-14 17:43:49,614 [7356] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:43:49,615 [7356] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240020'
+2013-09-14 17:43:49,615 [7356] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 17:43:49,615 [7356] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:49,615 [7356] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 17:43:49,615 [7356] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:49,615 [7356] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307240020' order by BillNo desc
+2013-09-14 17:43:49,616 [7356] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:49,616 [7356] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307240020' order by BillNo
+2013-09-14 17:43:49,617 [7356] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:49,617 [7356] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 17:43:49,617 [7356] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 17:43:49,617 [7356] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307240020'
+2013-09-14 17:43:49,617 [7356] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 17:43:49,617 [7356] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307240020'
+2013-09-14 17:43:49,618 [7356] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:43:49,618 [7356] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240020'
+2013-09-14 17:43:51,014 [12864] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:43:51,015 [12864] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201306050002'
+2013-09-14 17:43:51,015 [12864] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 17:43:51,015 [12864] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:51,015 [12864] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 17:43:51,015 [12864] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:51,015 [12864] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201306050002' order by BillNo desc
+2013-09-14 17:43:51,016 [12864] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:51,016 [12864] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201306050002' order by BillNo
+2013-09-14 17:43:51,017 [12864] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:51,017 [12864] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 17:43:51,017 [12864] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 17:43:51,017 [12864] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201306050002'
+2013-09-14 17:43:51,017 [12864] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 17:43:51,017 [12864] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201306050002'
+2013-09-14 17:43:51,017 [12864] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:43:51,018 [12864] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201306050002'
+2013-09-14 17:43:52,438 [15480] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:43:52,439 [15480] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201306270002'
+2013-09-14 17:43:52,439 [15480] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 17:43:52,439 [15480] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:52,439 [15480] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 17:43:52,439 [15480] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:52,439 [15480] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201306270002' order by BillNo desc
+2013-09-14 17:43:52,439 [15480] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:52,440 [15480] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201306270002' order by BillNo
+2013-09-14 17:43:52,440 [15480] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:52,440 [15480] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 17:43:52,440 [15480] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 17:43:52,440 [15480] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201306270002'
+2013-09-14 17:43:52,440 [15480] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 17:43:52,440 [15480] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201306270002'
+2013-09-14 17:43:52,440 [15480] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:43:52,441 [15480] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201306270002'
+2013-09-14 17:43:54,938 [12864] DEBUG Mms - update mms_send set [ApproveState] = 'passed', [ApproveRemark] = '', [ApprovePerson] = '刘会胜', [ApproveDate] = '2013-09-14 17:43:54' where  BillNo =  '201306270002'
+2013-09-14 17:43:54,945 [12864] DEBUG Mms - 
+select A.*,B.WarehouseCode,B.ProjectCode 
+from mms_sendDetail A 
+left join mms_send B on B.BillNo = A.BillNo 
+where A.BillNo='201306270002'
+2013-09-14 17:43:55,037 [12864] DEBUG Mms - select * from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010104'
+2013-09-14 17:43:55,043 [12864] DEBUG Mms - update mms_warehouseStock set [Unit] = '吨', [Num] = '2.00', [UnitPrice] = '-3.00', [Money] = '-6.0000', [WarnStockDown] = '', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-04 17:57:05', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-14 17:43:55', [Remark] = '' where [WarehouseCode] = '201306030001' and [MaterialCode] = '0101010104'
+2013-09-14 17:43:55,082 [12864] DEBUG Mms - select * from mms_materialWarnning where ProjectCode='201306030001' and MaterialCode='0101010104'
+2013-09-14 17:43:55,086 [12864] DEBUG Mms - update mms_materialWarnning set [LowerNum] = '0.00', [UpperNum] = '0.00', [Num] = '-58.00', [CreatePerson] = '颜荣华', [CreateDate] = '2013-06-05 17:58:00', [UpdatePerson] = '刘会胜', [UpdateDate] = '2013-09-14 17:43:55', [Remark] = '' where [ProjectCode] = '201306030001' and [MaterialCode] = '0101010104'
+2013-09-14 17:43:55,186 [12864] DEBUG Mms - select Num,UnitPrice from mms_warehouseStock where WarehouseCode='201306030001' and MaterialCode='0101010104'
+2013-09-14 17:43:55,190 [12864] DEBUG Mms - insert into mms_warehouseStockHistory([SrcBillType],[SrcBillNo],[SrcRowId],[MaterialCode],[WarehouseCode],[Num],[UnitPrice],[Money],[StockNum],[StockUnitPrice],[StockMoney],[Remark],[CreatePerson],[CreateDate],[UpdatePerson],[UpdateDate]) values('send','201306270002','6','0101010104','201306030001','-1.00','21.00','-21.0000','2.00','-3.00','','','刘会胜','2013-09-14 17:43:55','刘会胜','2013-09-14 17:43:55')
+2013-09-14 17:43:56,667 [15480] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:43:56,669 [15480] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201306050002'
+2013-09-14 17:43:56,670 [15480] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 17:43:56,670 [15480] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:56,670 [15480] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 17:43:56,670 [15480] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:56,670 [15480] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201306050002' order by BillNo desc
+2013-09-14 17:43:56,670 [15480] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:56,670 [15480] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201306050002' order by BillNo
+2013-09-14 17:43:56,670 [15480] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:56,670 [15480] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 17:43:56,670 [15480] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 17:43:56,671 [15480] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201306050002'
+2013-09-14 17:43:56,671 [15480] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 17:43:56,671 [15480] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201306050002'
+2013-09-14 17:43:56,671 [15480] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:43:56,671 [15480] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201306050002'
+2013-09-14 17:43:57,929 [7256] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:43:57,930 [7256] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201306270002'
+2013-09-14 17:43:57,930 [7256] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 17:43:57,930 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:57,930 [7256] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 17:43:57,930 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:57,930 [7256] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201306270002' order by BillNo desc
+2013-09-14 17:43:57,930 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:57,930 [7256] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201306270002' order by BillNo
+2013-09-14 17:43:57,931 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:57,931 [7256] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 17:43:57,931 [7256] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 17:43:57,931 [7256] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201306270002'
+2013-09-14 17:43:57,931 [7256] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 17:43:57,931 [7256] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201306270002'
+2013-09-14 17:43:57,931 [7256] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:43:57,931 [7256] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201306270002'
+2013-09-14 17:43:59,112 [12864] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:43:59,113 [12864] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-14 17:43:59,114 [12864] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 17:43:59,114 [12864] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:59,114 [12864] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 17:43:59,114 [12864] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:59,114 [12864] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307040001' order by BillNo desc
+2013-09-14 17:43:59,115 [12864] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:59,115 [12864] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307040001' order by BillNo
+2013-09-14 17:43:59,115 [12864] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:43:59,116 [12864] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 17:43:59,116 [12864] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 17:43:59,116 [12864] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307040001'
+2013-09-14 17:43:59,117 [12864] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 17:43:59,117 [12864] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307040001'
+2013-09-14 17:43:59,118 [12864] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:43:59,118 [12864] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307040001'
+2013-09-14 17:44:00,618 [6616] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:00,618 [6616] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-14 17:44:00,619 [6616] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 17:44:00,619 [6616] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:00,619 [6616] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 17:44:00,619 [6616] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:00,620 [6616] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307110001' order by BillNo desc
+2013-09-14 17:44:00,620 [6616] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:00,620 [6616] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307110001' order by BillNo
+2013-09-14 17:44:00,621 [6616] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:00,621 [6616] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 17:44:00,621 [6616] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 17:44:00,622 [6616] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307110001'
+2013-09-14 17:44:00,622 [6616] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 17:44:00,622 [6616] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307110001'
+2013-09-14 17:44:00,623 [6616] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:00,623 [6616] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307110001'
+2013-09-14 17:44:02,288 [14768] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:02,289 [14768] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230011'
+2013-09-14 17:44:02,290 [14768] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 17:44:02,290 [14768] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:02,290 [14768] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 17:44:02,291 [14768] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:02,291 [14768] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307230011' order by BillNo desc
+2013-09-14 17:44:02,293 [14768] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:02,293 [14768] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307230011' order by BillNo
+2013-09-14 17:44:02,294 [14768] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:02,294 [14768] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 17:44:02,295 [14768] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 17:44:02,295 [14768] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307230011'
+2013-09-14 17:44:02,296 [14768] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 17:44:02,296 [14768] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307230011'
+2013-09-14 17:44:02,297 [14768] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:02,298 [14768] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230011'
+2013-09-14 17:44:03,661 [6616] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:03,661 [6616] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '2013072300112'
+2013-09-14 17:44:03,662 [6616] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 17:44:03,663 [6616] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:03,663 [6616] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 17:44:03,663 [6616] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:03,663 [6616] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '2013072300112' order by BillNo desc
+2013-09-14 17:44:03,665 [6616] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:03,665 [6616] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '2013072300112' order by BillNo
+2013-09-14 17:44:03,667 [6616] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:03,667 [6616] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 17:44:03,667 [6616] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 17:44:03,668 [6616] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '2013072300112'
+2013-09-14 17:44:03,669 [6616] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 17:44:03,669 [6616] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '2013072300112'
+2013-09-14 17:44:03,670 [6616] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:03,670 [6616] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '2013072300112'
+2013-09-14 17:44:05,036 [7256] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:05,037 [7256] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230013'
+2013-09-14 17:44:05,038 [7256] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 17:44:05,038 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:05,038 [7256] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 17:44:05,038 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:05,039 [7256] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307230013' order by BillNo desc
+2013-09-14 17:44:05,040 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:05,040 [7256] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307230013' order by BillNo
+2013-09-14 17:44:05,042 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:05,042 [7256] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 17:44:05,043 [7256] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 17:44:05,043 [7256] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307230013'
+2013-09-14 17:44:05,044 [7256] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 17:44:05,044 [7256] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307230013'
+2013-09-14 17:44:05,045 [7256] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:05,045 [7256] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230013'
+2013-09-14 17:44:06,304 [7256] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:06,304 [7256] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230015'
+2013-09-14 17:44:06,305 [7256] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 17:44:06,305 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:06,305 [7256] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 17:44:06,306 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:06,306 [7256] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307230015' order by BillNo desc
+2013-09-14 17:44:06,308 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:06,308 [7256] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307230015' order by BillNo
+2013-09-14 17:44:06,310 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:06,310 [7256] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 17:44:06,310 [7256] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 17:44:06,311 [7256] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307230015'
+2013-09-14 17:44:06,312 [7256] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 17:44:06,312 [7256] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307230015'
+2013-09-14 17:44:06,313 [7256] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:06,313 [7256] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230015'
+2013-09-14 17:44:07,543 [6736] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:07,544 [6736] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230016'
+2013-09-14 17:44:07,545 [6736] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 17:44:07,545 [6736] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:07,545 [6736] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 17:44:07,546 [6736] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:07,546 [6736] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307230016' order by BillNo desc
+2013-09-14 17:44:07,548 [6736] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:07,548 [6736] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307230016' order by BillNo
+2013-09-14 17:44:07,550 [6736] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:07,550 [6736] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 17:44:07,550 [6736] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 17:44:07,551 [6736] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307230016'
+2013-09-14 17:44:07,551 [6736] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 17:44:07,552 [6736] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307230016'
+2013-09-14 17:44:07,552 [6736] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:07,552 [6736] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230016'
+2013-09-14 17:44:08,711 [14768] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:08,711 [14768] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230017'
+2013-09-14 17:44:08,712 [14768] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 17:44:08,712 [14768] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:08,712 [14768] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 17:44:08,712 [14768] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:08,713 [14768] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307230017' order by BillNo desc
+2013-09-14 17:44:08,715 [14768] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:08,715 [14768] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307230017' order by BillNo
+2013-09-14 17:44:08,717 [14768] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:08,717 [14768] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 17:44:08,717 [14768] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 17:44:08,718 [14768] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307230017'
+2013-09-14 17:44:08,718 [14768] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 17:44:08,719 [14768] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307230017'
+2013-09-14 17:44:08,719 [14768] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:08,719 [14768] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230017'
+2013-09-14 17:44:09,917 [6616] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:09,918 [6616] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230018'
+2013-09-14 17:44:09,919 [6616] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 17:44:09,919 [6616] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:09,919 [6616] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 17:44:09,919 [6616] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:09,920 [6616] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307230018' order by BillNo desc
+2013-09-14 17:44:09,921 [6616] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:09,921 [6616] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307230018' order by BillNo
+2013-09-14 17:44:09,923 [6616] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:09,923 [6616] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 17:44:09,924 [6616] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 17:44:09,924 [6616] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307230018'
+2013-09-14 17:44:09,925 [6616] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 17:44:09,925 [6616] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307230018'
+2013-09-14 17:44:09,926 [6616] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:09,926 [6616] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230018'
+2013-09-14 17:44:11,208 [6616] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:11,208 [6616] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230019'
+2013-09-14 17:44:11,209 [6616] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 17:44:11,209 [6616] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:11,210 [6616] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 17:44:11,210 [6616] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:11,210 [6616] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307230019' order by BillNo desc
+2013-09-14 17:44:11,212 [6616] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:11,212 [6616] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307230019' order by BillNo
+2013-09-14 17:44:11,214 [6616] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:11,214 [6616] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 17:44:11,215 [6616] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 17:44:11,215 [6616] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307230019'
+2013-09-14 17:44:11,216 [6616] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 17:44:11,216 [6616] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307230019'
+2013-09-14 17:44:11,217 [6616] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:11,217 [6616] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307230019'
+2013-09-14 17:44:12,384 [14768] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:12,385 [14768] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240006'
+2013-09-14 17:44:12,386 [14768] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 17:44:12,386 [14768] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:12,386 [14768] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 17:44:12,386 [14768] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:12,387 [14768] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307240006' order by BillNo desc
+2013-09-14 17:44:12,388 [14768] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:12,388 [14768] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307240006' order by BillNo
+2013-09-14 17:44:12,390 [14768] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:12,390 [14768] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 17:44:12,391 [14768] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 17:44:12,391 [14768] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307240006'
+2013-09-14 17:44:12,392 [14768] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 17:44:12,392 [14768] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307240006'
+2013-09-14 17:44:12,392 [14768] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:12,393 [14768] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240006'
+2013-09-14 17:44:13,497 [15480] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:13,497 [15480] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240007'
+2013-09-14 17:44:13,498 [15480] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 17:44:13,498 [15480] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:13,498 [15480] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 17:44:13,499 [15480] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:13,499 [15480] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307240007' order by BillNo desc
+2013-09-14 17:44:13,500 [15480] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:13,500 [15480] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307240007' order by BillNo
+2013-09-14 17:44:13,502 [15480] DEBUG Servicemms_send - 获取字段
+2013-09-14 17:44:13,502 [15480] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 17:44:13,503 [15480] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 17:44:13,503 [15480] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307240007'
+2013-09-14 17:44:13,504 [15480] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 17:44:13,504 [15480] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307240007'
+2013-09-14 17:44:13,505 [15480] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 17:44:13,505 [15480] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240007'
+2013-09-14 18:49:36,901 [7256] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 18:49:38,031 [7256] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240017'
+2013-09-14 18:49:38,545 [7256] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 18:49:38,545 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 18:49:38,545 [7256] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 18:49:38,547 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 18:49:38,547 [7256] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307240017' order by BillNo desc
+2013-09-14 18:49:38,549 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 18:49:38,549 [7256] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307240017' order by BillNo
+2013-09-14 18:49:38,551 [7256] DEBUG Servicemms_send - 获取字段
+2013-09-14 18:49:38,551 [7256] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 18:49:38,552 [7256] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 18:49:38,553 [7256] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307240017'
+2013-09-14 18:49:39,974 [7256] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 18:49:39,975 [7256] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307240017'
+2013-09-14 18:49:40,008 [7256] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 18:49:40,009 [7256] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240017'
+2013-09-14 23:03:46,094 [5192] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 23:03:46,117 [5192] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240019'
+2013-09-14 23:03:46,178 [5192] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 23:03:46,179 [5192] DEBUG Servicemms_send - 获取字段
+2013-09-14 23:03:46,179 [5192] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 23:03:46,180 [5192] DEBUG Servicemms_send - 获取字段
+2013-09-14 23:03:46,180 [5192] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307240019' order by BillNo desc
+2013-09-14 23:03:46,181 [5192] DEBUG Servicemms_send - 获取字段
+2013-09-14 23:03:46,182 [5192] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307240019' order by BillNo
+2013-09-14 23:03:46,183 [5192] DEBUG Servicemms_send - 获取字段
+2013-09-14 23:03:46,183 [5192] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 23:03:46,184 [5192] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 23:03:46,184 [5192] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307240019'
+2013-09-14 23:03:46,192 [5192] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 23:03:46,192 [5192] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307240019'
+2013-09-14 23:03:46,202 [5192] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 23:03:46,202 [5192] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240019'
+2013-09-14 23:03:47,741 [5192] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 23:03:47,741 [5192] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240020'
+2013-09-14 23:03:47,742 [5192] DEBUG Servicemms_send - 获取上一条下一条数据
+2013-09-14 23:03:47,742 [5192] DEBUG Servicemms_send - 获取字段
+2013-09-14 23:03:47,743 [5192] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo
+2013-09-14 23:03:47,743 [5192] DEBUG Servicemms_send - 获取字段
+2013-09-14 23:03:47,743 [5192] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo < '201307240020' order by BillNo desc
+2013-09-14 23:03:47,745 [5192] DEBUG Servicemms_send - 获取字段
+2013-09-14 23:03:47,745 [5192] DEBUG Mms - select top 1 BillNo from mms_send where  BillNo >  '201307240020' order by BillNo
+2013-09-14 23:03:47,747 [5192] DEBUG Servicemms_send - 获取字段
+2013-09-14 23:03:47,747 [5192] DEBUG Mms - select top 1 BillNo from mms_send order by BillNo desc
+2013-09-14 23:03:47,747 [5192] DEBUG Servicemms_sendDetail - 获取动态列表
+2013-09-14 23:03:47,748 [5192] DEBUG Mms - select mms_sendDetail.* from mms_sendDetail where  BillNo =  '201307240020'
+2013-09-14 23:03:47,748 [5192] DEBUG Servicemms_sendBatches - 获取动态列表
+2013-09-14 23:03:47,749 [5192] DEBUG Mms - select mms_sendBatches.* from mms_sendBatches where  BillNo =  '201307240020'
+2013-09-14 23:03:47,749 [5192] DEBUG Servicemms_send - 获取实体对象
+2013-09-14 23:03:47,749 [5192] DEBUG Mms - select mms_send.* from mms_send where  BillNo =  '201307240020'

@@ -1,0 +1,105 @@
+﻿@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section head {
+     <style type="text/css">
+        .grid_3{margin-top:8px;margin-bottom:8px;width: 78px;height: 82px; padding-top:8px;}
+        .center{ background-color:#eff6fe !important;}
+        .container_16 {  background:url(/Images/mms/库房管理流程.jpg) center no-repeat !important; height:408px;margin: 25px auto; width: 500px;position: relative;text-align: center;}
+        .container_16 a:hover { background: url(/Images/mms/HotBtnBack.jpg) center no-repeat;color: black;text-decoration: none;cursor: pointer;}
+        .panel-tool { display: none;}
+        ul { padding-top: 2px;}
+        ul li{padding-left:18px;line-height:18px;background:url('/Content/css/icon/icon/arrow_right_16.png') no-repeat;}
+        ul li a{ cursor: pointer;}
+    </style>
+}
+
+@section scripts{
+    <script type="text/javascript" >
+        $(function () {
+            $('a').each(function () {
+                var that = $(this), data = parent.$("body", parent.document).data("menulist");
+                $.each(data||[], function () {
+                    if (this.URL == that.attr('url')) {
+                        that.attr('title', this.MenuName);
+                        that.attr('icon', this.IconClass);
+                    }
+                });
+            }).click(function () {
+                var that = $(this);
+                com.openTab(that.attr('title'), that.attr('url'), that.attr('icon'));
+            });
+
+            using('layout', function () {
+                var box = $("#layoutbox");
+                box.width($(window).width() - 4).height($(window).height() - 4).layout();
+                $(window).resize(function () { box.width($(window).width() - 4).height($(window).height() - 4).layout('resize'); });
+            });
+        });
+    </script>
+}
+
+    <div id="layoutbox">
+        <div region="center" class="center"  >
+            <div class="container_16">
+                <a class="grid_3" url="/mms/direct"><img src="~/Images/mms/直入直出单.jpg" alt="直入直出单" /><div>直入直出单</div></a>
+                <a class="grid_3" url="/mms/refund" style="margin-left:128px;"><img src="~/Images/mms/退库单.jpg" alt="退库单" /><div>退库单</div></a>
+                <a class="grid_3" url="/mms/check" style="margin-left:20px;"><img src="~/Images/mms/盘点单.jpg" alt="盘点单" /><div>盘点单</div></a>
+       
+                <div class="clear"></div>
+
+                <a class="grid_3" url="/mms/receive"><img src="~/Images/mms/收料单.jpg" alt="收料单" /><div>收料单</div></a>
+                <a class="grid_3" url="/mms/send" style="margin-left:25px;"><img src="~/Images/mms/发料单.jpg" alt="发料单" /><div>发料单</div></a>
+                <a class="grid_3" url="/mms/return" style="margin-left:15px;"><img src="~/Images/mms/退货单.jpg" alt="退货单" /><div>退货单</div></a>
+                <a class="grid_3" url="/mms/lossreport" style="margin-left:20px;"><img src="~/Images/mms/报损单.jpg" alt="报损单" /><div>报损单</div></a>
+        
+                <div class="clear"></div>
+
+                <a class="grid_3" url="/mms/transfer" style="margin-left:223px;"><img src="~/Images/mms/调拨单.jpg" alt="调拨单" /><div>调拨单</div></a>
+                <a class="grid_3" url="/mms/repair" style="margin-left:20px;"><img src="~/Images/mms/维修单.jpg" alt="维修单" /><div>维修单</div></a>
+                <a class="grid_3" url="/mms/deal" style="margin-left:-10px;"><img src="~/Images/mms/处置单.jpg" alt="处置单" /><div>处置单</div></a>
+         
+                <div class="clear"></div>
+
+                <a class="grid_3" url="/mms/rentin"><img src="~/Images/mms/租赁进场单.jpg" alt="租赁进场单" /><div>租赁进场单</div></a>
+                <a class="grid_3" url="/mms/rentoff" style="margin-left:25px;"><img src="~/Images/mms/停租单.jpg" alt="停租单" /><div>停租单</div></a>
+                <a class="grid_3" url="/mms/rentout" style="margin-left:125px;"><img src="~/Images/mms/租赁出场单.jpg" alt="租赁出场单" /><div>租赁出场单</div></a>
+            </div>
+        </div>
+        
+        <div region="east" split="true"  style="width:180px;overflow: hidden;">
+            <div id="right" class="easyui-layout" fit="true">
+                    <div region="north" title="报表中心" style="height:200px" border="false" split="true" data-options="collapse:false">
+                        <ul>
+                            <li><a url="/mms/report/balanceaccount" title="收发存情况查询">收发存情况查询</a></li>
+                            <li><a url="/mms/report/receivesummary" title="收料情况查询">收料情况查询</a></li>
+                            <li><a url="/mms/report/sendsummary" title="发料情况查询">发料情况查询</a></li>
+                            <li><a url="/mms/report/warehousequery" title="库存查询">库存查询</a></li>
+                            <li><a url="/mms/report/materialwarnning" title="库存预警报告">库存预警报告</a></li>
+                            <li><a url="/mms/report/warehouseaccount" title="库存流水查询">库存流水查询</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div region="center" title="单据管理中心" border="false" split="true">
+                        <ul>
+                            <li><a url="/mms/receive" title="材料收料单">收料单</a></li>
+                            <li><a url="/mms/send" title="材料发料单">发料单</a></li>
+                            <li><a url="/mms/refund" title="材料退库单">退库单</a></li> 
+                            <li><a url="/mms/return" title="材料退货单">退货单</a></li> 
+                            <li><a url="/mms/check" title="材料盘点单">盘点单</a></li> 
+                            <li><a url="/mms/transfer" title="材料调拨单">调拨单</a></li> 
+                            <li><a url="/mms/lossreport" title="材料报损单">报损单</a></li> 
+                            <li><a url="/mms/repair" title="材料维修单">维修单</a></li> 
+                            <li><a url="/mms/deal" title="材料处置单">处置单</a></li> 
+                            <li><a url="/mms/direct" title="直入直出单">直入直出单</a></li> 
+                            <li><a url="/mms/rentin" title="租赁进场单">租赁进场单</a></li> 
+                            <li><a url="/mms/rentoff" title="租赁停租单">租赁停租单</a></li>
+                            <li><a url="/mms/rentout" title="租赁出场单">租赁出场单</a></li> 
+                        </ul>
+                    </div>
+            </div>
+        </div>  
+    </div> 
+
